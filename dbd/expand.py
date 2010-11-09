@@ -82,6 +82,16 @@ def loadEntry(name, entry, path=['.'], skip=[]):
     skip.pop()
     return dbd
 
+class _Result(object):
+    __list=None
+    def __init__(self, *names):
+        self.__list=names
+    def __getitem__(self, key):
+        return getattr(self, self.__list[key])
+    def __setitem__(self, key, value):
+        return setattr(self, self.__list[key], value)
+    #del __delitem__(self, key):
+        #return delattr(self, self.__list[key])
 
 def loadDBD(name, path=['.'], skip=[]):
     """Recursively read and parse database
@@ -105,8 +115,7 @@ def loadDBD(name, path=['.'], skip=[]):
 
             elif ent.what=='recordtype':
                 nf=[]
-                while len(ent.fields)>0:
-                    fld=ent.fields.pop(0)
+                for fld in ent.fields:
                     if fld.what=='include':
                         R=loadEntry(fld.name, grammer.RecordInclude,
                                     path=path, skip=skip)
@@ -115,8 +124,12 @@ def loadDBD(name, path=['.'], skip=[]):
                     else:
                         nf.append(fld)
 
-                ent.fields=nf
-                out.append(ent)
+                ent2=_Result('what','name','fields')
+                for n in ['what','name']:
+                    setattr(ent2, n, getattr(ent, n))
+                ent2.fields=nf
+
+                out.append(ent2)
 
             elif ent.what=='record':
                 nf=[]
@@ -130,8 +143,12 @@ def loadDBD(name, path=['.'], skip=[]):
                     else:
                         nf.append(fld)
 
-                ent.fields=nf
-                out.append(ent)
+                ent2=_Result('what','rec','name','fields')
+                for n in ['what','rec','name']:
+                    setattr(ent2, n, getattr(ent, n))
+                ent2.fields=nf
+
+                out.append(ent2)
 
             else:
                 out.append(ent)

@@ -136,6 +136,8 @@ class TestLoad(unittest.TestCase):
             #print '\n',str(check)
             #print '\n',str(full)
             import difflib
-            for line in difflib.unified_diff(check, full, 'actual', 'expected'):
-                print line,
+            for line in difflib.unified_diff(check.splitlines(),
+                                             full.splitlines(),
+                                             'actual', 'expected'):
+                print line
         self.assertEqual(check, full)

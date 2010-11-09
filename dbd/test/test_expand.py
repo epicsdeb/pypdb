@@ -111,8 +111,9 @@ class TestLoad(unittest.TestCase):
         x=expand.findFile('dbCom.dbd', path=['wrong','../d%mmy','.'])
         self.assertEqual(x, os.path.join('.','dbCom.dbd'))
 
-        x=expand.findFile('dbCom.dbd', path=['wrong','../d%mmy'])
-        self.assertTrue(x is None)
+        def tst():
+            x=expand.findFile('dbCom.dbd', path=['wrong','../d%mmy'])
+        self.assertRaises(IOError, tst)
 
     def test_include(self):
 

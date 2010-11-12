@@ -5,7 +5,7 @@ import time
 from warnings import warn
 from optparse import OptionParser
 
-from dbd.expand import loadDBD, DBD
+from pyPDB.dbd.expand import loadDBD, DBD
 
 linktypes = ['DBF_INLINK', 'DBF_OUTLINK', 'DBF_FWDLINK']
 

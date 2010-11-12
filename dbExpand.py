@@ -3,8 +3,8 @@
 
 from optparse import OptionParser
 
-from dbd.expand import loadDBD
-from dbd.show import showDBD
+from pyPDB.dbd.expand import loadDBD
+from pyPDB.dbd.show import showDBD
 
 parser = OptionParser()
 parser.add_option("-I", dest='include', action='append', default=[],

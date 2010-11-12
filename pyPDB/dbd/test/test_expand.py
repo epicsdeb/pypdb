@@ -2,7 +2,7 @@
 
 import unittest
 import os.path
-from dbd import expand, show
+from pyPDB.dbd import expand, show
 
 files={
     'dbCom.dbd':"""

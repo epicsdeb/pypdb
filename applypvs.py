@@ -5,7 +5,7 @@ import re, sys, os.path
 from warnings import warn
 from optparse import OptionParser
 
-from po.grammer import PO
+from pyPDB.po.grammer import PO
 
 parser = OptionParser(usage='%prog [options] <-i file.po ...> <input.db | in.edl>')
 parser.add_option('-i', '--po', action='append', default=[],

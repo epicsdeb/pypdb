@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import dbd.grammer as dbd
-from dbd.show import showDBD
+import pyPDB.dbd.grammer as dbd
+from pyPDB.dbd.show import showDBD
 
 class TestDbd(unittest.TestCase):
     

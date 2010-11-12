@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from po.grammer import PO
+from pyPDB.po.grammer import PO
 
 class TestPO(unittest.TestCase):
 

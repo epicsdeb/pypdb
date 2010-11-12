@@ -6,6 +6,25 @@ from pyparsing import *
 
 # General
 
+_annoated={}
+
+def annotate(s,loc,toks):
+    out=[]
+    for t in toks:
+        cls=_annoated.get(t.__class__)
+        if cls is None:
+            class Annotated(t.__class__):
+                file=None
+                lineno=None
+                col=None
+            _annoated[t.__class__]=Annotated
+            cls=Annotated
+        tt=cls(t)
+        tt.lineno=lineno(loc,s)
+        tt.col=col(loc,s)
+        out.append(tt)
+    return out
+
 def listToDict(toks):
     return dict(toks.asList())
 
@@ -21,6 +40,7 @@ UnQuotedString = Optional( CharsNotIn(' \t\r\n)') +
 
 DBValue = QuotedString('"', unquoteResults=True) | \
           Combine(UnQuotedString)
+DBValue=DBValue.addParseAction(annotate)
 
 Comment = pythonStyleComment
 
@@ -93,7 +113,7 @@ Record = RecordHead + Suppress("{") + \
 
 InstHead = Keyword("record").setResultsName('what') + Suppress("(") + \
                   Word(alphanums).setResultsName('rec') + Suppress(",") + \
-                  QuotedString('"').setResultsName('name') + Suppress(")")
+                  DBValue.setResultsName('name') + Suppress(")")
 
 InstField = Keyword("field").setResultsName('what') + Suppress("(") + \
                   Word(fldname).setResultsName('name') + Suppress(",") + \

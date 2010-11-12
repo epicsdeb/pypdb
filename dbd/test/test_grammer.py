@@ -160,6 +160,8 @@ record (ai, "$(P)") {
         self.assertEqual(x.what, "record")
         self.assertEqual(x.rec, "ai")
         self.assertEqual(x.name, "$(P)")
+        self.assertEqual(x.name.lineno, 2)
+        self.assertEqual(x.fields[1].value.lineno, 4)
         self.assertEqual(x.fields.asList(),
                 [['include', 'favFields.db'],
                  ['field', 'TST', 'testing'],

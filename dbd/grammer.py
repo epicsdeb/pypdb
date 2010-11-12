@@ -38,9 +38,15 @@ LCURL  = Suppress("{")
 RCURL  = Suppress("}")
 COMMA  = Suppress(",")
 
-UnQuotedString = Optional( CharsNotIn(' \t\r\n)') + 
+# a word with a macro
+ValueWord = OneOrMore( CharsNotIn(' \t\r\n()') |
+                       QuotedString('(', endQuoteChar=')',
+                                         unquoteResults=False)
+                     ).setName('Value Word')
+
+UnQuotedString = Optional( ValueWord + 
                            ZeroOrMore( White(' \t') +
-                                       CharsNotIn(' \t\r\n)')
+                                       ValueWord
                            )
                          ).setName("Un-quoted string")
 

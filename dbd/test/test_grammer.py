@@ -57,7 +57,11 @@ menu(menuScan) {
         for inp,exp in [('  " test value "  ', [' test value ']),
                         ('test value', ['test value']),
                         ('  test value ', ['test value']),
+                        ('  $(P) ', ['$(P)']),
+                        ('  test$(P)ing ', ['test$(P)ing']),
+                        ('  test $(P)ing ', ['test $(P)ing']),
                        ]:
+            dbd.DBValue.setDebug(True)
             x=dbd.DBValue.parseString(inp, parseAll=True)
             self.assertEqual(x.asList(), exp)
 
@@ -152,6 +156,7 @@ record (ai, "$(P)") {
     include "favFields.db"
     field(TST,  "testing" )
     field(VAL, test value )
+    field(XYZ, $(P))
     info(hELlo, "world")
     alias("$(P):other")
 }
@@ -166,6 +171,7 @@ record (ai, "$(P)") {
                 [['include', 'favFields.db'],
                  ['field', 'TST', 'testing'],
                  ['field', 'VAL', 'test value'],
+                 ['field', 'XYZ', '$(P)'],
                  ['info', 'hELlo', 'world'],
                  ['alias', '$(P):other']
                 ])

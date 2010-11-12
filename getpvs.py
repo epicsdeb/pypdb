@@ -43,11 +43,12 @@ def cleanLink(val):
 recflds={}
 
 strings={}
+comments={}
 
 for rec, flds in pdb.records.iteritems():
     #print rec,flds[0],
 
-    strings[rec]=['defined']
+    strings[rec]=['%s:%d'%(rec.file, rec.lineno)]
 
     rflds=pdb.recordtypes.get(flds[0], None)
     if rflds is None:
@@ -71,11 +72,14 @@ for rec, flds in pdb.records.iteritems():
 
             if len(val)==0 or val[0]=='@':
                 continue
-
+ 
             if val not in strings:
-                strings[val]=['undefined!']
+                strings[val]=['undefined:0']
 
-            strings[val].append('%s.%s'%(rec, fld.name))
+            strings[val].append('%s:%d'%(fld.value.file, fld.value.lineno))
+
+        if fld.name=='DESC':
+            comments[rec]=fld.value
 
     #print
 
@@ -89,13 +93,17 @@ msgstr ""
 "Language: \\n"
 "MIME-Version: 1.0\\n"
 "Content-Type: text/plain; charset=iso-8859-1\\n"
-"Content-Transfer-Encoding: 8bit\\n"
-""" % {'time':time.strftime('%F %H:%M%z')}
+"Content-Transfer-Encoding: 8bit\\n" """ % {'time':time.strftime('%F %H:%M%z')}
+
+for n,d in enumerate(opts.include):
+    print >>out,'"X-Poedit-SearchPath-%d: %s\\n"'%(n,d)
+print >>out
+
 for pv, refs in strings.iteritems():
-    print >>out,'#:',
+    if pv in comments:
+        print >>out,'#.',comments[pv]
     for r in refs:
-        print >>out,r,
-    print >>out
+        print >>out,'#:',r
     print >>out,'msgid "%s"'%pv
     print >>out,'msgstr ""'
     print >>out

@@ -24,7 +24,7 @@ mappings={}
 src={}
 
 def loadPO(file):
-    x=PO.parseFile(file, parseAll=True)
+    x=PO.parseFile(file)
 
     for orig, sub in x:
         if len(orig.strip())==0 or len(sub.strip())==0:

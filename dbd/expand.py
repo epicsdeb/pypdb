@@ -53,7 +53,7 @@ def loadEntry(name, entry, path=['.'], skip=[]):
     skip.append(f)
 
     try:
-        dbd=entry.parseFile(f, parseAll=True)
+        dbd=entry.parseFile(f)
 
         out=[]
         while len(dbd)>0:
@@ -107,7 +107,7 @@ def loadDBD(name, path=['.'], skip=[]):
     skip.append(f)
 
     try:
-        dbd=grammer.DBD.parseFile(f, parseAll=True)
+        dbd=grammer.DBD.parseFile(f)
 
         out=[]
         while len(dbd)>0:

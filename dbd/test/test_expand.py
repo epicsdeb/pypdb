@@ -119,6 +119,13 @@ class TestLoad(unittest.TestCase):
 
         dbd=expand.loadDBD('simpleRecord.dbd', path=['.'])
 
+        self.assertEqual(dbd[2].name.file, 'simpleRecord.dbd')
+        self.assertEqual(dbd[2].name.lineno, 18)
+        self.assertEqual(dbd[2].fields[1].value.file, 'fieldCom.dbd')
+        self.assertEqual(dbd[2].fields[1].value.lineno, 3)
+        self.assertEqual(dbd[2].fields[4].value.file, 'simpleRecord.dbd')
+        self.assertEqual(dbd[2].fields[4].value.lineno, 21)
+
         f=open('expand.dbd', 'w')
         show.showDBD(dbd, f)
         f.close()

@@ -63,6 +63,10 @@ def loadEntry(name, entry, path=['.'], skip=[]):
                 R=loadEntry(ent.name, entry, path=path, skip=skip)
                 out+=R                        
 
+            elif ent.what=='field' and 'value' in ent:
+                # instance field
+                ent.value.file=name
+                out.append(ent)
             else:
                 out.append(ent)
 
@@ -133,12 +137,17 @@ def loadDBD(name, path=['.'], skip=[]):
 
             elif ent.what=='record':
                 nf=[]
+                ent.name.file=name
                 while len(ent.fields)>0:
                     fld=ent.fields.pop(0)
                     if fld.what=='include':
                         R=loadEntry(fld.name, grammer.InstInclude,
                                     path=path, skip=skip)
                         nf+=R
+
+                    elif fld.what=='field':
+                        fld.value.file=name
+                        nf.append(fld)
 
                     else:
                         nf.append(fld)

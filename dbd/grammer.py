@@ -13,6 +13,15 @@ upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 fldname = upper + '0123456789'
 
+UnQuotedString = Optional( CharsNotIn(' \t\r\n)') + 
+                           ZeroOrMore( White(' \t') +
+                                       CharsNotIn(' \t\r\n)')
+                           )
+                         ).setName("Un-quoted string")
+
+DBValue = QuotedString('"', unquoteResults=True) | \
+          Combine(UnQuotedString)
+
 Comment = pythonStyleComment
 
 Include = Keyword("include").setResultsName('what') + \
@@ -88,7 +97,7 @@ InstHead = Keyword("record").setResultsName('what') + Suppress("(") + \
 
 InstField = Keyword("field").setResultsName('what') + Suppress("(") + \
                   Word(fldname).setResultsName('name') + Suppress(",") + \
-                  QuotedString('"', unquoteResults=True).setResultsName('value') + Suppress(")")
+                  DBValue.setResultsName('value') + Suppress(")")
 
 InstInfo = Keyword("info").setResultsName('what') + Suppress("(") + \
                   Word(alphanums+'_').setResultsName('name') + Suppress(",") + \

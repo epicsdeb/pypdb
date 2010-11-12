@@ -53,6 +53,14 @@ menu(menuScan) {
         self.assertEqual(x.what, 'CCode')
         self.assertEqual(x.code, 'struct aSubRecord;')
 
+    def test_value(self):
+        for inp,exp in [('  " test value "  ', [' test value ']),
+                        ('test value', ['test value']),
+                        ('  test value ', ['test value']),
+                       ]:
+            x=dbd.DBValue.parseString(inp, parseAll=True)
+            self.assertEqual(x.asList(), exp)
+
     def test_field(self):
         x=dbd.RecordFieldHead.parseString("field(INP,DBF_INLINK)", parseAll=True)
         self.assertEqual(x.asList(), ['field','INP','DBF_INLINK'])
@@ -142,7 +150,8 @@ recordtype(compress) {
         inp="""
 record (ai, "$(P)") {
     include "favFields.db"
-    field(TST, "testing")
+    field(TST,  "testing" )
+    field(VAL, test value )
     info(hELlo, "world")
     alias("$(P):other")
 }
@@ -154,6 +163,7 @@ record (ai, "$(P)") {
         self.assertEqual(x.fields.asList(),
                 [['include', 'favFields.db'],
                  ['field', 'TST', 'testing'],
+                 ['field', 'VAL', 'test value'],
                  ['info', 'hELlo', 'world'],
                  ['alias', '$(P):other']
                 ])

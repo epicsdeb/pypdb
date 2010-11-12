@@ -32,6 +32,12 @@ upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 fldname = upper + '0123456789'
 
+LPAREN = Suppress("(")
+RPAREN = Suppress(")")
+LCURL  = Suppress("{")
+RCURL  = Suppress("}")
+COMMA  = Suppress(",")
+
 UnQuotedString = Optional( CharsNotIn(' \t\r\n)') + 
                            ZeroOrMore( White(' \t') +
                                        CharsNotIn(' \t\r\n)')
@@ -40,7 +46,7 @@ UnQuotedString = Optional( CharsNotIn(' \t\r\n)') +
 
 DBValue = QuotedString('"', unquoteResults=True) | \
           Combine(UnQuotedString)
-DBValue=DBValue.addParseAction(annotate)
+DBValue=DBValue.addParseAction(annotate).setName("DB Value")
 
 Comment = pythonStyleComment
 
@@ -54,35 +60,35 @@ CCode = Literal("%").setParseAction(lambda _:'CCode').setResultsName('what') + \
 # Menues
 
 MenuHead = Keyword("menu").setResultsName('what') + \
-                      Suppress("(") + \
+                      LPAREN + \
                       Word(alphanums).setResultsName('name') + \
-                      Suppress(")")
+                      RPAREN
 
 MenuEntry = Keyword("choice").suppress() + \
-             Suppress("(") + \
+             LPAREN + \
 		     Word(alphanums+'_') + \
-		     Suppress(",") + \
+		     COMMA + \
 		     QuotedString('"') + \
-		     Suppress(")")
+		     RPAREN
 MenuEntry = Group(MenuEntry)
 
-Menu = MenuHead + Suppress("{") + \
+Menu = MenuHead + LCURL + \
 	      OneOrMore( MenuEntry ).setResultsName('choices').setParseAction(listToDict) + \
-	      Suppress("}")
+	      RCURL
 
 # Records
 
 RecordHead = Keyword("recordtype").setResultsName('what') + \
-                      Suppress("(") + \
+                      LPAREN + \
                       Word(alphanums).setResultsName('name') + \
-                      Suppress(")")
+                      RPAREN
 RecordHead.setName("Record header")
 
 # Record body statements
 
-RecordFieldHead = Keyword("field").setResultsName('what') + Suppress("(") + \
-                  Word(fldname).setResultsName('name') + Suppress(",") + \
-                  Word(upper+'_').setResultsName('dbf') + Suppress(")")
+RecordFieldHead = Keyword("field").setResultsName('what') + LPAREN + \
+                  Word(fldname).setResultsName('name') + COMMA + \
+                  Word(upper+'_').setResultsName('dbf') + RPAREN
 
 _valQuoted = ['prompt', 'initial', 'extra']
 _valPlain = ['asl','promptgroup','special','pp',
@@ -90,62 +96,62 @@ _valPlain = ['asl','promptgroup','special','pp',
 
 _fieldAttrs=[]
 for v in _valQuoted:
-    a=Keyword(v) + Suppress("(") + QuotedString('"') + Suppress(")")
+    a=Keyword(v) + LPAREN + QuotedString('"') + RPAREN
     _fieldAttrs.append(a)
 
 for v in _valPlain:
-    a=Keyword(v) + Suppress("(") + Word(alphanums+'_') + Suppress(")")
+    a=Keyword(v) + LPAREN + Word(alphanums+'_') + RPAREN
     _fieldAttrs.append(a)
 
 RecordFieldAttr = reduce(lambda a,b:a|b, _fieldAttrs)
 
-RecordField = RecordFieldHead + Suppress("{") + \
+RecordField = RecordFieldHead + LCURL + \
           OneOrMore( Group(RecordFieldAttr) ).setParseAction(listToDict).setResultsName('attrs') + \
-          Suppress("}")
+          RCURL
 
 RecordEntry = Group( RecordField | Include | CCode )
 
-Record = RecordHead + Suppress("{") + \
+Record = RecordHead + LCURL + \
           Group( OneOrMore( RecordEntry ) ).setResultsName('fields') + \
-          Suppress("}")
+          RCURL
 
 # Record Instances
 
-InstHead = Keyword("record").setResultsName('what') + Suppress("(") + \
-                  Word(alphanums).setResultsName('rec') + Suppress(",") + \
-                  DBValue.setResultsName('name') + Suppress(")")
+InstHead = Keyword("record").setResultsName('what') + LPAREN + \
+                  Word(alphanums).setResultsName('rec') + COMMA + \
+                  DBValue.setResultsName('name') + RPAREN
 
-InstField = Keyword("field").setResultsName('what') + Suppress("(") + \
-                  Word(fldname).setResultsName('name') + Suppress(",") + \
-                  DBValue.setResultsName('value') + Suppress(")")
+InstField = Keyword("field").setResultsName('what') + LPAREN + \
+                  Word(fldname).setResultsName('name') + COMMA + \
+                  DBValue.setResultsName('value') + RPAREN
 
-InstInfo = Keyword("info").setResultsName('what') + Suppress("(") + \
-                  Word(alphanums+'_').setResultsName('name') + Suppress(",") + \
-                  QuotedString('"').setResultsName('value') + Suppress(")")
+InstInfo = Keyword("info").setResultsName('what') + LPAREN + \
+                  Word(alphanums+'_').setResultsName('name') + COMMA + \
+                  QuotedString('"').setResultsName('value') + RPAREN
 
-InstAlias = Keyword("alias").setResultsName('what') + Suppress("(") + \
-                  QuotedString('"').setResultsName('name') + Suppress(")")
+InstAlias = Keyword("alias").setResultsName('what') + LPAREN + \
+                  QuotedString('"').setResultsName('name') + RPAREN
 
 InstEntry = Group( InstField | InstInfo | InstAlias | Include )
 
-Inst = InstHead + Suppress("{") + \
+Inst = InstHead + LCURL + \
           Group( ZeroOrMore( InstEntry ) ).setResultsName('fields') + \
-          Suppress("}")
+          RCURL
 
 # misc
 
-Registrar = Keyword('registrar') + Suppress("(") + \
-            Word(alphanums+'_').setResultsName('name') + Suppress(")")
+Registrar = Keyword('registrar') + LPAREN + \
+            Word(alphanums+'_').setResultsName('name') + RPAREN
 
-Variable = Keyword("variable").setResultsName('what') + Suppress("(") + \
-           Word(alphanums+'_').setResultsName('name') + Suppress(",") + \
-           Word(alphanums+'_').setResultsName('ctype') + Suppress(")")
+Variable = Keyword("variable").setResultsName('what') + LPAREN + \
+           Word(alphanums+'_').setResultsName('name') + COMMA + \
+           Word(alphanums+'_').setResultsName('ctype') + RPAREN
 
-Device = Keyword("device").setResultsName('what') + Suppress("(") + \
-         Word(alphanums+'_').setResultsName('rec') + Suppress(",") + \
-         Word(upper+'_').setResultsName('link') + Suppress(",") + \
-         Word(alphanums+'_').setResultsName('name') + Suppress(",") + \
-         QuotedString('"').setResultsName('dtyp') + Suppress(")")
+Device = Keyword("device").setResultsName('what') + LPAREN + \
+         Word(alphanums+'_').setResultsName('rec') + COMMA + \
+         Word(upper+'_').setResultsName('link') + COMMA + \
+         Word(alphanums+'_').setResultsName('name') + COMMA + \
+         QuotedString('"').setResultsName('dtyp') + RPAREN
 
 # Root nodes
 

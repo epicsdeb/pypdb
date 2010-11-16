@@ -135,7 +135,7 @@ def loadDBD(name, path=['.'], skip=[]):
 
                 out.append(ent2)
 
-            elif ent.what=='record':
+            elif ent.what=='record' or ent.what=='grecord':
                 nf=[]
                 ent.name.file=name
                 while len(ent.fields)>0:
@@ -194,7 +194,7 @@ class DBD(object):
                    continue
                self.menus[ent.name]=ent.choices
 
-            elif ent.what=='record':
+            elif ent.what=='record' or ent.what=='grecord':
                if ent.name in self.records:
                    warnings.warn('Skipping duplicate record '+ent.name)
                    continue

@@ -61,7 +61,7 @@ menu(menuScan) {
                         ('  test$(P)ing ', ['test$(P)ing']),
                         ('  test $(P)ing ', ['test $(P)ing']),
                        ]:
-            dbd.DBValue.setDebug(True)
+
             x=dbd.DBValue.parseString(inp, parseAll=True)
             self.assertEqual(x.asList(), exp)
 
@@ -174,6 +174,23 @@ record (ai, "$(P)") {
                  ['field', 'XYZ', '$(P)'],
                  ['info', 'hELlo', 'world'],
                  ['alias', '$(P):other']
+                ])
+
+        inp="""
+grecord (ai, "yy$(P)xx") {
+    include "favFields.db"
+    field(FFF, test)
+}
+"""
+        x=dbd.Inst.parseString(inp, parseAll=True)
+        self.assertEqual(x.what, "grecord")
+        self.assertEqual(x.rec, "ai")
+        self.assertEqual(x.name, "yy$(P)xx")
+        self.assertEqual(x.name.lineno, 2)
+        self.assertEqual(x.fields[1].value.lineno, 4)
+        self.assertEqual(x.fields.asList(),
+                [['include', 'favFields.db'],
+                 ['field', 'FFF', 'test'],
                 ])
 
     def test_dbd(self):

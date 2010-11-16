@@ -37,6 +37,7 @@ RPAREN = Suppress(")")
 LCURL  = Suppress("{")
 RCURL  = Suppress("}")
 COMMA  = Suppress(",")
+RECORD = (Keyword("record") | Keyword("grecord")).setName("record")
 
 # a word with a macro
 ValueWord = OneOrMore( CharsNotIn(' \t\r\n()') |
@@ -123,7 +124,7 @@ Record = RecordHead + LCURL + \
 
 # Record Instances
 
-InstHead = Keyword("record").setResultsName('what') + LPAREN + \
+InstHead = RECORD.setResultsName('what') + LPAREN + \
                   Word(alphanums).setResultsName('rec') + COMMA + \
                   DBValue.setResultsName('name') + RPAREN
 

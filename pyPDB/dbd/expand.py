@@ -4,6 +4,8 @@ import sys
 import warnings
 
 from pyparsing import ParseBaseException
+from collections import defaultdict
+from StringIO import StringIO
 
 import grammer
 
@@ -180,28 +182,41 @@ def loadDBD(name, path=['.'], skip=[]):
 
 class DBD(object):
     def __init__(self, dbd=None):
-        self.recordtypes={}
-        self.menus={}
-        self.records={}
+        self.recordtypes=defaultdict(list)
+        self.menus=defaultdict(list)
+        self.records=defaultdict(list)
+        self._dispatch={'menu':self.menus,
+                        'record':self.records,
+                        'grecord':self.records,
+                        'recordtype':self.recordtypes}
         if dbd is not None:
             self.load(dbd)
 
     def load(self, dbd):
+        # group by type
         for ent in dbd:
-            if ent.what=='menu':
-               if ent.name in self.menus:
-                   warnings.warn('Skipping duplicate menu '+ent.name)
-                   continue
-               self.menus[ent.name]=ent.choices
+            d=self._dispatch.get(ent.what, None)
+            if d is None:
+                continue
+            d[ent.name].append(ent)
 
-            elif ent.what=='record' or ent.what=='grecord':
-               if ent.name in self.records:
-                   warnings.warn('Skipping duplicate record '+ent.name)
-                   continue
-               self.records[ent.name]=(ent.rec, ent.fields)
-
-            elif ent.what=='recordtype':
-               if ent.name in self.recordtypes:
-                   warnings.warn('Skipping duplicate recordtype '+ent.name)
-                   continue
-               self.recordtypes[ent.name]=ent.fields
+    def singular(self, type):
+        """Enforce that entries of 'type' have unique names
+        """
+        d=self._dispatch[type]
+        n=defaultdict(list)
+        R=StringIO()
+        for name, ent in d.iteritems():
+            if len(ent)>1:
+                print >>R,'\nDuplicate definitions for %s \'%s\''% \
+                  (type,name)
+                for inst in ent:
+                    print >>R,'  %s:%d'%(inst.name.file, inst.name.lineno)
+            n[name]=ent[0]
+        R.seek(0)
+        R=R.read()
+        if len(R)>0:
+            print R
+            raise KeyError('duplicate definitions')
+        d.clear()
+        d.update(n)

@@ -4,6 +4,7 @@
 import time
 from warnings import warn
 from optparse import OptionParser
+from collections import defaultdict
 
 from pyPDB.dbd.expand import loadDBD, DBD
 
@@ -14,6 +15,9 @@ parser.add_option("-I", dest='include', action='append', default=[],
                   help='Add to search path', metavar='PATH')
 parser.add_option("-o", '--output',
                   help='Output file', metavar='FILE')
+parser.add_option('-M', '--merge-duplicates', dest='dups', action='store_true',
+                  help='When encountering records with duplicate names '
+                  'treat them as one record')
 
 opts, args = parser.parse_args()
 
@@ -33,6 +37,10 @@ for inp in args:
 
 pdb=DBD(pdb)
 
+pdb.singular('recordtype')
+if not opts.dups:
+    pdb.singular('record')
+
 def cleanLink(val):
     val=val.strip()
     v,_,_=val.partition('.')
@@ -42,32 +50,40 @@ def cleanLink(val):
 # list of translatable fields by recordtype
 recflds={}
 
-strings={}
+strings=defaultdict(list)
 comments={}
 
-for rec, flds in pdb.records.iteritems():
+def allentries(sec):
+    for s in sec:
+        assert isinstance(s, list)
+        for inst in s:
+            yield inst
+
+if opts.dups:
+    I=allentries(pdb.records.itervalues())
+else:
+    I=pdb.records.itervalues()
+
+for rec in I:
     #print rec,flds[0],
 
-    if rec not in strings:
-        strings[rec]=[]
-    strings[rec].insert(0, '%s:%d'%(rec.file, rec.lineno))
+    # prepend definition(s)
+    strings[rec.name].insert(0, '%s:%d'%(rec.name.file, rec.name.lineno))
 
-    rflds=pdb.recordtypes.get(flds[0], None)
-    if rflds is None:
-        warn("%s : Skipping unknown recordtype '%s'"%(rec,flds[0]))
+    rtype=pdb.recordtypes.get(rec.rec, None)
+    if rtype is None:
+        warn("%s : Skipping unknown recordtype '%s'"%(rec.name,rec.rec))
         continue
 
-    if flds[0] not in recflds:
+    interesting=recflds.get(rtype,  None)
+    if interesting is None:
         interesting=[]
-        for rf in rflds:
+        for rf in rtype.fields:
             if rf.dbf in linktypes:
                 interesting.append(rf.name)
-        recflds[flds[0]]=interesting
+        recflds[rtype]=interesting
 
-    else:
-        interesting=recflds[flds[0]]
-
-    for fld in flds[1]:
+    for fld in rec.fields:
         if fld.name in interesting:
             #print fld.name,
             try:

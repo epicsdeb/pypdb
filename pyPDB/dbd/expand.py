@@ -3,7 +3,7 @@
 import sys
 import warnings
 
-from pyparsing import ParseException
+from pyparsing import ParseBaseException
 
 import grammer
 
@@ -77,7 +77,7 @@ def loadEntry(name, entry, path=['.'], skip=[]):
         next=RecursiveError('%s\nFrom %s'%(e,f))
         raise RecursiveError, next, tb
 
-    except ParseException,e:
+    except ParseBaseException,e:
         _, _, tb = sys.exc_info()
         next=RecursiveError('%s\nOn %d (col %d) of %s\n  %s\n  %s'% \
                             (e, e.lineno, e.col, f, e.line, ('-'*(e.col-1)+'^')))
@@ -169,7 +169,7 @@ def loadDBD(name, path=['.'], skip=[]):
         next=RecursiveError('%s\nFrom %s'%(e,f))
         raise RecursiveError, next, tb
 
-    except ParseException,e:
+    except ParseBaseException,e:
         _, _, tb = sys.exc_info()
         next=RecursiveError('%s\nOn %d (col %d) of %s\n  %s\n  %s'% \
                             (e, e.lineno, e.col, f, e.line, ('-'*(e.col-1)+'^')))

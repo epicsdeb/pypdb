@@ -44,6 +44,7 @@ for po in opts.po:
     loadPO(po)
 
 if opts.reverse:
+    fail=False
     nm={}
     for orig, sub in mappings.iteritems():
         if sub not in nm:
@@ -56,8 +57,9 @@ and
 From %(prevfile)s '%(prev)s = %(sub)s'
 """ % {'orig':orig, 'sub':sub, 'prev':nm[sub],
        'origfile':src[orig], 'prevfile':src[nm[sub]]}
-            sys.exit(1)
-
+            fail=True
+    if fail:
+        sys.exit(1)
     mappings=nm
 
 #valid   = PP.alphanums + '$:-[]{}<>()'

@@ -105,7 +105,9 @@ for n,d in enumerate(opts.include):
     print >>out,'"X-Poedit-SearchPath-%d: %s\\n"'%(n,d)
 print >>out
 
-for pv, refs in strings.iteritems():
+pvs=strings.items()
+pvs.sort()
+for pv, refs in pvs:
     if pv in comments:
         print >>out,'#.',comments[pv]
     for r in refs:

@@ -67,6 +67,12 @@ for rec, flds in pdb.records.iteritems():
     for fld in flds[1]:
         if fld.name in interesting:
             #print fld.name,
+            try:
+                float(fld.value)
+                # Constant link
+                continue
+            except ValueError:
+                pass
             
             val=cleanLink(fld.value)
 

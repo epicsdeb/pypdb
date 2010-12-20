@@ -54,7 +54,8 @@ for rec, flds in pdb.records.iteritems():
 
     rflds=pdb.recordtypes.get(flds[0], None)
     if rflds is None:
-        warn("Unknown recordtype '%s'"%flds[0])
+        warn("%s : Skipping unknown recordtype '%s'"%(rec,flds[0]))
+        continue
 
     if flds[0] not in recflds:
         interesting=[]

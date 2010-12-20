@@ -48,7 +48,9 @@ comments={}
 for rec, flds in pdb.records.iteritems():
     #print rec,flds[0],
 
-    strings[rec]=['%s:%d'%(rec.file, rec.lineno)]
+    if rec not in strings:
+        strings[rec]=[]
+    strings[rec].insert(0, '%s:%d'%(rec.file, rec.lineno))
 
     rflds=pdb.recordtypes.get(flds[0], None)
     if rflds is None:
@@ -80,7 +82,7 @@ for rec, flds in pdb.records.iteritems():
                 continue
  
             if val not in strings:
-                strings[val]=['undefined:0']
+                strings[val]=[]
 
             strings[val].append('%s:%d'%(fld.value.file, fld.value.lineno))
 

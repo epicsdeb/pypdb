@@ -75,15 +75,15 @@ for orig, sub in mappings.iteritems():
 for f in args:
     out=os.path.join(opts.output, os.path.basename(f))
 
-    inp=file(f, 'r')
-    out=file(out, 'w')
-
+    inp=open(f, 'rU')
     val=inp.read()
 
     for pat, sub in actions:
         val=pat.sub(sub, val)
 
-    out.write(val)
+    out=open(out, 'wb')
+    for L in val.splitlines():
+        out.write(L+inp.newlines)
 
     out.close()
     inp.close()

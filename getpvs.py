@@ -30,6 +30,9 @@ else:
 #from dbd.grammer import DBD
 #DBD.setDebug(True)
 
+if len(opts.include)==0:
+    opts.include=['.']
+
 pdb=[]
 
 for inp in args:

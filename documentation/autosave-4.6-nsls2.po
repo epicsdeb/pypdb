@@ -1,0 +1,212 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2010-12-19 10:35-0500\n"
+"PO-Revision-Date: 2010-12-19 10:35-0500\n"
+"Last-Translator: Michael Davidsaver <mdavidsaver@bnl.gov>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SearchPath-0: /home/mdavidsaver/work/epics/epics-git/dbd\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: asApp/Db/save_restoreStatus.db:70
+msgid "$(P)SR_0_Name"
+msgstr "$(P)SR:Name0-I"
+
+#: asApp/Db/save_restoreStatus.db:75
+msgid "$(P)SR_0_State"
+msgstr "$(P)SR:State0-Sts"
+
+#: asApp/Db/save_restoreStatus.db:79
+msgid "$(P)SR_0_Status"
+msgstr "$(P)SR:Status0-Sts"
+
+#: asApp/Db/save_restoreStatus.db:93
+msgid "$(P)SR_0_StatusStr"
+msgstr "$(P)SR:Status0-I"
+
+#: asApp/Db/save_restoreStatus.db:98
+msgid "$(P)SR_0_Time"
+msgstr "$(P)SR:Time0-I"
+
+#: asApp/Db/save_restoreStatus.db:103
+msgid "$(P)SR_1_Name"
+msgstr "$(P)SR:Name1-I"
+
+#: asApp/Db/save_restoreStatus.db:108
+msgid "$(P)SR_1_State"
+msgstr "$(P)SR:State1-I"
+
+#: asApp/Db/save_restoreStatus.db:112
+msgid "$(P)SR_1_Status"
+msgstr "$(P)SR:Status1-Sts"
+
+#: asApp/Db/save_restoreStatus.db:126
+msgid "$(P)SR_1_StatusStr"
+msgstr "$(P)SR:Status1-I"
+
+#: asApp/Db/save_restoreStatus.db:131
+msgid "$(P)SR_1_Time"
+msgstr "$(P)SR:Time1-I"
+
+#: asApp/Db/save_restoreStatus.db:136
+msgid "$(P)SR_2_Name"
+msgstr "$(P)SR:Name2-I"
+
+#: asApp/Db/save_restoreStatus.db:141
+msgid "$(P)SR_2_State"
+msgstr "$(P)SR:State2-I"
+
+#: asApp/Db/save_restoreStatus.db:145
+msgid "$(P)SR_2_Status"
+msgstr "$(P)SR:Status2-Sts"
+
+#: asApp/Db/save_restoreStatus.db:159
+msgid "$(P)SR_2_StatusStr"
+msgstr "$(P)SR:Status2-I"
+
+#: asApp/Db/save_restoreStatus.db:164
+msgid "$(P)SR_2_Time"
+msgstr "$(P)SR:Time2-I"
+
+#: asApp/Db/save_restoreStatus.db:169
+msgid "$(P)SR_3_Name"
+msgstr "$(P)SR:Name3-I"
+
+#: asApp/Db/save_restoreStatus.db:174
+msgid "$(P)SR_3_State"
+msgstr "$(P)SR:State3-I"
+
+#: asApp/Db/save_restoreStatus.db:178
+msgid "$(P)SR_3_Status"
+msgstr "$(P)SR:Status3-Sts"
+
+#: asApp/Db/save_restoreStatus.db:192
+msgid "$(P)SR_3_StatusStr"
+msgstr "$(P)SR:Status3-I"
+
+#: asApp/Db/save_restoreStatus.db:197
+msgid "$(P)SR_3_Time"
+msgstr "$(P)SR:Time3-I"
+
+#: asApp/Db/save_restoreStatus.db:202
+msgid "$(P)SR_4_Name"
+msgstr "$(P)SR:Name4-I"
+
+#: asApp/Db/save_restoreStatus.db:207
+msgid "$(P)SR_4_State"
+msgstr "$(P)SR:State4-I"
+
+#: asApp/Db/save_restoreStatus.db:211
+msgid "$(P)SR_4_Status"
+msgstr "$(P)SR:Status4-Sts"
+
+#: asApp/Db/save_restoreStatus.db:225
+msgid "$(P)SR_4_StatusStr"
+msgstr "$(P)SR:Status4-I"
+
+#: asApp/Db/save_restoreStatus.db:230
+msgid "$(P)SR_4_Time"
+msgstr "$(P)SR:Time4-I"
+
+#: asApp/Db/save_restoreStatus.db:235
+msgid "$(P)SR_5_Name"
+msgstr "$(P)SR:Name5-I"
+
+#: asApp/Db/save_restoreStatus.db:240
+msgid "$(P)SR_5_State"
+msgstr "$(P)SR:State5-Sts"
+
+#: asApp/Db/save_restoreStatus.db:244
+msgid "$(P)SR_5_Status"
+msgstr "$(P)SR:Status5-Sts"
+
+#: asApp/Db/save_restoreStatus.db:258
+msgid "$(P)SR_5_StatusStr"
+msgstr "$(P)SR:Status5-I"
+
+#: asApp/Db/save_restoreStatus.db:263
+msgid "$(P)SR_5_Time"
+msgstr "$(P)SR:Time5-I"
+
+#: asApp/Db/save_restoreStatus.db:268
+msgid "$(P)SR_6_Name"
+msgstr "$(P)SR:Name6-I"
+
+#: asApp/Db/save_restoreStatus.db:273
+msgid "$(P)SR_6_State"
+msgstr "$(P)SR:State6-I"
+
+#: asApp/Db/save_restoreStatus.db:277
+msgid "$(P)SR_6_Status"
+msgstr "$(P)SR:Status6-Sts"
+
+#: asApp/Db/save_restoreStatus.db:291
+msgid "$(P)SR_6_StatusStr"
+msgstr "$(P)SR:Status6-I"
+
+#: asApp/Db/save_restoreStatus.db:296
+msgid "$(P)SR_6_Time"
+msgstr "$(P)SR:Time6-I"
+
+#: asApp/Db/save_restoreStatus.db:301
+msgid "$(P)SR_7_Name"
+msgstr "$(P)SR:Name7-I"
+
+#: asApp/Db/save_restoreStatus.db:306
+msgid "$(P)SR_7_State"
+msgstr "$(P)SR:State7-I"
+
+#: asApp/Db/save_restoreStatus.db:310
+msgid "$(P)SR_7_Status"
+msgstr "$(P)SR:Status7-Sts"
+
+#: asApp/Db/save_restoreStatus.db:324
+msgid "$(P)SR_7_StatusStr"
+msgstr "$(P)SR:Status7-I"
+
+#: asApp/Db/save_restoreStatus.db:329
+msgid "$(P)SR_7_Time"
+msgstr "$(P)SR:Time7-I"
+
+#: asApp/Db/save_restoreStatus.db:18
+#: asApp/Db/save_restoreStatus.db:16
+msgid "$(P)SR_deadIfZero"
+msgstr "$(P)SR:DeadIfZero-Sts"
+
+#: asApp/Db/save_restoreStatus.db:7
+msgid "$(P)SR_heartbeat"
+msgstr "$(P)SR:Heartbeat-Sts"
+
+#: asApp/Db/save_restoreStatus.db:12
+#: asApp/Db/save_restoreStatus.db:9
+msgid "$(P)SR_i_am_alive"
+msgstr "$(P)SR:Alive-Sts"
+
+#: asApp/Db/save_restoreStatus.db:22
+msgid "$(P)SR_rebootStatus"
+msgstr "$(P)SR:Reboot-Sts"
+
+#: asApp/Db/save_restoreStatus.db:55
+msgid "$(P)SR_rebootStatusStr"
+msgstr "$(P)SR:Reboot-I"
+
+#: asApp/Db/save_restoreStatus.db:60
+msgid "$(P)SR_rebootTime"
+msgstr "$(P)SR:RebootTime-I"
+
+#: asApp/Db/save_restoreStatus.db:50
+msgid "$(P)SR_recentlyStr"
+msgstr "$(P)SRRecently-I"
+
+#: asApp/Db/save_restoreStatus.db:36
+msgid "$(P)SR_status"
+msgstr "$(P)SR:Status-Sts"
+
+#: asApp/Db/save_restoreStatus.db:65
+msgid "$(P)SR_statusStr"
+msgstr "$(P)SR:Status-I"
+

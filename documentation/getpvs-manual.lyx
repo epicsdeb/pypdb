@@ -1,0 +1,1370 @@
+#LyX 1.6.7 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+% add bibliography to TOC
+\IfFileExists{tocbibind.sty}{\usepackage[nottoc]{tocbibind}}
+
+% add Nomenclature to TOC
+\def\nompreamble{\addcontentsline{toc}{section}{\nomname}\markboth{\nomname}{\nomname}}
+\end_preamble
+\options liststotoc
+\use_default_options true
+\language english
+\inputencoding auto
+\font_roman lmodern
+\font_sans lmss
+\font_typewriter lmtt
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered true
+\pdf_bookmarksopen true
+\pdf_bookmarksopenlevel 2
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=blue, urlcolor=blue, citecolor=blue"
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+getpvs/applypvs Manual
+\end_layout
+
+\begin_layout Author
+Michael Davidsaver
+\end_layout
+
+\begin_layout Date
+Rev.
+ 1 Dec.
+ 2010
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+This manual describes the usage of the 
+\series bold
+getpvs
+\series default
+ and 
+\series bold
+applypvs
+\series default
+ utilities included in the pyPDB package.
+ These tools provide a way to generate and apply translations in the GNU
+ Gettext PO
+\begin_inset CommandInset nomenclature
+LatexCommand nomenclature
+symbol "PO"
+description "Portable Object"
+
+\end_inset
+
+ format.
+ In this way it is possible to translate EPICS record names using the tools
+ intended for natual language translation.
+ The intent is to simplify the application of site record naming convention
+ rules to externally produced EPICS
+\begin_inset CommandInset nomenclature
+LatexCommand nomenclature
+symbol "EPICS"
+description "Experimental Physics and Industrial Control System"
+
+\end_inset
+
+ support modules.
+\end_layout
+
+\begin_layout Standard
+These tools are best suited to work with databases which have large numbers
+ of records with similar names, either fully expanded, or with macros.
+ A database with many records with names like `
+\shape italic
+\size footnotesize
+$(P)<Signal>
+\shape default
+\size default
+' (eg.
+ `$(P)$(N)Status') would be a good candidate.
+ However, a database using MSI
+\begin_inset CommandInset nomenclature
+LatexCommand nomenclature
+symbol "MSI"
+description "Macro Substitution and Include Tool"
+
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "msi"
+
+\end_inset
+
+ where the record names are entirely set in the substitutions file would
+ likely not benefit from using this method.
+\end_layout
+
+\begin_layout Subsection
+PO Workflow
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename po-cycle.dia
+	width 80col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Lifecycle of PO files
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:pocycle"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+getpvs
+\series default
+ and 
+\series bold
+applypvs
+\series default
+ tools are designed to fit into the Gettext translation workflow.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pocycle"
+
+\end_inset
+
+ shows a simplified view of this workflow.
+\end_layout
+
+\begin_layout Standard
+The Gettext package provides the 
+\series bold
+msgmerge
+\series default
+ command line tool for updating translations from a new template.
+ Removing names of record no longer present, and adding new names.
+ This will happen when a new version of a package is released.
+ In this way it is possible to maintain a translation over several versions
+ without having to start over each time.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+Note: The Poedit GUI can also perform merges.
+ See page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "sec:poedit:merge"
+
+\end_inset
+
+ for an example.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Limitations
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:limitations"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When using the these tools it is assumed that a record name is unique.
+ However, if a record name contains macros this may not be the case.
+ For example if a module contains two .db files each of which contains a
+ record `$(P)$(N)'.
+\end_layout
+
+\begin_layout Standard
+There are two resolutions to this situation.
+ One is to create two POTs so that the name `$(P)$(N)' and its references
+ are unique in each template, or to manually change the name of one record
+ (and all its references).
+ The second is to use the `--merge-duplicates' argument of getpvs to merge
+ all references into one translation.
+\end_layout
+
+\begin_layout Standard
+Also, use of applypvs with files other then .db files requires that record
+ names be in exactly the same form.
+ If a .db file contains `$(P)Status' and the corresponding .edl file contains
+ `$(P):Status' then this will not work.
+\end_layout
+
+\begin_layout Section
+Quick Start
+\end_layout
+
+\begin_layout Standard
+The simplest translation work flow has three steps.
+ Creating a PO template (POT
+\begin_inset CommandInset nomenclature
+LatexCommand nomenclature
+symbol "POT"
+description "Portable Object Template"
+
+\end_inset
+
+), translating the template, and applying the translation.
+ In practice the first step will be the least common as only one PO template
+ need to created for each version of a support module.
+ The second and third steps will be carried out by each site, for each version.
+\end_layout
+
+\begin_layout Standard
+The following examples the 4.6 version of the autosave module
+\begin_inset CommandInset citation
+LatexCommand cite
+key "autosave"
+
+\end_inset
+
+ is translated to follow the FLS
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Fictional Light Source
+\end_layout
+
+\end_inset
+
+ naming conversion.
+\end_layout
+
+\begin_layout Subsection
+Generating a template
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+getpvs
+\series default
+ script is used to generate a template (POT) from an EPICS
+\begin_inset CommandInset citation
+LatexCommand cite
+key "epics"
+
+\end_inset
+
+ Process Database (PDB
+\begin_inset CommandInset nomenclature
+LatexCommand nomenclature
+symbol "PDB"
+description "Process Database"
+
+\end_inset
+
+).
+ The PDB is the complete collection of all .dbd and .db loaded into an IOC
+\begin_inset CommandInset nomenclature
+LatexCommand nomenclature
+symbol "IOC"
+description "Input/Output Controller"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+cd autosave-4-6
+\end_layout
+
+\begin_layout Plain Layout
+
+getpvs.py -I ~/epics-3.14.11/dbd -I .
+ 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ -o as-4.6.pot base.dbd 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ asApp/Db/save_restoreStatus.db
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This will create the file 
+\series bold
+as-4.6.pot
+\series default
+ from the base record definitions and the autosave status db.
+ Since the autosave package does not define any recordtypes in is not necessary
+ to include the asSupport.dbd file.
+ 
+\series bold
+getpvs
+\series default
+ must be able to locate all recordtype definitions.
+ This information is needed to determine which fields can contain record
+ names.
+\end_layout
+
+\begin_layout Standard
+The POT file is a simple text file containing a header and a number of entries
+ like:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+#: asApp/Db/save_restoreStatus.db:22
+\end_layout
+
+\begin_layout Plain Layout
+
+msgid "$(P)SR_rebootStatus"
+\end_layout
+
+\begin_layout Plain Layout
+
+msgstr ""
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#: asApp/Db/save_restoreStatus.db:174
+\end_layout
+
+\begin_layout Plain Layout
+
+msgid "$(P)SR_3_State"
+\end_layout
+
+\begin_layout Plain Layout
+
+msgstr ""
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Translating a template
+\end_layout
+
+\begin_layout Standard
+Starting a translation is as simple as creating a copy of the template and
+ filling in the 
+\series bold
+msgstr
+\series default
+ of each entry.
+ However, a number of PO file editors exist which simplify this process.
+ Poedit
+\begin_inset CommandInset citation
+LatexCommand cite
+key "poedit"
+
+\end_inset
+
+ is one such editor.
+ See section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:poedit"
+
+\end_inset
+
+ for an short tutorial.
+\end_layout
+
+\begin_layout Standard
+The suggested name for the FLS translation of 
+\series bold
+as-4.6.pot
+\series default
+ is 
+\series bold
+as-4.6-fls.po
+\series default
+.
+\end_layout
+
+\begin_layout Standard
+Once translated the entries in 
+\series bold
+as-4.6-fls.po
+\series default
+ will appear as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+#: asApp/Db/save_restoreStatus.db:22
+\end_layout
+
+\begin_layout Plain Layout
+
+msgid "$(P)SR_rebootStatus"
+\end_layout
+
+\begin_layout Plain Layout
+
+msgstr "$(P)SR:Reboot-Sts"
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#: asApp/Db/save_restoreStatus.db:174
+\end_layout
+
+\begin_layout Plain Layout
+
+msgid "$(P)SR_3_State"
+\end_layout
+
+\begin_layout Plain Layout
+
+msgstr "$(P)SR:State3-Sts"
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Framed
+position "t"
+hor_pos "c"
+has_inner_box 0
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+Note: Not all record names need to be translated.
+ The applypvs script will not modify untranslated names.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After editing, it is a good practice to verify that the translation is reversibl
+e.
+ That it does not give two records the same name.
+ This can be done by invoking the 
+\series bold
+applypvs
+\series default
+ script with no input files.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+applypvs.py -i as-4.6-fls.po -R
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Irreversible mapping will result in errors like
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Un-reversable mapping 
+\end_layout
+
+\begin_layout Plain Layout
+
+From autosave-4.6-fls.po '$(P)SR_6_State = $(P)SR:State7-I' 
+\end_layout
+
+\begin_layout Plain Layout
+
+and
+\end_layout
+
+\begin_layout Plain Layout
+
+From autosave-4.6-fls.po '$(P)SR_7_State = $(P)SR:State7-I'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Apply a Translation
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+applypvs
+\series default
+ script uses the 
+\series bold
+msgid
+\series default
+/
+\series bold
+msgstr
+\series default
+ pairs from the PO file to perform a search and replace on the files given
+ as arguments.
+ These the modified files are then written into the given output directory.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+mkdir fls
+\end_layout
+
+\begin_layout Plain Layout
+
+applypvs.py -i as-4.6-fls.po -o fls 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ asApp/Db/save_restoreStatus.db
+\end_layout
+
+\begin_layout Plain Layout
+
+ asApp/op/adl/*.edl
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The translated database and MEDM panels have been placed in the 
+\series bold
+fls/
+\series default
+ directory.
+ The save_restoreStatus.db has changes like:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\small}"
+inline false
+status collapsed
+
+\begin_layout Plain Layout
+
+@@ -4,22 +4,22 @@  
+\end_layout
+
+\begin_layout Plain Layout
+
+ #! DBDEND
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+-record(bo, "$(P)SR_heartbeat") {
+\end_layout
+
+\begin_layout Plain Layout
+
++record(bo, "$(P)SR:Heartbeat-Sts") {
+\end_layout
+
+\begin_layout Plain Layout
+
+   field(DTYP, "Soft Channel")
+\end_layout
+
+\begin_layout Plain Layout
+
+-  field(FLNK, "$(P)SR_i_am_alive")
+\end_layout
+
+\begin_layout Plain Layout
+
++  field(FLNK, "$(P)SR:Alive-Sts")
+\end_layout
+
+\begin_layout Plain Layout
+
+ }
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+-record(bo, "$(P)SR_i_am_alive") {
+\end_layout
+
+\begin_layout Plain Layout
+
++record(bo, "$(P)SR:Alive-Sts") {
+\end_layout
+
+\begin_layout Plain Layout
+
+   field(DTYP, "Soft Channel")
+\end_layout
+
+\begin_layout Plain Layout
+
+   field(DOL, "1")
+\end_layout
+
+\begin_layout Plain Layout
+
+   field(UDF, "0")
+\end_layout
+
+\begin_layout Plain Layout
+
+-  field(OUT, "$(P)SR_deadIfZero.VAL PP")
+\end_layout
+
+\begin_layout Plain Layout
+
++  field(OUT, "$(P)SR:DeadIfZero-Sts.VAL PP")
+\end_layout
+
+\begin_layout Plain Layout
+
+ } 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+applypvs
+\series default
+ script can also apply the reverse translation.
+ This can be useful both for verification of the translation process, and
+ when contributing changes to module maintainers.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+mkdir orig
+\end_layout
+
+\begin_layout Plain Layout
+
+applypvs.py -i as-4.6-fls.po -o orig -R fls/*
+\end_layout
+
+\begin_layout Plain Layout
+
+diff -u asApp/Db/save_restoreStatus.db 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ orig/save_restoreStatus.db
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If the mapping is reversible this file should show no differences.
+\end_layout
+
+\begin_layout Section
+Theory of Operation
+\end_layout
+
+\begin_layout Standard
+Translation templates are created by parsing an entire PDB.
+ By inspecting the type of each field in a recordtype the 
+\series bold
+getpvs
+\series default
+ script can determine which may contain a record name.
+ By knowing the restrictions of record names it is able to exclude field
+ names (eg.
+ `rec.FLD') and link attributes when reading link fields.
+\end_layout
+
+\begin_layout Standard
+It then collects all references to each record and writes a single entry
+ in the POT file.
+ All locations where a record is mentioned are included as `#:' reference
+ comments in the POT file.
+ Additionally, if a record sets its DESC field then this value is included
+ as a `#.' extractor comment.
+\end_layout
+
+\begin_layout Standard
+A full description of the PO file format can be found in the gettext manual
+\end_layout
+
+\begin_layout Standard
+
+\size footnotesize
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.gnu.org/software/gettext/manual/html_node/gettext_toc.html#PO-Files
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Application of translations is done using Regular Expressions to match record
+ names in any text file.
+ The matching expressions use forward and backward matching to ensure that
+ only complete record names are matched.
+ This allows correct handling of cases where one record name is a sub-string
+ of another (ie `dev:out' and `dev:out:sts').
+\end_layout
+
+\begin_layout Section
+Using Poedit
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:poedit"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This section presents a brief tutorial on using Poedit
+\begin_inset CommandInset citation
+LatexCommand cite
+key "poedit"
+
+\end_inset
+
+ to produce a translation for the autosave database.
+ The files used can be found in the documentation directory of the pyPDB
+ package.
+\end_layout
+
+\begin_layout Standard
+The following instructions where created for Poedit 1.4.6.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+Start a new translation by starting the Poedit program.
+ The main window will appear.
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename poedit.png
+	height 2in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+From the File menu select `New catalog from POT file'.
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename poedit-start.png
+	height 1.5in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+You will now see the settings dialog.
+ This sets information which will be included in the header of the translated
+ PO file.
+ Enter information as appropriate.
+ Then click `OK'.
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename poedit-settings.png
+	height 2in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You will then be prompted for a file name.
+ The suggested convention is modulename-version-site.po (ie autosave-4.6-fls.po).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+Once a file is selected then the list of untranslated strings appear in
+ the main window.
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename poedit2.png
+	height 2.5in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+To enter a translation select an line and enter the replacement in the lower
+ left dialog.
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename poedit3.png
+	height 2.5in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Saving the PO file will move all entries with translations to the bottom
+ of the list.
+ Once saved the PO file may be used with the 
+\series bold
+applypvs
+\series default
+ script.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+Right clicking on a line will show a context menu containing a list of reference
+s with file and line number.
+ Clicking on a reference will open it in a text editor.
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename poedit-source.png
+	width 90text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:poedit:merge"
+
+\end_inset
+
+Instead of using 
+\series bold
+msgmerge
+\series default
+ an updated POT can be merged by selecting `Update from POT file' from the
+ `Catalog' menu.
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename poedit-catalog.png
+	width 1.5in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+A fully translated PO file will appear like:
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename poedit4.png
+	height 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset nomencl_print
+LatexCommand printnomenclature
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "epics"
+
+\end_inset
+
+EPICS Home 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.aps.anl.gov/epics/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "msi"
+
+\end_inset
+
+MSI 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://epics.aps.anl.gov/epics/extensions/msi/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "autosave"
+
+\end_inset
+
+Autosave 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.aps.anl.gov/bcda/synApps/autosave/autosave.html
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "ref:gettext"
+
+\end_inset
+
+GNU Gettext 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.gnu.org/software/gettext/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "poedit"
+
+\end_inset
+
+Poedit 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.poedit.net/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

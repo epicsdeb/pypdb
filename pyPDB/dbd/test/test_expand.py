@@ -52,6 +52,10 @@ record(simple, "${P}")
     include "fieldCom.dbd"
     field(DESC, "Hello world")
 }
+breaktable(typeJdegC) {
+        0.000000 0.000000
+        365.023256 67.000000
+}
 """
 }
 
@@ -90,6 +94,10 @@ record(simple,"${P}") {
     info(autoSave, "VAL INP")
     alias("${P}:other")
     field(DESC, "Hello world")
+}
+breaktable(typeJdegC) {
+    0.000000 0.000000
+    365.023256 67.000000
 }
 """
 

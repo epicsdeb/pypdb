@@ -58,6 +58,12 @@ def showDBD(dbd, fd=sys.stdout):
                                 (f.what, ent.name))
             print >>fd,'}'
 
+        elif t=='breaktable':
+            print >>fd, 'breaktable(%s) {' % ent.name
+            for E in ent.table:
+                print >>fd, '    %.06f %.06f'%tuple(E)
+            print >>fd, "}"
+
         elif t=='device':
             print >>fd,'device(%s,%s,%s,"%s")' % (ent.rec, ent.link, ent.name, ent.dtyp)
 

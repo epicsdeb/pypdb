@@ -6,6 +6,23 @@ from pyPDB.dbd.show import showDBD
 
 class TestDbd(unittest.TestCase):
     
+    def test_double(self):
+        vals=[('4', 4.0), 
+                  ('4.1',  4.1),
+                  ('+4.1',  4.1),
+                  ('.4',  0.4),
+                  ('-.4',  -0.4),
+                  ('-00.004',  -0.004),
+                  ('0e0',  0.0),
+                  ('-1e-5',  -1e-5),
+                  ('-1e5',  -1e5),
+                  ('1e-5',  1e-5),
+                  ('1e-5',  1e-5),
+                ]
+        for s, f in vals:
+            x=dbd.Double.parseString(s)
+            self.assertEqual(x[0], f)
+    
     def test_menu(self):
         x=dbd.MenuHead.parseString("menu(XXX)", parseAll=True)
         self.assertEqual(x.asList(), ['menu','XXX'])
@@ -243,3 +260,38 @@ recordtype(Compress) {
                  'interest': '1'}]
              ]
            ])
+    
+    def test_bpt(self):
+        x=dbd.BPTHead.parseString("breaktable(bptXj4sd)", parseAll=True)
+        self.assertEqual(x.asList(), ['breaktable','bptXj4sd'])
+        self.assertEqual(x.what, 'breaktable')
+        self.assertEqual(x.name, 'bptXj4sd')
+        
+        x=dbd.BPTLine.parseString('365.023256 67.000000', parseAll=True)
+        self.assertEqual(x.asList(), [365.023256,  67.0])
+        
+        T="""
+  breaktable(typeJdegC) {
+        0.000000 0.000000
+        365.023256 67.000000
+        1000.046512 178.000000
+        3007.255814 524.000000
+        3543.383721 613.000000
+        4042.988372 692.000000
+        4101.488372 701.000000
+}"""
+        F=[[0.0, 0.0],
+             [365.023256, 67.0],
+             [1000.046512, 178.0],
+             [3007.2558140000001, 524.0],
+             [3543.3837210000002, 613.0],
+             [4042.9883719999998, 692.0],
+             [4101.4883719999998, 701.0], 
+            ]
+
+        x=dbd.BPT.parseString(T,  parseAll=True)
+        self.assertEqual(x.what, 'breaktable')
+        self.assertEqual(x.name, 'typeJdegC')
+        self.assertEqual(len(x.table), len(F))
+        for A,E in zip(x.table,  F):
+            self.assertEqual(A.asList(),  E)

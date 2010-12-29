@@ -51,6 +51,12 @@ RTYPE  = Keyword("recordtype")
 
 FieldName=Word(upper + '0123456789').setName('Field name')
 
+Integer = Regex('[+-]?[0-9]+')
+Decimal= Regex('[+-]?[0-9]*\.[0-9]*')
+Double = (Decimal | Integer) + \
+                Optional(Regex('(?:[Ee][+-]?[0-9]+)?'))
+Double = Combine(Double).setName("Float Value").setParseAction(lambda x:float(x[0]))
+
 # a word with a macro
 ValueWord = OneOrMore( CharsNotIn(' \t\r\n()"\'') |
                        QuotedString('(', endQuoteChar=')',
@@ -157,6 +163,17 @@ Inst = InstHead + LCURL + \
           Group( ZeroOrMore( InstEntry ) ).setResultsName('fields') + \
           RCURL
 
+# breakpoint table
+
+BPTHead = Keyword('breaktable').setResultsName('what') - \
+                      LPAREN + \
+                      Word(alphanums).setResultsName('name') + \
+                      RPAREN
+
+BPTLine = Double + Double.setName('BPT Line')
+
+BPT = BPTHead + LCURL + Group(ZeroOrMore(Group(BPTLine))).setResultsName('table') + RCURL
+
 # misc
 
 Registrar = Keyword('registrar') - LPAREN + \
@@ -174,8 +191,9 @@ Device = Keyword("device").setResultsName('what') - LPAREN + \
 
 # Root nodes
 
-DBD = OneOrMore( Group(Record   | Menu   | Inst  | Registrar | \
-                       Variable | Device | CCode | Include) )
+DBDEntry=Record   | Menu   | Inst | BPT | Registrar | Variable | Device | CCode | Include
+
+DBD = OneOrMore( Group(DBDEntry) )
 DBD.ignore(Comment)
 
 # include from recordtype

@@ -9,6 +9,8 @@
 
 % add Nomenclature to TOC
 \def\nompreamble{\addcontentsline{toc}{section}{\nomname}\markboth{\nomname}{\nomname}}
+
+\lstset{basicstyle={\footnotesize\ttfamily}}
 \end_preamble
 \options liststotoc
 \use_default_options true
@@ -123,23 +125,8 @@ $(P)<Signal>
 \size default
 ' (eg.
  `$(P)$(N)Status') would be a good candidate.
- However, a database using MSI
-\begin_inset CommandInset nomenclature
-LatexCommand nomenclature
-symbol "MSI"
-description "Macro Substitution and Include Tool"
-
-\end_inset
-
-
-\begin_inset CommandInset citation
-LatexCommand cite
-key "msi"
-
-\end_inset
-
- where the record names are entirely set in the substitutions file would
- likely not benefit from using this method.
+ However, a database where record names are entirely defined by macros (`$(P)$(N
+)') would likely not benefit from using these tools.
 \end_layout
 
 \begin_layout Subsection
@@ -217,9 +204,9 @@ The Gettext package provides the
 \series bold
 msgmerge
 \series default
- command line tool for updating translations from a new template.
- Removing names of record no longer present, and adding new names.
- This will happen when a new version of a package is released.
+ command line tool for updating translations from a new template, removing
+ names of record no longer present, and adding new names.
+ This will happen when a new version of a module is released.
  In this way it is possible to maintain a translation over several versions
  without having to start over each time.
 \end_layout
@@ -309,7 +296,7 @@ description "Portable Object Template"
 \end_layout
 
 \begin_layout Standard
-The following examples the 4.6 version of the autosave module
+The following examples use the 4.6 version of the autosave module
 \begin_inset CommandInset citation
 LatexCommand cite
 key "autosave"
@@ -329,6 +316,144 @@ Fictional Light Source
  naming conversion.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\footnotesize}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+$ getpvs.py -h
+\end_layout
+
+\begin_layout Plain Layout
+
+Usage: getpvs.py [options]
+\end_layout
+
+\begin_layout Plain Layout
+
+Options:   
+\end_layout
+
+\begin_layout Plain Layout
+
+  -h, --help              show this help message and exit
+\end_layout
+
+\begin_layout Plain Layout
+
+  -I PATH                 Add to search path
+\end_layout
+
+\begin_layout Plain Layout
+
+  -o FILE, --output=FILE  Output file
+\end_layout
+
+\begin_layout Plain Layout
+
+  -M, --merge-duplicates When encountering records
+\end_layout
+
+\begin_layout Plain Layout
+
+                         with duplicate names treat them
+\end_layout
+
+\begin_layout Plain Layout
+
+                         as one record
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\footnotesize}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+$ applypvs.py -h
+\end_layout
+
+\begin_layout Plain Layout
+
+Usage: applypvs.py [options] <-i file.po ...> <input.db | in.edl>
+\end_layout
+
+\begin_layout Plain Layout
+
+Options:
+\end_layout
+
+\begin_layout Plain Layout
+
+  -h, --help            show this help message and exit
+\end_layout
+
+\begin_layout Plain Layout
+
+  -i FILE, --po=FILE    Translation file(s) to apply
+\end_layout
+
+\begin_layout Plain Layout
+
+  -o DIR, --output=DIR  Location to write output files
+\end_layout
+
+\begin_layout Plain Layout
+
+  -R, --reverse         Apply reverse translation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Generating a template
 \end_layout
@@ -338,23 +463,15 @@ The
 \series bold
 getpvs
 \series default
- script is used to generate a template (POT) from an EPICS
+ script is used to generate a template (POT) from an complete EPICS
 \begin_inset CommandInset citation
 LatexCommand cite
 key "epics"
 
 \end_inset
 
- Process Database (PDB
-\begin_inset CommandInset nomenclature
-LatexCommand nomenclature
-symbol "PDB"
-description "Process Database"
-
-\end_inset
-
-).
- The PDB is the complete collection of all .dbd and .db loaded into an IOC
+ database definitions.
+ This is the complete collection of all .dbd and .db loaded into an IOC
 \begin_inset CommandInset nomenclature
 LatexCommand nomenclature
 symbol "IOC"
@@ -362,6 +479,15 @@ description "Input/Output Controller"
 
 \end_inset
 
+.
+ For each 
+\series bold
+record()
+\series default
+ it must find the corresponding 
+\series bold
+recordtype()
+\series default
 .
 \end_layout
 
@@ -373,12 +499,12 @@ status open
 
 \begin_layout Plain Layout
 
-cd autosave-4-6
+$ cd autosave-4-6
 \end_layout
 
 \begin_layout Plain Layout
 
-getpvs.py -I ~/epics-3.14.11/dbd -I .
+$ getpvs.py -I ~/epics-3.14.11/dbd -I .
  
 \backslash
 
@@ -406,8 +532,8 @@ This will create the file
 \series bold
 as-4.6.pot
 \series default
- from the base record definitions and the autosave status db.
- Since the autosave package does not define any recordtypes in is not necessary
+ from the base record definitions (base.dbd) and the autosave status db.
+ Since the autosave package does not define any recordtypes it is not necessary
  to include the asSupport.dbd file.
  
 \series bold
@@ -494,7 +620,7 @@ reference "sec:poedit"
 
 \end_inset
 
- for an short tutorial.
+ for a short tutorial.
 \end_layout
 
 \begin_layout Standard
@@ -587,7 +713,7 @@ Note: Not all record names need to be translated.
 \begin_layout Standard
 After editing, it is a good practice to verify that the translation is reversibl
 e.
- That it does not give two records the same name.
+ Meaning that it does not give two records the same name.
  This can be done by invoking the 
 \series bold
 applypvs
@@ -602,7 +728,7 @@ status open
 
 \begin_layout Plain Layout
 
-applypvs.py -i as-4.6-fls.po -R
+$ applypvs.py -i as-4.6-fls.po -R
 \end_layout
 
 \end_inset
@@ -663,7 +789,7 @@ msgstr
 \series default
  pairs from the PO file to perform a search and replace on the files given
  as arguments.
- These the modified files are then written into the given output directory.
+ These modified files are then written into the given output directory.
 \end_layout
 
 \begin_layout Standard
@@ -673,19 +799,21 @@ status open
 
 \begin_layout Plain Layout
 
-mkdir fls
+$ mkdir fls
 \end_layout
 
 \begin_layout Plain Layout
 
-applypvs.py -i as-4.6-fls.po -o fls 
+$ applypvs.py -i as-4.6-fls.po -o fls 
 \backslash
 
 \end_layout
 
 \begin_layout Plain Layout
 
- asApp/Db/save_restoreStatus.db
+ asApp/Db/save_restoreStatus.db 
+\backslash
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -711,7 +839,24 @@ fls/
 \begin_inset listings
 lstparams "basicstyle={\small}"
 inline false
-status collapsed
+status open
+
+\begin_layout Plain Layout
+
+$ diff -u asApp/Db/save_restoreStatus.db 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   fls/save_restoreStatus.db
+\end_layout
+
+\begin_layout Plain Layout
+
+...
+\end_layout
 
 \begin_layout Plain Layout
 
@@ -802,7 +947,12 @@ status collapsed
 
 \begin_layout Plain Layout
 
- } 
+ }
+\end_layout
+
+\begin_layout Plain Layout
+
+...
 \end_layout
 
 \end_inset
@@ -827,12 +977,12 @@ status open
 
 \begin_layout Plain Layout
 
-mkdir orig
+$ mkdir orig
 \end_layout
 
 \begin_layout Plain Layout
 
-applypvs.py -i as-4.6-fls.po -o orig -R fls/*
+$ applypvs.py -i as-4.6-fls.po -o orig -R fls/*
 \end_layout
 
 \begin_layout Plain Layout
@@ -935,7 +1085,7 @@ key "poedit"
 \end_layout
 
 \begin_layout Standard
-The following instructions where created for Poedit 1.4.6.
+The following instructions were created for Poedit 1.4.6.
 \end_layout
 
 \begin_layout Standard

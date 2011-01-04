@@ -337,12 +337,12 @@ status open
 
 \begin_layout Plain Layout
 
-$ getpvs.py -h
+$ getpvs -h
 \end_layout
 
 \begin_layout Plain Layout
 
-Usage: getpvs.py [options]
+Usage: getpvs [options]
 \end_layout
 
 \begin_layout Plain Layout
@@ -411,12 +411,12 @@ status open
 
 \begin_layout Plain Layout
 
-$ applypvs.py -h
+$ applypvs -h
 \end_layout
 
 \begin_layout Plain Layout
 
-Usage: applypvs.py [options] <-i file.po ...> <input.db | in.edl>
+Usage: applypvs [options] <-i file.po ...> <input.db | in.edl>
 \end_layout
 
 \begin_layout Plain Layout
@@ -504,7 +504,7 @@ $ cd autosave-4-6
 
 \begin_layout Plain Layout
 
-$ getpvs.py -I ~/epics-3.14.11/dbd -I .
+$ getpvs -I ~/epics-3.14.11/dbd -I .
  
 \backslash
 
@@ -728,7 +728,7 @@ status open
 
 \begin_layout Plain Layout
 
-$ applypvs.py -i as-4.6-fls.po -R
+$ applypvs -i as-4.6-fls.po -R
 \end_layout
 
 \end_inset
@@ -804,7 +804,7 @@ $ mkdir fls
 
 \begin_layout Plain Layout
 
-$ applypvs.py -i as-4.6-fls.po -o fls 
+$ applypvs -i as-4.6-fls.po -o fls 
 \backslash
 
 \end_layout
@@ -982,7 +982,7 @@ $ mkdir orig
 
 \begin_layout Plain Layout
 
-$ applypvs.py -i as-4.6-fls.po -o orig -R fls/*
+$ applypvs -i as-4.6-fls.po -o orig -R fls/*
 \end_layout
 
 \begin_layout Plain Layout

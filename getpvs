@@ -55,6 +55,7 @@ recflds={}
 
 strings=defaultdict(list)
 comments={}
+rectypes={}
 
 def allentries(sec):
     for s in sec:
@@ -85,6 +86,8 @@ for rec in I:
             if rf.dbf in linktypes:
                 interesting.append(rf.name)
         recflds[rtype]=interesting
+
+    rectypes[rec.name]=rtype.name
 
     for fld in rec.fields:
         if fld.name in interesting:
@@ -130,8 +133,10 @@ print >>out
 pvs=strings.items()
 pvs.sort()
 for pv, refs in pvs:
+    print >>out,'#. recordtype:',rectypes.get(pv, '<unknown>')
     if pv in comments:
-        print >>out,'#.',comments[pv]
+        for L in comments[pv].splitlines():
+            print >>out,'#.',L
     for r in refs:
         print >>out,'#:',r
     print >>out,'msgid "%s"'%pv

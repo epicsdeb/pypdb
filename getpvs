@@ -107,7 +107,7 @@ for rec in I:
             strings[val].append('%s:%d'%(fld.value.file, fld.value.lineno))
 
         if fld.name=='DESC':
-            comments[rec]=fld.value
+            comments[rec.name]=fld.value
 
     #print
 

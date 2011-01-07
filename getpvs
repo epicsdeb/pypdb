@@ -9,6 +9,7 @@ from collections import defaultdict
 from pyPDB.dbd.expand import loadDBD, DBD
 
 linktypes = ['DBF_INLINK', 'DBF_OUTLINK', 'DBF_FWDLINK']
+infofields = ['EGU', 'DESC']
 
 parser = OptionParser()
 parser.add_option("-I", dest='include', action='append', default=[],
@@ -54,7 +55,7 @@ def cleanLink(val):
 recflds={}
 
 strings=defaultdict(list)
-comments={}
+comments=defaultdict(list)
 rectypes={}
 
 def allentries(sec):
@@ -109,8 +110,9 @@ for rec in I:
 
             strings[val].append('%s:%d'%(fld.value.file, fld.value.lineno))
 
-        if fld.name=='DESC':
-            comments[rec.name]=fld.value
+        if fld.name in infofields:
+            comments[rec.name].append('%s: %s'% \
+                (fld.name, repr(fld.value)[1:-1]))
 
     #print
 
@@ -135,8 +137,8 @@ pvs.sort()
 for pv, refs in pvs:
     print >>out,'#. recordtype:',rectypes.get(pv, '<unknown>')
     if pv in comments:
-        for L in comments[pv].splitlines():
-            print >>out,'#.',L
+        for C in comments[pv]:
+            print >>out,'#.',C
     for r in refs:
         print >>out,'#:',r
     print >>out,'msgid "%s"'%pv

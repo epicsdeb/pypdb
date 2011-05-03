@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 
+import sys
+import pyparsing
+
+PPV = tuple(map(int,pyparsing.__version__.split('.')))
+if PPV<(1,5,2):
+	print "Requires pyparsing >= 1.5.2"
+	sys.exit(1)
+
 from distutils.core import setup
 
 setup(name='pyPDB', 
@@ -14,5 +22,5 @@ setup(name='pyPDB',
                    ], 
           scripts=['getpvs',  'applypvs'], 
           requires=
-            ['pyparsing (>=1.5.5)'],
+            ['pyparsing (>=1.5.2)'],
       )

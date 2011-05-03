@@ -12,6 +12,8 @@ parser.add_option('-i', '--po', action='append', default=[],
                   help='Translation file(s) to apply', metavar='FILE')
 parser.add_option('-o', '--output', default='.',
                   help='Location to write output files', metavar='DIR')
+parser.add_option('-F', '--flat', action="store_true", default=False,
+                  help="Don't preserve directory structure in output")
 parser.add_option('-R', '--reverse', action='store_true', default=False,
                   help='Apply reverse translation')
 
@@ -72,8 +74,16 @@ for orig, sub in mappings.iteritems():
     tst = '(?:^|(?<=[\s."]))' + re.escape(orig) + '(?:$|(?=[\s."]))'
     actions.append((re.compile(tst), sub))
 
+if not os.path.exists(opts.output):
+    os.makedirs(opts.output)
+
 for f in args:
-    out=os.path.join(opts.output, os.path.basename(f))
+    if opts.flat:
+        out=os.path.join(opts.output, os.path.basename(f))
+    else:
+        out=os.path.normpath(os.path.join(opts.output, f))
+        if not os.path.exists(os.path.dirname(out)):
+            os.makedirs(os.path.dirname(out))
 
     inp=open(f, 'rU')
     val=inp.read()
@@ -81,9 +91,11 @@ for f in args:
     for pat, sub in actions:
         val=pat.sub(sub, val)
 
+    inp.close()
+    # close input file in case it is about to be overwritten
+
     out=open(out, 'wb')
     for L in val.splitlines():
         out.write(L+inp.newlines)
 
     out.close()
-    inp.close()

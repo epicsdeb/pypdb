@@ -16,6 +16,8 @@ parser.add_option('-F', '--flat', action="store_true", default=False,
                   help="Don't preserve directory structure in output")
 parser.add_option('-R', '--reverse', action='store_true', default=False,
                   help='Apply reverse translation')
+parser.add_option('--edl', action='store_true', default=False,
+                  help="Insert escape charactors for EDM")
 
 opts, args = parser.parse_args()
 
@@ -69,6 +71,12 @@ From %(prevfile)s '%(prev)s = %(sub)s'
 actions=[]
 
 for orig, sub in mappings.iteritems():
+    if opts.edl:
+        orig = orig.replace('{', '\{')
+        sub = sub.replace('{', '\{')
+        orig = orig.replace('}', '\}')
+        sub = sub.replace('}', '\}')
+
     # look behind for beginning of line or a non-name charactor
     # look ahead for end of line or a non-name charactor
     tst = '(?:^|(?<=[\s."]))' + re.escape(orig) + '(?:$|(?=[\s."]))'
@@ -82,8 +90,9 @@ for f in args:
         out=os.path.join(opts.output, os.path.basename(f))
     else:
         out=os.path.normpath(os.path.join(opts.output, f))
-        if not os.path.exists(os.path.dirname(out)):
-            os.makedirs(os.path.dirname(out))
+        DN=os.path.dirname(out)
+        if len(DN.strip())>0 and not os.path.exists(DN):
+            os.makedirs(DN)
 
     inp=open(f, 'rU')
     val=inp.read()

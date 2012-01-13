@@ -16,8 +16,8 @@ parser.add_option('-F', '--flat', action="store_true", default=False,
                   help="Don't preserve directory structure in output")
 parser.add_option('-R', '--reverse', action='store_true', default=False,
                   help='Apply reverse translation')
-parser.add_option('--edl', action='store_true', default=False,
-                  help="Insert escape charactors for EDM")
+parser.add_option('-m', '--mode', default="db", metavar="NAME",
+                  help='Replacement mode (db, proto)')
 
 opts, args = parser.parse_args()
 
@@ -70,17 +70,35 @@ From %(prevfile)s '%(prev)s = %(sub)s'
 
 actions=[]
 
-for orig, sub in mappings.iteritems():
-    if opts.edl:
-        orig = orig.replace('{', '\{')
-        sub = sub.replace('{', '\{')
-        orig = orig.replace('}', '\}')
-        sub = sub.replace('}', '\}')
+if opts.mode in ['db', 'edl']:
+    for orig, sub in mappings.iteritems():
+        if opts.mode=='edl':
+            orig = orig.replace('{', '\{')
+            sub = sub.replace('{', '\{')
+            orig = orig.replace('}', '\}')
+            sub = sub.replace('}', '\}')
 
-    # look behind for beginning of line or a non-name charactor
-    # look ahead for end of line or a non-name charactor
-    tst = '(?:^|(?<=[\s."]))' + re.escape(orig) + '(?:$|(?=[\s."]))'
-    actions.append((re.compile(tst), sub))
+        # look behind for beginning of line or a non-name charactor
+        # look ahead for end of line or a non-name charactor
+
+	# Records names look like
+        #  record(type, "name")
+        #  field(INPA, "name.VAL EXTRA")
+        # So break names on whitespace, '.', or '"'
+        tst = '(?:^|(?<=[\s."]))' + re.escape(orig) + '(?:$|(?=[\s."]))'
+        actions.append((re.compile(tst), sub))
+
+elif opts.mode=='proto':
+    for orig, sub in mappings.iteritems():
+        # Like DB except that macros are "\$1" and record names are found
+        # enclosed like "(\$1:name.FLD)"
+        tst = '(?:^|(?<=[\s."\(]))' + re.escape(orig) + '(?:$|(?=[\)\s."]))'
+        actions.append((re.compile(tst), sub))
+    
+
+else:
+    print >>sys.stderr,"Unknown replacement mode",opts.mode
+    sys.exit(1)
 
 if not os.path.exists(opts.output):
     os.makedirs(opts.output)

@@ -51,11 +51,8 @@ RTYPE  = Keyword("recordtype")
 
 FieldName=Word(upper + '0123456789').setName('Field name')
 
-Integer = Regex('[+-]?[0-9]+')
-Decimal= Regex('[+-]?[0-9]*\.[0-9]*')
-Double = (Decimal | Integer) + \
-                Optional(Regex('(?:[Ee][+-]?[0-9]+)?'))
-Double = Combine(Double).setName("Float Value").setParseAction(lambda x:float(x[0]))
+Double = Word('+-.Ee0123456789')
+Double.setName("Float Value").setParseAction(lambda x:float(x[0]))
 
 # a word with a macro
 ValueWord = OneOrMore( CharsNotIn(' \t\r\n()"\'') |
@@ -115,20 +112,11 @@ RecordFieldHead = FIELD.setResultsName('what') - LPAREN + \
                   FieldName.setResultsName('name') + COMMA + \
                   Word(upper+'_').setResultsName('dbf') + RPAREN
 
-_valQuoted = ['prompt', 'initial', 'extra']
-_valPlain = ['asl','promptgroup','special','pp',
-             'interest','base','size','menu']
+recattrs = oneOf(['prompt', 'initial', 'extra',
+                  'asl','promptgroup','special','pp',
+                  'interest','base','size','menu'])
 
-_fieldAttrs=[]
-for v in _valQuoted:
-    a=Keyword(v) - LPAREN + QuotedString('"') + RPAREN
-    _fieldAttrs.append(a)
-
-for v in _valPlain:
-    a=Keyword(v) - LPAREN + Word(alphanums+'_') + RPAREN
-    _fieldAttrs.append(a)
-
-RecordFieldAttr = reduce(lambda a,b:a|b, _fieldAttrs)
+RecordFieldAttr = recattrs - LPAREN + (QuotedString('"',escChar='\\')|Word(alphanums+'_')) + RPAREN
 
 RecordField = RecordFieldHead - LCURL + \
           OneOrMore( Group(RecordFieldAttr) ).setParseAction(listToDict).setResultsName('attrs') + \
@@ -200,6 +188,6 @@ DBD.ignore(Comment)
 RecordInclude = OneOrMore( RecordEntry )
 RecordInclude.ignore(Comment)
 
-# include from recordtype
+# include from record or grecord
 InstInclude = OneOrMore( InstEntry )
 InstInclude.ignore(Comment)

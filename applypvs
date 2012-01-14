@@ -17,7 +17,7 @@ parser.add_option('-F', '--flat', action="store_true", default=False,
 parser.add_option('-R', '--reverse', action='store_true', default=False,
                   help='Apply reverse translation')
 parser.add_option('-m', '--mode', default="db", metavar="NAME",
-                  help='Replacement mode (db, edl, proto, alias)')
+                  help='Replacement mode (db, edl, xml, proto, alias)')
 
 opts, args = parser.parse_args()
 
@@ -86,6 +86,16 @@ if opts.mode in ['db', 'edl']:
         #  field(INPA, "name.VAL EXTRA")
         # So break names on whitespace, '.', or '"'
         tst = '(?:^|(?<=[\s."]))' + re.escape(orig) + '(?:$|(?=[\s."]))'
+        actions.append((re.compile(tst), sub))
+
+elif opts.mode=='xml':
+    from xml.sax.saxutils import escape
+
+    for orig, sub in mappings.iteritems():
+        # Like DB except record names are found
+        # enclosed like ">$(1):name.FLD<"
+        orig, sub = map(escape, (orig,sub))
+        tst = '(?:^|(?<=[\s.>]))' + re.escape(orig) + '(?:$|(?=[\s.<]))'
         actions.append((re.compile(tst), sub))
 
 elif opts.mode=='proto':

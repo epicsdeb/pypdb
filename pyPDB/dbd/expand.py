@@ -47,12 +47,17 @@ def findFile(name, path=['.'], env=None, all=False, sep=':'):
     else:
         raise IOError(name+" not in path")
 
-def loadEntry(name, entry, path=['.'], skip=[]):
+def loadEntry(name, entry, path=['.'], skip=[], cache=None):
     from os.path import realpath
     f=realpath( findFile(name, path, env='DBDPATH') )
     if f in skip:
         raise RecursiveError('Recursive include of "%s"'%f)
     skip.append(f)
+
+    try:
+        return cache[entry][f]
+    except KeyError:
+        pass
 
     try:
         dbd=entry.parseFile(f)
@@ -86,6 +91,7 @@ def loadEntry(name, entry, path=['.'], skip=[]):
         raise RecursiveError, next, tb
 
     skip.pop()
+    cache[entry][f]=dbd
     return dbd
 
 class _Result(object):
@@ -99,7 +105,7 @@ class _Result(object):
     #del __delitem__(self, key):
         #return delattr(self, self.__list[key])
 
-def loadDBD(name, path=['.'], skip=[]):
+def loadDBD(name, path=['.'], skip=[], cache=defaultdict(dict)):
     """Recursively read and parse database
     """
     from os.path import realpath
@@ -107,6 +113,11 @@ def loadDBD(name, path=['.'], skip=[]):
     if f in skip:
         raise RecursiveError('Recursive include of "%s"'%f)
     skip.append(f)
+    
+    try:
+        return cache[grammer.DBD][f]
+    except KeyError:
+        pass
 
     try:
         dbd=grammer.DBD.parseFile(f)
@@ -124,7 +135,7 @@ def loadDBD(name, path=['.'], skip=[]):
                 for fld in ent.fields:
                     if fld.what=='include':
                         R=loadEntry(fld.name, grammer.RecordInclude,
-                                    path=path, skip=skip)
+                                    path=path, skip=skip, cache=cache)
                         nf+=R
 
                     else:
@@ -144,7 +155,7 @@ def loadDBD(name, path=['.'], skip=[]):
                     fld=ent.fields.pop(0)
                     if fld.what=='include':
                         R=loadEntry(fld.name, grammer.InstInclude,
-                                    path=path, skip=skip)
+                                    path=path, skip=skip, cache=cache)
                         nf+=R
 
                     elif fld.what=='field':
@@ -178,6 +189,7 @@ def loadDBD(name, path=['.'], skip=[]):
         raise RecursiveError, next, tb
 
     skip.pop()
+    cache[grammer.DBD][f]=dbd
     return dbd
 
 class DBD(object):

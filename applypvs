@@ -17,7 +17,7 @@ parser.add_option('-F', '--flat', action="store_true", default=False,
 parser.add_option('-R', '--reverse', action='store_true', default=False,
                   help='Apply reverse translation')
 parser.add_option('-m', '--mode', default="db", metavar="NAME",
-                  help='Replacement mode (db, edl, proto)')
+                  help='Replacement mode (db, edl, proto, alias)')
 
 opts, args = parser.parse_args()
 
@@ -94,7 +94,17 @@ elif opts.mode=='proto':
         # enclosed like "(\$1:name.FLD)"
         tst = '(?:^|(?<=[\s."\(]))' + re.escape(orig) + '(?:$|(?=[\)\s."]))'
         actions.append((re.compile(tst), sub))
-    
+
+elif opts.mode=='alias':
+    if opts.output=='.':
+        out=sys.stdout
+    else:
+        out=open(opts.output, 'w')
+
+    for orig, sub in mappings.iteritems():
+        print >>out,'alias("%s",\t"%s")'%(orig,sub)
+    out.close()
+    sys.exit(0)
 
 else:
     print >>sys.stderr,"Unknown replacement mode",opts.mode

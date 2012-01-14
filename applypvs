@@ -132,7 +132,9 @@ for f in args:
         if len(DN.strip())>0 and not os.path.exists(DN):
             os.makedirs(DN)
 
-    inp=open(f, 'rU')
+    # Use binary I/O to ensure the EOL stays the same
+    # in output files
+    inp=open(f, 'rb')
     val=inp.read()
 
     for pat, sub in actions:
@@ -142,7 +144,6 @@ for f in args:
     # close input file in case it is about to be overwritten
 
     out=open(out, 'wb')
-    for L in val.splitlines():
-        out.write(L+inp.newlines)
+    out.write(val)
 
     out.close()

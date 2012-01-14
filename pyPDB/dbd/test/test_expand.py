@@ -33,19 +33,19 @@ menu(menuTest) {
     'simpleRecord.dbd':"""
 include "menuTest.dbd"
 recordtype(simple) {
-        include "dbCom.dbd"
-        field(VAL,DBF_NOACCESS) {
-                prompt("Value")
-                asl(ASL0)
-                special(SPC_DBADDR)
-                pp(TRUE)
-                extra("void *           val")
-        }
-        field(INP,DBF_INLINK) {
-                prompt("Input Specification")
-                promptgroup(GUI_COMPRESS)
-                interest(1)
-        }
+\tinclude "dbCom.dbd"
+\tfield(VAL,DBF_NOACCESS) {
+\t\tprompt("Value")
+\t\tasl(ASL0)
+\t\tspecial(SPC_DBADDR)
+\t\tpp(TRUE)
+\t\textra("void *           val")
+\t}
+\tfield(INP,DBF_INLINK) {
+\t\tprompt("Input Specification")
+\t\tpromptgroup(GUI_COMPRESS)
+\t\tinterest(1)
+\t}
 }
 record(simple, "${P}")
 {
@@ -65,28 +65,28 @@ full="""menu(menuTest) {
     choice(menuTestA,"A")
 }
 recordtype(simple) {
-    field(NAME,DBF_STRING) {
-        prompt("Record Name")
-        special(SPC_NOMOD)
-        size(61)
-    }
-    field(DESC,DBF_STRING) {
-        promptgroup(GUI_COMMON)
-        prompt("Descriptor")
-        size(41)
-    }
-    field(VAL,DBF_NOACCESS) {
-        pp(TRUE)
-        extra("void *           val")
-        prompt("Value")
-        special(SPC_DBADDR)
-        asl(ASL0)
-    }
-    field(INP,DBF_INLINK) {
-        promptgroup(GUI_COMPRESS)
-        prompt("Input Specification")
-        interest(1)
-    }
+\tfield(NAME,DBF_STRING) {
+\t\tprompt("Record Name")
+\t\tspecial(SPC_NOMOD)
+\t\tsize(61)
+\t}
+\tfield(DESC,DBF_STRING) {
+\t\tpromptgroup(GUI_COMMON)
+\t\tprompt("Descriptor")
+\t\tsize(41)
+\t}
+\tfield(VAL,DBF_NOACCESS) {
+\t\tpp(TRUE)
+\t\textra("void *           val")
+\t\tprompt("Value")
+\t\tspecial(SPC_DBADDR)
+\t\tasl(ASL0)
+\t}
+\tfield(INP,DBF_INLINK) {
+\t\tpromptgroup(GUI_COMPRESS)
+\t\tprompt("Input Specification")
+\t\tinterest(1)
+\t}
 }
 record(simple,"${P}") {
     field(VAL, "0")

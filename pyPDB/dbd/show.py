@@ -40,15 +40,15 @@ def showDBD(dbd, fd=sys.stdout):
                     print >>fd,'    include "%s"'%f.name
 
                 elif f.what=='field':
-                    print >>fd,'    field(%s,%s) {'%(f.name,f.dbf)
+                    print >>fd,'\tfield(%s,%s) {'%(f.name,f.dbf)
 
                     for k,v in f.attrs.iteritems():
                         if k in ['prompt', 'initial', 'extra']:
-                            print >>fd,' '*7,'%s("%s")'%(k,v)
+                            print >>fd,'\t\t%s("%s")'%(k,v)
                         else:
-                            print >>fd,' '*7,'%s(%s)'%(k,v)
+                            print >>fd,'\t\t%s(%s)'%(k,v)
 
-                    print >>fd,'    }'
+                    print >>fd,'\t}'
 
                 elif f.what=='CCode':
                     print >>fd,'    %%%s'%f.code
@@ -69,6 +69,9 @@ def showDBD(dbd, fd=sys.stdout):
 
         elif t=='variable':
             print >>fd,'variable(%s,%s)' % (ent.name,ent.ctype)
+
+        elif t=='registrar':
+            print >>fd,'registrar(%s)' % ent.name
 
         else:
             warnings.warn("Unknown entry '%s'"%\

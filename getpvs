@@ -36,8 +36,10 @@ if len(opts.include)==0:
 
 pdb=[]
 
+pcache=defaultdict(dict)
+
 for inp in args:
-    pdb+=loadDBD(inp, path=opts.include)
+    pdb+=loadDBD(inp, path=opts.include, cache=pcache)
 
 pdb=DBD(pdb)
 

@@ -72,8 +72,12 @@ Michael Davidsaver
 
 \begin_layout Date
 Rev.
- 1 Dec.
- 2010
+ 2
+\begin_inset Newline newline
+\end_inset
+
+Jan.
+ 2012
 \end_layout
 
 \begin_layout Section
@@ -127,6 +131,88 @@ $(P)<Signal>
  `$(P)$(N)Status') would be a good candidate.
  However, a database where record names are entirely defined by macros (`$(P)$(N
 )') would likely not benefit from using these tools.
+\end_layout
+
+\begin_layout Standard
+Both 
+\series bold
+getpvs
+\series default
+ and 
+\series bold
+applypvs
+\series default
+ have several input/output modes for working with different file formats.
+ A mode determines where in the file PV names are found, and what escape
+ sequences are used.
+\end_layout
+
+\begin_layout Standard
+In this version the following formats are supported.
+ The default is 
+\series bold
+db
+\series default
+.
+\end_layout
+
+\begin_layout Description
+db The IOC database format.
+ Supported for both get and apply.
+\end_layout
+
+\begin_layout Description
+alias A special apply format which creates a set of alias() definitions
+ which can be loaded into an IOC.
+\end_layout
+
+\begin_layout Description
+edl Panels for EDM
+\begin_inset CommandInset nomenclature
+LatexCommand nomenclature
+symbol "EDM"
+description "Extendable Display Manager"
+
+\end_inset
+
+.
+ Both directions.
+\end_layout
+
+\begin_layout Description
+opi Panels for CSS
+\begin_inset CommandInset nomenclature
+LatexCommand nomenclature
+symbol "CSS"
+description "Control System Studio"
+
+\end_inset
+
+ (BOY
+\begin_inset CommandInset nomenclature
+LatexCommand nomenclature
+symbol "BOY"
+description "Best OPI Yet"
+
+\end_inset
+
+).
+ Both directions.
+ (Apply mode is an alias for 
+\series bold
+xml
+\series default
+)
+\end_layout
+
+\begin_layout Description
+xml Generic XML files.
+ Apply only.
+\end_layout
+
+\begin_layout Description
+proto Steamdevice protocol files.
+ Apply only.
 \end_layout
 
 \begin_layout Subsection
@@ -380,6 +466,11 @@ Options:
                          as one record
 \end_layout
 
+\begin_layout Plain Layout
+
+  -m NAME, --mode=NAME  Replacement mode (db, edl, opi)
+\end_layout
+
 \end_inset
 
 
@@ -441,7 +532,17 @@ Options:
 
 \begin_layout Plain Layout
 
+  -F, --flat            Don't preserve directory structure in output
+\end_layout
+
+\begin_layout Plain Layout
+
   -R, --reverse         Apply reverse translation
+\end_layout
+
+\begin_layout Plain Layout
+
+  -m NAME, --mode=NAME  Replacement mode (db, edl, xml, proto, alias)
 \end_layout
 
 \end_inset
@@ -528,18 +629,67 @@ $ getpvs -I ~/epics-3.14.11/dbd -I .
 \end_layout
 
 \begin_layout Standard
-This will create the file 
+The same can be done with EDM display files (After converting them with
+ the 
+\series bold
+adl2edl
+\series default
+ utility).
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+$ cd autosave-4-6
+\end_layout
+
+\begin_layout Plain Layout
+
+$ getpvs -m edl -I .
+ 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ -o as-4.6.pot 
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+asApp/op/adl/save_restoreStatus*.edl
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Either case will create the suitable file 
 \series bold
 as-4.6.pot
 \series default
- from the base record definitions (base.dbd) and the autosave status db.
+.
  Since the autosave package does not define any recordtypes it is not necessary
  to include the asSupport.dbd file.
  
 \series bold
 getpvs
 \series default
- must be able to locate all recordtype definitions.
+ in 
+\series bold
+db
+\series default
+ mode must be able to locate all recordtype definitions.
  This information is needed to determine which fields can contain record
  names.
 \end_layout
@@ -793,6 +943,22 @@ msgstr
 \end_layout
 
 \begin_layout Standard
+The 
+\series bold
+applypvs
+\series default
+ script has several output mode corresponding to the syntax and charactor
+ sets of different file formats.
+ Currently supported modes include EPICS database files, EDM display files,
+ XML files, and streamdevice protocol files.
+\end_layout
+
+\begin_layout Standard
+A special `alias' mode is available which emits a list of record name alias
+ definitions which can be loaded into an IOC.
+\end_layout
+
+\begin_layout Standard
 \begin_inset listings
 inline false
 status open
@@ -804,14 +970,19 @@ $ mkdir fls
 
 \begin_layout Plain Layout
 
-$ applypvs -i as-4.6-fls.po -o fls 
+$ applypvs -F -i as-4.6-fls.po -o fls 
 \backslash
 
 \end_layout
 
 \begin_layout Plain Layout
 
- asApp/Db/save_restoreStatus.db 
+ asApp/Db/save_restoreStatus.db
+\end_layout
+
+\begin_layout Plain Layout
+
+$ applypvs -F -i as-4.6-fls.po -o fls -m edl 
 \backslash
 
 \end_layout

@@ -51,7 +51,10 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\\n"
 "Content-Transfer-Encoding: 8bit\\n" """ % header
     
-    for n,d in enumerate(header.get('path',[])):
+    path=header.get('path',[])
+    if len(path)>0:
+        print >>fd,'"X-Poedit-Basepath: %s\\n"'%(path[0])
+    for n,d in enumerate(path):
         print >>fd,'"X-Poedit-SearchPath-%d: %s\\n"'%(n,d)
     print >>fd
 

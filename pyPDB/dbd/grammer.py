@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Grammer for EPICS database
+"""
+Copyright (c) 2012 Brookhaven Science Associates, as Operator of
+    Brookhaven National Laboratory.
+mrfioc2 is distributed subject to a Software License Agreement found
+in file LICENSE that is included with this distribution.
+
+Grammer for EPICS database
 """
 
 from pyparsing import *

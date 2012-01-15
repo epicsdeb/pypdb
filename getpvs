@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time
 from warnings import warn
 from optparse import OptionParser
 from collections import defaultdict
 
+from pyPDB.po import POEnt, writePO
 from pyPDB.dbd.expand import loadDBD, DBD
 
 linktypes = ['DBF_INLINK', 'DBF_OUTLINK', 'DBF_FWDLINK']
@@ -56,9 +56,7 @@ def cleanLink(val):
 # list of translatable fields by recordtype
 recflds={}
 
-strings=defaultdict(list)
-comments=defaultdict(list)
-rectypes={}
+entries={}
 
 def allentries(sec):
     for s in sec:
@@ -74,8 +72,15 @@ else:
 for rec in I:
     #print rec,flds[0],
 
+    try:
+        ent = entries[rec.name]
+    except KeyError:
+        ent = POEnt(rec.name)
+        entries[rec.name] = ent
+
     # prepend definition(s)
-    strings[rec.name].insert(0, '%s:%d'%(rec.name.file, rec.name.lineno))
+    ent.comExt.insert(0, 'recordtype: %s'%rec.rec)
+    ent.refs.insert(0, '%s:%d'%(rec.name.file, rec.name.lineno))
 
     rtype=pdb.recordtypes.get(rec.rec, None)
     if rtype is None:
@@ -89,8 +94,6 @@ for rec in I:
             if rf.dbf in linktypes:
                 interesting.append(rf.name)
         recflds[rtype]=interesting
-
-    rectypes[rec.name]=rtype.name
 
     for fld in rec.fields:
         if fld.name in interesting:
@@ -106,43 +109,22 @@ for rec in I:
 
             if len(val)==0 or val[0]=='@':
                 continue
+    
+            try:
+                valent=entries[val]
+            except KeyError:
+                valent=POEnt(val)
+                entries[val] = valent
+            
+            valent.refs.append('%s:%d'%(fld.value.file, fld.value.lineno))
  
-            if val not in strings:
-                strings[val]=[]
-
-            strings[val].append('%s:%d'%(fld.value.file, fld.value.lineno))
-
         if fld.name in infofields:
-            comments[rec.name].append('%s: %s'% \
+            ent.comExt.append('%s: %s'% \
                 (fld.name, repr(fld.value)[1:-1]))
 
     #print
 
-print >>out,"""msgid ""
-msgstr ""
-"Project-Id-Version: \\n"
-"POT-Creation-Date: %(time)s\\n"
-"PO-Revision-Date: %(time)s\\n"
-"Last-Translator: \\n"
-"Language-Team: \\n"
-"Language: \\n"
-"MIME-Version: 1.0\\n"
-"Content-Type: text/plain; charset=iso-8859-1\\n"
-"Content-Transfer-Encoding: 8bit\\n" """ % {'time':time.strftime('%F %H:%M%z')}
+entries=entries.values()
+entries.sort()
 
-for n,d in enumerate(opts.include):
-    print >>out,'"X-Poedit-SearchPath-%d: %s\\n"'%(n,d)
-print >>out
-
-pvs=strings.items()
-pvs.sort()
-for pv, refs in pvs:
-    print >>out,'#. recordtype:',rectypes.get(pv, '<unknown>')
-    if pv in comments:
-        for C in comments[pv]:
-            print >>out,'#.',C
-    for r in refs:
-        print >>out,'#:',r
-    print >>out,'msgid "%s"'%pv
-    print >>out,'msgstr ""'
-    print >>out
+writePO(out, entries, header={'path':opts.include})

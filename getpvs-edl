@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import re, sys, os, time
-from copy import copy
-from subprocess import Popen, PIPE
-from collections import defaultdict
-from os.path import join, isfile, normpath, samefile
+import re, sys
+from warnings import warn
 from optparse import OptionParser
+
+from pyPDB.dbd.expand import findFile
+from pyPDB.po import POEnt, writePO
 
 linktypes = ['DBF_INLINK', 'DBF_OUTLINK', 'DBF_FWDLINK']
 infofields = ['EGU', 'DESC']
@@ -19,10 +19,6 @@ parser.add_option("-o", '--output',
 
 opts, args = parser.parse_args()
 
-if 'DISPLAY' not in os.environ:
-    print >>sys.stderr,"DISPLAY not set\nThis script runs EDM, which needs a running X server"
-    sys.exit(1)
-
 if opts.output is None:
     out=sys.stdout
 else:
@@ -31,112 +27,98 @@ else:
 if len(opts.include)==0:
     opts.include=['.']
 
-# locate files
-inputs=[]
-for fname in args:
-    fpath=None
-    for p in opts.include:
-        fp=normpath(join(p,fname))
-        if isfile(fp):
-            fpath=fp
-            break
+attrpat=re.compile('^\s* (\S+) \s* "(\\"|[^"]*)" \s*$', re.X)
+
+# widget attributes known to contain PV names
+PVattrs=[
+'alarmPv',
+'colorPv',
+'controlPv',
+'filePv',
+'indicatorPv',
+'readPv',
+'visPv',
+'xPv',
+'yPv',
+]
+
+# Just a record name with optional field
+#   record.FLD
+plainpv=re.compile('^\s*([^.]+)\.?.*$')
+
+
+def extractRec(s):
+    """ Extract record name(s) from string
+    """
+    
+    if s.startswith('CALC'):
+        # May contain several record names
+        #   CALC\\\{(((A=0)&&(B=0)))\}($(P)$(M).DMOV, $(P)$(M).STAT)
+
+        _,_,pvs = s.partition('\\}')
+        pvs=pvs.strip().strip('()')
+
+        if len(pvs)==0:
+            warn('CALC with no PVs? "%s"'%s)
+            return []
         
-    if fpath is None:
-        print >>sys.stderr, "Can't find",fname,"in",', '.join(opts.include)
+        pvs=pvs.split(',')
+        pvs=map(str.strip, pvs)
+        # strip field names
+        pvs=map(lambda p:extractRec(p)[0],pvs)
+
+        return pvs
+
+    else:
+        M=plainpv.match(s)
+        if M is None:
+            return []
+        return [M.group(1)]
+
+entries={}
+
+for fname in args:
+
+    try:
+        fullname=findFile(fname, path=opts.include, env='EDMDATAPATH') 
+
+        fd=open(fullname, 'rU')
+
+    except IOError:
+        print >>sys.stderr, "Can't find/read",fname,"in",', '.join(opts.include)
         sys.exit(1)
 
-    inputs.append(fpath)
+    for ln, L in enumerate(fd.readlines()):
+        #print ln,L
+        M=attrpat.match(L)
+        if M is None:
+            continue
 
-# identify macros
+        if M.group(1) not in PVattrs:
+            continue
+        
+        pvs=extractRec(M.group(2))
+        pvs=list(set(pvs)) # make unique
 
-mac=re.compile("\$\(([^\)]*)\)")
+        for pv in pvs:
+            try:
+                ent=entries[pv]
+            except KeyError:
+                ent=POEnt(pv)
+                entries[pv]=ent
 
-names=set()
-for i in inputs:
-    with open(i, 'rU') as fp:
-        found = mac.findall(fp.read())
+            if M.group(1) not in ent.comExt:
+                ent.comExt.append(M.group(1))
 
-        map(names.add, found)
+            ent.refs.append('%s:%d'%(fname,ln))
 
-#print 'Found macros:',', '.join(names)
+        print fname,ln,pvs
 
-# build: NAME=$(NAME), ...
-macros = ','.join(map(lambda m:'%s=$(%s)'%(m,m), names))
+    fd.close()
 
-#print macros
+entries=entries.values()
+entries.sort()
 
-cmd = ['edm', '-m', macros, '-crawl'] + inputs
+writePO(out, entries, header={'path':opts.include})
 
-#print >>sys.stderr, ' '.join(cmd)
-
-procenv = copy(os.environ)
-if 'EDMDATAFILES' in procenv:
-    # only find files listed on the command line
-    del procenv['EDMDATAFILES']
-
-def cleanLink(val):
-    val=val.strip()
-    v,_,_=val.partition('.')
-    #v,_,_=v.partition(' ')
-    #v=v.replace("'","")
-    return v.strip()
-
-proc = Popen(cmd, env=procenv, stdout=PIPE)
-
-# TODO make tolerant of changes
-edmpat = re.compile('.*file="([^"]*)",pv="([^"]*)"')
-
-result = defaultdict(list)
-
-for ent in proc.stdout.readlines():
-    L = ent.strip()
-    if len(L)==0:
-        break
-    M = edmpat.match(L)
-    if M is None:
-        print '???',L
-        continue
-
-    src, macro = M.groups()
-    macro = cleanLink(macro)
-
-    fnd = False
-    for n in inputs:
-        if samefile(n,src):
-            fnd=True
-            result[macro].append(n)
-
-    if not fnd:
-        print 'Macro',macro,'from unknown file',src
-
-proc.wait()
-
-print >>out,"""msgid ""
-msgstr ""
-"Project-Id-Version: \\n"
-"POT-Creation-Date: %(time)s\\n"
-"PO-Revision-Date: %(time)s\\n"
-"Last-Translator: \\n"
-"Language-Team: \\n"
-"Language: \\n"
-"MIME-Version: 1.0\\n"
-"Content-Type: text/plain; charset=iso-8859-1\\n"
-"Content-Transfer-Encoding: 8bit\\n" """ % {'time':time.strftime('%F %H:%M%z')}
-
-for n,d in enumerate(opts.include):
-    print >>out,'"X-Poedit-SearchPath-%d: %s\\n"'%(n,d)
-print >>out
-
-mlist = result.keys()
-mlist.sort()
-
-for macro in mlist:
-    files = result[macro]
-
-    for F in files:
-        print >>out,'#:',F
-
-    
-    print >>out,'msgid "%s"'%macro
-    print >>out,'msgstr ""'
-    print >>out
+sys.exit(0)

@@ -17,7 +17,7 @@ parser.add_option('-F', '--flat', action="store_true", default=False,
 parser.add_option('-R', '--reverse', action='store_true', default=False,
                   help='Apply reverse translation')
 parser.add_option('-m', '--mode', default="db", metavar="NAME",
-                  help='Replacement mode (db, proto)')
+                  help='Replacement mode (db, edl, proto)')
 
 opts, args = parser.parse_args()
 

@@ -1,15 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from warnings import warn
 from optparse import OptionParser
-from collections import defaultdict
-
-from pyPDB.po import POEnt, writePO
-from pyPDB.dbd.expand import loadDBD, DBD
-
-linktypes = ['DBF_INLINK', 'DBF_OUTLINK', 'DBF_FWDLINK']
-infofields = ['EGU', 'DESC']
 
 parser = OptionParser()
 parser.add_option("-I", dest='include', action='append', default=[],
@@ -19,112 +11,39 @@ parser.add_option("-o", '--output',
 parser.add_option('-M', '--merge-duplicates', dest='dups', action='store_true',
                   help='When encountering records with duplicate names '
                   'treat them as one record')
+parser.add_option('-m', '--mode', default="db", metavar="NAME",
+                  help='Replacement mode (db, edl, xml)')
 
 opts, args = parser.parse_args()
-
-if opts.output is None:
-    import sys
-    out=sys.stdout
-else:
-    out=file(opts.output, 'w')
 
 #from dbd.grammer import DBD
 #DBD.setDebug(True)
 
+from pyPDB.po import writePO
+
 if len(opts.include)==0:
     opts.include=['.']
 
-pdb=[]
-
-pcache=defaultdict(dict)
-
-for inp in args:
-    pdb+=loadDBD(inp, path=opts.include, cache=pcache)
-
-pdb=DBD(pdb)
-
-pdb.singular('recordtype')
-if not opts.dups:
-    pdb.singular('record')
-
-def cleanLink(val):
-    val=val.strip()
-    v,_,_=val.partition('.')
-    v,_,_=v.partition(' ')
-    return v.strip()
-
-# list of translatable fields by recordtype
-recflds={}
-
-entries={}
-
-def allentries(sec):
-    for s in sec:
-        assert isinstance(s, list)
-        for inst in s:
-            yield inst
-
-if opts.dups:
-    I=allentries(pdb.records.itervalues())
+if opts.mode=='db':
+    from pyPDB.getdbd import main
+elif opts.mode=='edl':
+    from pyPDB.getedl import main
 else:
-    I=pdb.records.itervalues()
+    parser.error('Unknown module "%s"'%opts.mode)
+        
+if __name__=='__main__':
 
-for rec in I:
-    #print rec,flds[0],
+    if opts.output is None:
+        import sys
+        out=sys.stdout
+    else:
+        out=file(opts.output, 'w')
 
-    try:
-        ent = entries[rec.name]
-    except KeyError:
-        ent = POEnt(rec.name)
-        entries[rec.name] = ent
+    entries=main(opts,args,out)
 
-    # prepend definition(s)
-    ent.comExt.insert(0, 'recordtype: %s'%rec.rec)
-    ent.refs.insert(0, '%s:%d'%(rec.name.file, rec.name.lineno))
-
-    rtype=pdb.recordtypes.get(rec.rec, None)
-    if rtype is None:
-        warn("%s : Skipping unknown recordtype '%s'"%(rec.name,rec.rec))
-        continue
-
-    interesting=recflds.get(rtype,  None)
-    if interesting is None:
-        interesting=[]
-        for rf in rtype.fields:
-            if rf.dbf in linktypes:
-                interesting.append(rf.name)
-        recflds[rtype]=interesting
-
-    for fld in rec.fields:
-        if fld.name in interesting:
-            #print fld.name,
-            try:
-                float(fld.value)
-                # Constant link
-                continue
-            except ValueError:
-                pass
-            
-            val=cleanLink(fld.value)
-
-            if len(val)==0 or val[0]=='@':
-                continue
+    entries=entries.values()
+    entries.sort()
     
-            try:
-                valent=entries[val]
-            except KeyError:
-                valent=POEnt(val)
-                entries[val] = valent
-            
-            valent.refs.append('%s:%d'%(fld.value.file, fld.value.lineno))
- 
-        if fld.name in infofields:
-            ent.comExt.append('%s: %s'% \
-                (fld.name, repr(fld.value)[1:-1]))
+    writePO(out, entries, header={'path':opts.include})
 
-    #print
-
-entries=entries.values()
-entries.sort()
-
-writePO(out, entries, header={'path':opts.include})
+    out.close()

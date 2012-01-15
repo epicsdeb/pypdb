@@ -85,7 +85,7 @@ if opts.mode in ['db', 'edl']:
         #  record(type, "name")
         #  field(INPA, "name.VAL EXTRA")
         # So break names on whitespace, '.', or '"'
-        tst = '(?:^|(?<=[\s."]))' + re.escape(orig) + '(?:$|(?=[\s."]))'
+        tst = '(?:^|(?<=[\s"]))' + re.escape(orig) + '(?:$|(?=[\s."]))'
         actions.append((re.compile(tst), sub))
 
 elif opts.mode=='xml':
@@ -95,14 +95,14 @@ elif opts.mode=='xml':
         # Like DB except record names are found
         # enclosed like ">$(1):name.FLD<"
         orig, sub = map(escape, (orig,sub))
-        tst = '(?:^|(?<=[\s.>]))' + re.escape(orig) + '(?:$|(?=[\s.<]))'
+        tst = '''(?:^|(?<=[\s'">]))''' + re.escape(orig) + '''(?:$|(?=[\s.'"<]))'''
         actions.append((re.compile(tst), sub))
 
 elif opts.mode=='proto':
     for orig, sub in mappings.iteritems():
         # Like DB except that macros are "\$1" and record names are found
         # enclosed like "(\$1:name.FLD)"
-        tst = '(?:^|(?<=[\s."\(]))' + re.escape(orig) + '(?:$|(?=[\)\s."]))'
+        tst = '(?:^|(?<=[\s"\(]))' + re.escape(orig) + '(?:$|(?=[\)\s."]))'
         actions.append((re.compile(tst), sub))
 
 elif opts.mode=='alias':

@@ -56,7 +56,6 @@ msgstr ""
     print >>fd
 
     for E in ents:
-        print type(E),E
         for c in E.comTR:
             print >>fd,'# ',c
         for c in E.comExt:

@@ -28,6 +28,8 @@ if opts.mode=='db':
     from pyPDB.getdbd import main
 elif opts.mode=='edl':
     from pyPDB.getedl import main
+elif opts.mode=='opi':
+    from pyPDB.getopi import main
 else:
     parser.error('Unknown module "%s"'%opts.mode)
         

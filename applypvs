@@ -17,7 +17,7 @@ parser.add_option('-F', '--flat', action="store_true", default=False,
 parser.add_option('-R', '--reverse', action='store_true', default=False,
                   help='Apply reverse translation')
 parser.add_option('-m', '--mode', default="db", metavar="NAME",
-                  help='Replacement mode (db, edl, xml, proto, alias)')
+                  help='Replacement mode (db, edl, opi, xml, proto, alias)')
 
 opts, args = parser.parse_args()
 
@@ -88,7 +88,7 @@ if opts.mode in ['db', 'edl']:
         tst = '(?:^|(?<=[\s"]))' + re.escape(orig) + '(?:$|(?=[\s."]))'
         actions.append((re.compile(tst), sub))
 
-elif opts.mode=='xml':
+elif opts.mode in ['xml','opi']:
     from xml.sax.saxutils import escape
 
     for orig, sub in mappings.iteritems():

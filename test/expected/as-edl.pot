@@ -1,0 +1,115 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n" 
+"X-Poedit-Basepath: input\n"
+"X-Poedit-SearchPath-0: input\n"
+
+#. controlPv
+#: save_restoreStatus_more.edl:523
+msgid "$(P)SR_0_Name"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus_more.edl:504
+msgid "$(P)SR_0_State"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus_more.edl:432
+msgid "$(P)SR_0_Status"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus_more.edl:456
+msgid "$(P)SR_0_StatusStr"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus_more.edl:480
+msgid "$(P)SR_0_Time"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus_more.edl:638
+msgid "$(P)SR_1_Name"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus_more.edl:619
+msgid "$(P)SR_1_State"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus_more.edl:547
+msgid "$(P)SR_1_Status"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus_more.edl:571
+msgid "$(P)SR_1_StatusStr"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus_more.edl:595
+msgid "$(P)SR_1_Time"
+msgstr ""
+
+#. visPv
+#: save_restoreStatus.edl:415
+#: save_restoreStatus_more.edl:736
+#: save_restoreStatus_tiny.edl:325
+msgid "$(P)SR_deadIfZero"
+msgstr ""
+
+#. visPv
+#: save_restoreStatus.edl:187
+#: save_restoreStatus_more.edl:187
+#: save_restoreStatus_tiny.edl:187
+msgid "$(P)SR_heartbeat"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus.edl:299
+#: save_restoreStatus_more.edl:313
+msgid "$(P)SR_rebootStatus"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus.edl:275
+#: save_restoreStatus_more.edl:289
+msgid "$(P)SR_rebootStatusStr"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus.edl:341
+#: save_restoreStatus_more.edl:355
+msgid "$(P)SR_rebootTime"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus.edl:251
+#: save_restoreStatus_more.edl:251
+#: save_restoreStatus_tiny.edl:251
+msgid "$(P)SR_recentlyStr"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus.edl:203
+#: save_restoreStatus_more.edl:203
+#: save_restoreStatus_tiny.edl:203
+msgid "$(P)SR_status"
+msgstr ""
+
+#. controlPv
+#: save_restoreStatus.edl:227
+#: save_restoreStatus_more.edl:227
+#: save_restoreStatus_tiny.edl:227
+msgid "$(P)SR_statusStr"
+msgstr ""
+

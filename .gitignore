@@ -4,3 +4,4 @@ _trial_temp
 MANIFEST
 build
 dist
+test/output

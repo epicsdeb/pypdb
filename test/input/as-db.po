@@ -1,0 +1,273 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Last-Translator: Michael Davidsaver <mdavidsaver@bnl.gov>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: /usr/lib/epics/dbd\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"X-Poedit-SearchPath-0: /usr/lib/epics/dbd\n"
+"X-Poedit-SearchPath-1: input\n"
+
+#. recordtype: stringout
+#: save_restoreStatus.db:75
+msgid "$(P)SR_0_Name"
+msgstr "$(P)Name:0-I"
+
+#. recordtype: longout
+#: save_restoreStatus.db:80
+msgid "$(P)SR_0_State"
+msgstr "$(P)State:0-I"
+
+#. recordtype: mbbo
+#: save_restoreStatus.db:84
+msgid "$(P)SR_0_Status"
+msgstr "$(P)MessageID:0-Sts"
+
+#. recordtype: stringout
+#: save_restoreStatus.db:98
+msgid "$(P)SR_0_StatusStr"
+msgstr "$(P)Message:0-I"
+
+#. recordtype: stringout
+#: save_restoreStatus.db:103
+msgid "$(P)SR_0_Time"
+msgstr "$(P)Time:0-I"
+
+#. recordtype: stringout
+#: save_restoreStatus.db:108
+msgid "$(P)SR_1_Name"
+msgstr ""
+
+#. recordtype: longout
+#: save_restoreStatus.db:113
+msgid "$(P)SR_1_State"
+msgstr ""
+
+#. recordtype: mbbo
+#: save_restoreStatus.db:117
+msgid "$(P)SR_1_Status"
+msgstr "$(P)State:1-Sts"
+
+#. recordtype: stringout
+#: save_restoreStatus.db:131
+msgid "$(P)SR_1_StatusStr"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:136
+msgid "$(P)SR_1_Time"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:141
+msgid "$(P)SR_2_Name"
+msgstr ""
+
+#. recordtype: longout
+#: save_restoreStatus.db:146
+msgid "$(P)SR_2_State"
+msgstr ""
+
+#. recordtype: mbbo
+#: save_restoreStatus.db:150
+msgid "$(P)SR_2_Status"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:164
+msgid "$(P)SR_2_StatusStr"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:170
+msgid "$(P)SR_2_Time"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:175
+msgid "$(P)SR_3_Name"
+msgstr ""
+
+#. recordtype: longout
+#: save_restoreStatus.db:180
+msgid "$(P)SR_3_State"
+msgstr ""
+
+#. recordtype: mbbo
+#: save_restoreStatus.db:184
+msgid "$(P)SR_3_Status"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:198
+msgid "$(P)SR_3_StatusStr"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:203
+msgid "$(P)SR_3_Time"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:208
+msgid "$(P)SR_4_Name"
+msgstr ""
+
+#. recordtype: longout
+#: save_restoreStatus.db:213
+msgid "$(P)SR_4_State"
+msgstr ""
+
+#. recordtype: mbbo
+#: save_restoreStatus.db:217
+msgid "$(P)SR_4_Status"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:231
+msgid "$(P)SR_4_StatusStr"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:236
+msgid "$(P)SR_4_Time"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:241
+msgid "$(P)SR_5_Name"
+msgstr ""
+
+#. recordtype: longout
+#: save_restoreStatus.db:246
+msgid "$(P)SR_5_State"
+msgstr ""
+
+#. recordtype: mbbo
+#: save_restoreStatus.db:250
+msgid "$(P)SR_5_Status"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:265
+msgid "$(P)SR_5_StatusStr"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:270
+msgid "$(P)SR_5_Time"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:275
+msgid "$(P)SR_6_Name"
+msgstr ""
+
+#. recordtype: longout
+#: save_restoreStatus.db:280
+msgid "$(P)SR_6_State"
+msgstr ""
+
+#. recordtype: mbbo
+#: save_restoreStatus.db:284
+msgid "$(P)SR_6_Status"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:299
+msgid "$(P)SR_6_StatusStr"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:304
+msgid "$(P)SR_6_Time"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:309
+msgid "$(P)SR_7_Name"
+msgstr ""
+
+#. recordtype: longout
+#: save_restoreStatus.db:314
+msgid "$(P)SR_7_State"
+msgstr ""
+
+#. recordtype: mbbo
+#: save_restoreStatus.db:318
+msgid "$(P)SR_7_Status"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:333
+msgid "$(P)SR_7_StatusStr"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:338
+msgid "$(P)SR_7_Time"
+msgstr ""
+
+#. recordtype: bo
+#: save_restoreStatus.db:21
+#: save_restoreStatus.db:19
+msgid "$(P)SR_deadIfZero"
+msgstr ""
+
+#. recordtype: bo
+#: save_restoreStatus.db:6
+msgid "$(P)SR_heartbeat"
+msgstr ""
+
+#. recordtype: bo
+#: save_restoreStatus.db:13
+#: save_restoreStatus.db:10
+msgid "$(P)SR_i_am_alive"
+msgstr "$(P)Active-Sts"
+
+#. recordtype: mbbo
+#: save_restoreStatus.db:27
+msgid "$(P)SR_rebootStatus"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:60
+msgid "$(P)SR_rebootStatusStr"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:65
+msgid "$(P)SR_rebootTime"
+msgstr ""
+
+#. recordtype: stringout
+#: save_restoreStatus.db:55
+msgid "$(P)SR_recentlyStr"
+msgstr ""
+
+#. recordtype: mbbo
+#: save_restoreStatus.db:41
+msgid "$(P)SR_status"
+msgstr "$(P)StateID-Sts"
+
+#. recordtype: stringout
+#: save_restoreStatus.db:70
+msgid "$(P)SR_statusStr"
+msgstr "$(P)State-Sts"
+
+#. Check replace in CALC
+msgid "$(P)$(H)AND-$(N)_NOUT_SigShow"
+msgstr "$(P)$(H)Also-$(N)NOUT:SignalShow"
+
+#. Check replace in CALC
+msgid "$(P)$(H)SignalBlink"
+msgstr "$(P)$(H)Blinking:Light"
+
+#. Regular in same file
+msgid "$(P)$(H)AND-$(N)_IN2_Signal"
+msgstr "$(P)$(H)Also-$(N)IN2:Signal"

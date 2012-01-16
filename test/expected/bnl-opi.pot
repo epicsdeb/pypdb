@@ -1,0 +1,487 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n" 
+"X-Poedit-Basepath: input\n"
+"X-Poedit-SearchPath-0: input\n"
+
+#. pv_name
+#: cameraview.opi:89
+msgid "$(I)ArrayData"
+msgstr ""
+
+#. pv
+#: cameraview.opi:104
+#: cameraview.opi:116
+msgid "$(I)ArraySize0_RBV"
+msgstr ""
+
+#. pv
+#: cameraview.opi:110
+#: cameraview.opi:122
+msgid "$(I)ArraySize1_RBV"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:3983
+msgid "$(P)BW:Amp-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:2633
+#: drfm-main.opi:2722
+msgid "$(P)BW:Amp-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4025
+msgid "$(P)BW:Pha-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:2676
+#: drfm-main.opi:2769
+msgid "$(P)BW:Pha-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4881
+msgid "$(P)Cnt:FW-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4647
+msgid "$(P)Cnt:Rx-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4803
+msgid "$(P)Cnt:Tx-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:5044
+msgid "$(P)Commit-Cmd"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:5139
+msgid "$(P)Connect-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:5087
+msgid "$(P)Connect-Sel"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4962
+#: drfm-main.opi:5005
+#: drfm-main.opi:6534
+#: drfm-main.opi:6577
+#: drfm-main.opi:6752
+msgid "$(P)Connect-Sts"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:5615
+msgid "$(P)Drv:Amp-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:5859
+#: drfm-main.opi:6019
+#: drfm-main.opi:6133
+#: drfm-main.opi:6219
+msgid "$(P)Drv:AmpCtrl-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:495
+msgid "$(P)Drv:AmpMean-I"
+msgstr ""
+
+#. trace_1_y_pv
+#: drfm-main.opi:5613
+msgid "$(P)Drv:Pha-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:5812
+#: drfm-main.opi:5939
+#: drfm-main.opi:6176
+#: drfm-main.opi:6262
+msgid "$(P)Drv:PhaCtrl-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:538
+msgid "$(P)Drv:PhaMean-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:6377
+msgid "$(P)Ena:FB-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:6339
+#: drfm-main.opi:6454
+msgid "$(P)Ena:FB-Sts"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:896
+#: drfm-main.opi:1031
+#: drfm-main.opi:1467
+#: drfm-main.opi:6623
+#: drfm-main.opi:6709
+#: drfm-main.opi:6795
+msgid "$(P)Err-Sts"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:5290
+msgid "$(P)Field:Amp-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:6943
+#: drfm-main.opi:6990
+#: drfm-main.opi:7231
+#: drfm-main.opi:7317
+msgid "$(P)Field:AmpCtrl-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:409
+msgid "$(P)Field:AmpMean-I"
+msgstr ""
+
+#. trace_1_y_pv
+#: drfm-main.opi:5288
+msgid "$(P)Field:Pha-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:7070
+#: drfm-main.opi:7117
+#: drfm-main.opi:7274
+#: drfm-main.opi:7360
+msgid "$(P)Field:PhaCtrl-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:452
+msgid "$(P)Field:PhaMean-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:7761
+msgid "$(P)Gain:Amp-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:7623
+#: drfm-main.opi:7670
+msgid "$(P)Gain:Amp-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:7803
+msgid "$(P)Gain:Pha-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:7473
+#: drfm-main.opi:7717
+msgid "$(P)Gain:Pha-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:988
+#: drfm-main.opi:1074
+#: drfm-main.opi:1510
+msgid "$(P)IntrLock-Sts"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4067
+msgid "$(P)Lim:FB-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:2813
+#: drfm-main.opi:2859
+msgid "$(P)Lim:FB-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4109
+msgid "$(P)LoopDly-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:2903
+#: drfm-main.opi:2949
+msgid "$(P)LoopDly-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:1921
+#: drfm-main.opi:2556
+msgid "$(P)MO:Amp-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:2376
+#: drfm-main.opi:2422
+msgid "$(P)MO:AmpH-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:2466
+#: drfm-main.opi:2512
+msgid "$(P)MO:AmpL-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:2111
+#: drfm-main.opi:2153
+msgid "$(P)MO:Pha-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:6666
+msgid "$(P)Message-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4151
+msgid "$(P)Probe:AmpThres-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:2993
+#: drfm-main.opi:3039
+msgid "$(P)Probe:AmpThres-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4193
+msgid "$(P)Probe:CalPha-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:3083
+#: drfm-main.opi:3129
+msgid "$(P)Probe:CalPha-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:1805
+msgid "$(P)Rst-Cmd"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4235
+msgid "$(P)RunLen-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:3173
+#: drfm-main.opi:3219
+msgid "$(P)RunLen-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:942
+#: drfm-main.opi:1160
+#: drfm-main.opi:1596
+msgid "$(P)Stab:Amp-Sts"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4277
+msgid "$(P)Stab:AmpH-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:3263
+#: drfm-main.opi:3309
+msgid "$(P)Stab:AmpH-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4319
+msgid "$(P)Stab:AmpL-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:3353
+#: drfm-main.opi:3399
+msgid "$(P)Stab:AmpL-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4361
+msgid "$(P)Stab:Dly-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:3443
+#: drfm-main.opi:3489
+msgid "$(P)Stab:Dly-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4403
+msgid "$(P)Stab:Max-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:3533
+#: drfm-main.opi:3579
+msgid "$(P)Stab:Max-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:758
+#: drfm-main.opi:1203
+#: drfm-main.opi:1639
+msgid "$(P)Stab:Pha-Sts"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4445
+msgid "$(P)Stab:PhaH-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:3623
+#: drfm-main.opi:3669
+msgid "$(P)Stab:PhaH-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4487
+msgid "$(P)Stab:PhaL-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:3713
+#: drfm-main.opi:3759
+msgid "$(P)Stab:PhaL-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:1997
+msgid "$(P)T-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:1338
+#: drfm-main.opi:1381
+#: drfm-main.opi:1725
+msgid "$(P)T:Err-Sts"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:2196
+#: drfm-main.opi:2242
+msgid "$(P)T:Lim-SP"
+msgstr ""
+
+#. trace_0_x_pv
+#. trace_1_x_pv
+#: drfm-main.opi:5251
+#: drfm-main.opi:5259
+#: drfm-main.opi:5576
+#: drfm-main.opi:5584
+msgid "$(P)T:Scope-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:2286
+#: drfm-main.opi:2332
+msgid "$(P)T:Warn-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:1292
+#: drfm-main.opi:1424
+#: drfm-main.opi:1768
+msgid "$(P)T:Warn-Sts"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4725
+msgid "$(P)Time:Cycle-I"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4529
+msgid "$(P)Time:Fill-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:3803
+#: drfm-main.opi:3849
+msgid "$(P)Time:Fill-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:4571
+msgid "$(P)Trig:Dly-RB"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:3893
+#: drfm-main.opi:3939
+msgid "$(P)Trig:Dly-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:804
+#: drfm-main.opi:1117
+#: drfm-main.opi:1553
+msgid "$(P)Trip:MO-Sts"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:850
+#: drfm-main.opi:1246
+#: drfm-main.opi:1682
+msgid "$(P)Trip:MOClk-Sts"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:162
+#: drfm-main.opi:206
+msgid "$(P)Window:Start-SP"
+msgstr ""
+
+#. pv_name
+#: drfm-main.opi:322
+#: drfm-main.opi:366
+msgid "$(P)Window:Width-SP"
+msgstr ""
+
+#. pv
+#: cameraview.opi:128
+msgid "$(S)MaxValue_RBV"
+msgstr ""
+
+#. pv_name
+#. trace_0_y_pv
+#: drfm-main.opi:1832
+#: drfm-main.opi:5252
+#: drfm-main.opi:5577
+msgid "$(pv_name)"
+msgstr ""
+

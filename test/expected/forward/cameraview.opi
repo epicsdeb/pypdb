@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+  </macros>
+  <scripts />
+  <show_ruler>true</show_ruler>
+  <height>500</height>
+  <name />
+  <snap_to_geometry>true</snap_to_geometry>
+  <show_grid>true</show_grid>
+  <background_color>
+    <color name="GlobalBG" />
+  </background_color>
+  <foreground_color>
+    <color red="192" green="192" blue="192" />
+  </foreground_color>
+  <widget_type>Display</widget_type>
+  <show_close_button>true</show_close_button>
+  <width>900</width>
+  <rules />
+  <show_edit_range>true</show_edit_range>
+  <grid_space>6</grid_space>
+  <actions hook="false" />
+  <y>-1</y>
+  <x>-1</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.intensityGraph" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <y_axis_scale_font>
+      <opifont.name>Default</opifont.name>
+    </y_axis_scale_font>
+    <visible>true</visible>
+    <x_axis_axis_title>X Axis</x_axis_axis_title>
+    <scripts />
+    <height>367</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <y_axis_maximum>100.0</y_axis_maximum>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Intensity Graph</widget_type>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>541</width>
+    <color_map>
+      <interpolate>true</interpolate>
+      <autoscale>true</autoscale>
+      <map>2</map>
+    </color_map>
+    <border_style>0</border_style>
+    <vertical_profile_y_pv_name />
+    <x_axis_minimum>0.0</x_axis_minimum>
+    <x_axis_show_minor_ticks>true</x_axis_show_minor_ticks>
+    <crop_bottom>0</crop_bottom>
+    <maximum>4096.0</maximum>
+    <border_width>1</border_width>
+    <x_axis_title_font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </x_axis_title_font>
+    <x_axis_maximum>100.0</x_axis_maximum>
+    <crop_right>0</crop_right>
+    <y_axis_visible>true</y_axis_visible>
+    <crop_left>0</crop_left>
+    <graph_area_width>444</graph_area_width>
+    <minimum>0.0</minimum>
+    <data_height>0</data_height>
+    <y_axis_axis_title>Y Axis</y_axis_axis_title>
+    <y_axis_major_tick_step_hint>50</y_axis_major_tick_step_hint>
+    <x_axis_axis_color>
+      <color red="0" green="0" blue="0" />
+    </x_axis_axis_color>
+    <y_axis_title_font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </y_axis_title_font>
+    <x_axis_visible>true</x_axis_visible>
+    <name>Intensity Graph</name>
+    <x_axis_scale_font>
+      <opifont.name>Default</opifont.name>
+    </x_axis_scale_font>
+    <y_axis_axis_color>
+      <color red="0" green="0" blue="0" />
+    </y_axis_axis_color>
+    <data_width>0</data_width>
+    <vertical_profile_x_pv_name />
+    <y_axis_show_minor_ticks>true</y_axis_show_minor_ticks>
+    <pv_name>$(I)ImageData-I</pv_name>
+    <y_axis_minimum>0.0</y_axis_minimum>
+    <horizon_profile_y_pv_name />
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <horizon_profile_x_pv_name />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <crop_top>0</crop_top>
+    <graph_area_height>328</graph_area_height>
+    <rules>
+      <rule name="Image Width" prop_id="data_width" out_exp="true">
+        <exp bool_exp="1">
+          <value>pvInt0</value>
+        </exp>
+        <pv trig="true">$(I)ImageWidth-I</pv>
+      </rule>
+      <rule name="Image Height" prop_id="data_height" out_exp="true">
+        <exp bool_exp="1">
+          <value>pvInt0</value>
+        </exp>
+        <pv trig="true">$(I)ImageHeight-I</pv>
+      </rule>
+      <rule name="X scale" prop_id="x_axis_maximum" out_exp="true">
+        <exp bool_exp="1">
+          <value>pvInt0</value>
+        </exp>
+        <pv trig="true">$(I)ImageWidth-I</pv>
+      </rule>
+      <rule name="Y scale" prop_id="y_axis_maximum" out_exp="true">
+        <exp bool_exp="1">
+          <value>pvInt0</value>
+        </exp>
+        <pv trig="true">$(I)ImageHeight-I</pv>
+      </rule>
+      <rule name="Auto scale" prop_id="maximum" out_exp="true">
+        <exp bool_exp="pvInt0&gt;0 &amp;&amp; pvInt1!=0">
+          <value>pvInt0</value>
+        </exp>
+        <pv trig="true">$(S)MaxValue_RBV</pv>
+        <pv trig="true">loc://colorauto$(DID)</pv>
+      </rule>
+    </rules>
+    <x_axis_major_tick_step_hint>50</x_axis_major_tick_step_hint>
+    <show_ramp>true</show_ramp>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>6</y>
+    <actions hook="false" />
+    <x>6</x>
+    <tooltip>$(pv_name)</tooltip>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+    <group_name />
+    <enabled>true</enabled>
+    <widget_type>Linking Container</widget_type>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>322</width>
+    <border_style>12</border_style>
+    <auto_size>false</auto_size>
+    <rules />
+    <scripts />
+    <zoom_to_fit>true</zoom_to_fit>
+    <height>136</height>
+    <border_width>1</border_width>
+    <name>Statistics</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>30</y>
+    <actions hook="false" />
+    <opi_file>_camerastats.opi</opi_file>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>558</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+    <group_name />
+    <enabled>true</enabled>
+    <widget_type>Linking Container</widget_type>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>653</width>
+    <border_style>3</border_style>
+    <auto_size>true</auto_size>
+    <rules />
+    <scripts />
+    <zoom_to_fit>true</zoom_to_fit>
+    <height>190</height>
+    <border_width>1</border_width>
+    <name>Linking Container_1</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>378</y>
+    <actions hook="false" />
+    <opi_file>_cameracontrol.opi</opi_file>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>6</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+    <group_name />
+    <enabled>true</enabled>
+    <widget_type>Linking Container</widget_type>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>320</width>
+    <border_style>12</border_style>
+    <auto_size>false</auto_size>
+    <rules />
+    <scripts />
+    <zoom_to_fit>true</zoom_to_fit>
+    <height>169</height>
+    <border_width>1</border_width>
+    <name>Region of Interest</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" />
+    <opi_file>_cameraroi.opi</opi_file>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>558</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+    <group_name />
+    <enabled>true</enabled>
+    <widget_type>Linking Container</widget_type>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>142</width>
+    <border_style>12</border_style>
+    <auto_size>false</auto_size>
+    <rules />
+    <scripts />
+    <zoom_to_fit>true</zoom_to_fit>
+    <height>141</height>
+    <border_width>1</border_width>
+    <name>Device Control</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>348</y>
+    <actions hook="false" />
+    <opi_file>_araviscontrol.opi</opi_file>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>736</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <password />
+    <scripts />
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <height>23</height>
+    <show_led>true</show_led>
+    <data_type>0</data_type>
+    <show_boolean_label>false</show_boolean_label>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Boolean Button</name>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <pv_name>loc://colorauto$(DID)</pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <off_label>OFF</off_label>
+    <released_action_index>0</released_action_index>
+    <widget_type>Boolean Button</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>40</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <confirm_message>Are your sure you want to do this?</confirm_message>
+    <effect_3d>true</effect_3d>
+    <rules />
+    <bit>-1</bit>
+    <toggle_button>true</toggle_button>
+    <show_confirm_dialog>false</show_confirm_dialog>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <square_button>true</square_button>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>6</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>558</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>23</height>
+    <name>Label</name>
+    <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Autoscale Color</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>85</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>6</y>
+    <wrap_words>true</wrap_words>
+    <tooltip />
+    <x>600</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>24</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Expert</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>80</width>
+    <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
+    <image />
+    <rules />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>0</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>AD/ADBase.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>${BASE}</P>
+          <R>cam1:</R>
+        </macros>
+        <replace>0</replace>
+        <description />
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>786</x>
+  </widget>
+</display>

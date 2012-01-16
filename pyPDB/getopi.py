@@ -39,10 +39,10 @@ bodypatpvs=map(re.compile, bodypatpvs)
 
 class tagger(object):
     def __init__(self, db):
-        self.stack=[]
         self.db=db
         self.parser=None
         self.fname='<unknown>'
+        self.cdata=''
 
     def getLoc(self):
         return '%s:%d'%(self.fname, self.parser.CurrentLineNumber)
@@ -66,10 +66,19 @@ class tagger(object):
         return ent
 
     def start_element(self, name, attrs):
-        self.stack.append(name)
+        pass
     
     def char_data(self, data):
-        tag=self.stack[-1]
+        self.cdata+=data
+        # pyexpact sometimes delivers charactor data in pieces
+
+    def end_element(self, tag):
+        
+        data, self.cdata = self.cdata.strip(), ''
+
+        if len(data)==0:
+            return
+
         ent=None
 
         if tag in bodypvs:
@@ -86,8 +95,6 @@ class tagger(object):
                 ent.comExt.append(tag)
 
 
-    def end_element(self, name):
-        self.stack.pop()
 
 def main(opts,args,out):
     entries={}

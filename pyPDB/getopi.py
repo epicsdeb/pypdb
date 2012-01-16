@@ -106,7 +106,7 @@ def main(opts,args,out):
             T.fname = fname
 
             fullname=findFile(fname, path=opts.include) 
-            print fullname
+
             fd=open(fullname, 'rU')
             p.ParseFile(fd)
             fd.close()

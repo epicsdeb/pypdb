@@ -99,9 +99,7 @@ def main(opts,args,out):
                     ent.comExt.append(M.group(1))
     
                 ent.refs.append('%s:%d'%(fname,ln))
-    
-            print fname,ln,pvs
-    
+
         fd.close()
     
     return entries

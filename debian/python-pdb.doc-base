@@ -7,4 +7,4 @@ Abstract: This manual describes the usage of the getpvs and applypvs
 Section: Text
 
 Format: PDF
-Files: /usr/share/doc/python-pdb/getpvs-manual.pdf
+Files: /usr/share/doc/python-pdb/getpvs-manual.pdf.gz

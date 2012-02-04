@@ -6,3 +6,7 @@
 override_dh_auto_build:
 	dh_auto_build
 	lyx -e pdf2 documentation/getpvs-manual.lyx
+
+override_dh_auto_clean:
+	rm -f documentation/getpvs-manual.pdf
+	dh_auto_clean

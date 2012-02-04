@@ -1,5 +1,5 @@
 Source: pypdb
-Section: text
+Section: python
 Priority: extra
 Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
 Build-Depends: debhelper (>= 7.0.50~),

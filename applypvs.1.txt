@@ -1,0 +1,47 @@
+APPLYPVS(1)
+===========
+:doctype: manpage
+
+NAME
+----
+applypvs - Apply PO translation to input files
+
+DESCRIPTION
+-----------
+Searches input for strings matching the provided PO translation
+file.  Does a format sensitive replacement depending on the
+mode selected.
+
+OPTIONS
+-------
+
+*-h, --help*::
+  show this help message and exit
+
+*-i, --po*=FILE::
+  Translation file(s) to apply
+
+*-o, --output*=DIR::
+  Location to write output files
+
+*-F, --flat*::
+  Don't preserve directory structure in output
+
+*-R, --reverse*::
+  Apply reverse translation
+
+*-m, --mode*=NAME::
+  Replacement mode (db, edl, opi, xml, proto, alias)
+
+
+
+AUTHOR
+------
+Michael Davidsaver
+
+COPYING
+-------
+Copyright 2012 Michael Davidsaver
+
+This software may be used according to the terms of the
+GNU General Public License (GPL) version 2.

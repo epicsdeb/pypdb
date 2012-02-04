@@ -1,0 +1,44 @@
+GETPVS(1)
+===========
+:doctype: manpage
+
+NAME
+----
+getpvs - Gather names to create a PO template
+
+DESCRIPTION
+-----------
+Process the given input files to collect translatable
+names.
+
+OPTIONS
+-------
+
+*-h, --help*::
+ show this help message and exit
+
+*-I*PATH::
+ Add to search path
+
+*-o, --output*=FILE::
+ Output file
+
+*-M, --merge-duplicates*::
+
+ When encountering records with duplicate names treat
+ them as one record
+
+*-m, --mode*=NAME::
+ Replacement mode (db, edl, opi)
+
+
+AUTHOR
+------
+Michael Davidsaver
+
+COPYING
+-------
+Copyright 2012 Michael Davidsaver
+
+This software may be used according to the terms of the
+GNU General Public License (GPL) version 2.

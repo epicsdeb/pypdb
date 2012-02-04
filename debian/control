@@ -2,8 +2,8 @@ Source: pypdb
 Section: python
 Priority: extra
 Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
-Build-Depends: debhelper (>= 7.0.50~),
-               python-all-dev, python-all-dbg,
+Build-Depends: debhelper (>= 8.0.0),
+               python-all, python-all-dbg,
                python-pyparsing (>= 1.5.2),
                lyx, asciidoc,
 Standards-Version: 3.9.0

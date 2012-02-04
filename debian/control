@@ -1,0 +1,22 @@
+Source: pypdb
+Section: text
+Priority: extra
+Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
+Build-Depends: debhelper (>= 7.0.50~),
+               python-all-dev, python-all-dbg,
+               python-pyparsing (>= 1.5.2),
+               lyx,
+Standards-Version: 3.9.0
+XS-Python-Version: >= 2.6
+Homepage: http://epics.nsls2.bnl.gov/debian
+Vcs-Git: http://epics.nsls2.bnl.gov/git/src/pypdb.git
+
+Package: python-pdb
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}
+Recommends: ${python:Recommends}
+Suggests: ${python:Suggests}
+Description: Tools to translate names in epics files
+ Tools to "translate" (apply naming conventons) to common
+ EPICS file formats.  Includes process database and operator
+ interface files.

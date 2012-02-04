@@ -1,0 +1,10 @@
+Document: pypdb-user
+Title: getpvs/applypvs Manual
+Author: Michael Davidsaver
+Abstract: This manual describes the usage of the getpvs and applypvs
+ utilities included in the pyPDB package. These tools provide a way
+ to generate and apply translations in the GNU Gettext PO format.
+Section: Text
+
+Format: PDF
+Files: /usr/share/doc/python-pdb/getpvs-manual.pdf

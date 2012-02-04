@@ -5,11 +5,11 @@
 
 override_dh_auto_build:
 	dh_auto_build -- --force
-	lyx -e pdf2 documentation/getpvs-manual.lyx
+	#lyx -e pdf2 documentation/getpvs-manual.lyx
 	a2x -f manpage applypvs.1.txt
 	a2x -f manpage getpvs.1.txt
 
 override_dh_auto_clean:
-	rm -f documentation/getpvs-manual.pdf
+	#rm -f documentation/getpvs-manual.pdf
 	rm -f applypvs.1 getpvs.1
 	dh_auto_clean

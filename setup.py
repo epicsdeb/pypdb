@@ -20,7 +20,7 @@ setup(name='pyPDB',
                     'pyPDB.dbd.test',
                     'pyPDB.po',
                    ], 
-          scripts=['getpvs', 'getpvs-edl',  'applypvs'], 
+          scripts=['getpvs', 'applypvs'], 
           requires=
             ['pyparsing (>=1.5.2)'],
       )

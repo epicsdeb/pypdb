@@ -6,10 +6,10 @@ Build-Depends: debhelper (>= 8.0.0),
                python-all, python-all-dbg,
                python-pyparsing (>= 1.5.2),
                asciidoc, libxml2-utils, docbook-utils, xmlto,
-Standards-Version: 3.9.0
-XS-Python-Version: >= 2.6
-Homepage: http://epics.nsls2.bnl.gov/debian
-Vcs-Git: http://epics.nsls2.bnl.gov/git/src/pypdb.git
+Standards-Version: 3.9.4
+XS-Python-Version: >= 2.6, << 3.0
+Homepage: https://github.com/epicsdeb/pypdb
+Vcs-Git: https://github.com/epicsdeb/pypdb.git
 
 Package: python-pdb
 Architecture: all

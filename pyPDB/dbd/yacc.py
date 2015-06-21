@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-DB/DBD parser
+Copyright (c) 2015 Michael Davidsaver
+pyPDB is distributed subject to a Software License Agreement found
+in file LICENSE that is included with this distribution.
+
+DB/DBD file parser
 """
 
 import logging

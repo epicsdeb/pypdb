@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """
+Copyright (c) 2015 Michael Davidsaver
 Copyright (c) 2012 Brookhaven Science Associates, as Operator of
     Brookhaven National Laboratory.
 pyPDB is distributed subject to a Software License Agreement found

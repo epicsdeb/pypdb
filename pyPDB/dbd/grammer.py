@@ -120,7 +120,7 @@ RecordFieldHead = FIELD.setResultsName('what') - LPAREN + \
 
 recattrs = oneOf(['prompt', 'initial', 'extra',
                   'asl','promptgroup','special','pp',
-                  'interest','base','size','menu'])
+                  'interest','base','size','menu','prop'])
 
 RecordFieldAttr = recattrs - LPAREN + (QuotedString('"',escChar='\\')|Word(alphanums+'_')) + RPAREN
 
@@ -174,8 +174,9 @@ Registrar = Keyword('registrar') - LPAREN + \
             Word(alphanums+'_').setResultsName('name') + RPAREN
 
 Variable = Keyword("variable").setResultsName('what') - LPAREN + \
-           Word(alphanums+'_').setResultsName('name') + COMMA + \
-           Word(alphanums+'_').setResultsName('ctype') + RPAREN
+           Word(alphanums+'_').setResultsName('name') + \
+           Optional(COMMA + Word(alphanums+'_').setResultsName('ctype')) \
+           + RPAREN
 
 Device = Keyword("device").setResultsName('what') - LPAREN + \
          Word(alphanums+'_').setResultsName('rec') + COMMA + \

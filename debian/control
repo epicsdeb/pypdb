@@ -5,6 +5,7 @@ Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
 Build-Depends: debhelper (>= 8.0.0),
                python-all, python-all-dbg,
                python-ply (>= 3.4~),
+               lyx (>= 2.1~),
                asciidoc, libxml2-utils, docbook-utils, xmlto,
 Standards-Version: 3.9.4
 XS-Python-Version: >= 2.7

@@ -8,7 +8,6 @@ in file LICENSE that is included with this distribution.
 """
 
 from optparse import OptionParser
-from collections import defaultdict
 
 from pyPDB.dbd.expand import loadDBD
 from pyPDB.dbd.show import showDBD
@@ -32,7 +31,7 @@ dbd=[]
 #from dbd import grammer
 #grammer.Record.setDebug(True)
 
-pcache=defaultdict(dict)
+pcache={}
 
 for inp in args:
     dbd+=loadDBD(inp, path=opts.include, cache=pcache)

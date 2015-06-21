@@ -7,10 +7,11 @@ in file LICENSE that is included with this distribution.
 """
 
 from warnings import warn
-from collections import defaultdict
     
 from pyPDB.po import POEnt
 from pyPDB.dbd.expand import loadDBD, DBD
+
+from .dbd.ast import Block
 
 linktypes = ['DBF_INLINK', 'DBF_OUTLINK', 'DBF_FWDLINK']
 infofields = ['EGU', 'DESC']
@@ -19,7 +20,7 @@ def main(opts,args,out):
     
     pdb=[]
     
-    pcache=defaultdict(dict)
+    pcache={}
     
     for inp in args:
         pdb+=loadDBD(inp, path=opts.include, cache=pcache)
@@ -53,42 +54,44 @@ def main(opts,args,out):
         I=pdb.records.itervalues()
     
     for rec in I:
-        #print rec,flds[0],
     
         try:
-            ent = entries[rec.name]
+            ent = entries[rec.args[1]]
         except KeyError:
-            ent = POEnt(rec.name)
-            entries[rec.name] = ent
+            ent = POEnt(rec.args[1])
+            entries[rec.args[1]] = ent
     
         # prepend definition(s)
-        ent.comExt.insert(0, 'recordtype: %s'%rec.rec)
-        ent.refs.insert(0, '%s:%d'%(rec.name.file, rec.name.lineno))
+        ent.comExt.insert(0, 'recordtype: %s'%rec.args[0])
+        ent.refs.insert(0, '%s:%d'%(rec.fname, rec.lineno))
     
-        rtype=pdb.recordtypes.get(rec.rec, None)
+        rtype=pdb.recordtypes.get(rec.args[0], None)
         if rtype is None:
-            warn("%s : Skipping unknown recordtype '%s'"%(rec.name,rec.rec))
+            warn("%s : Skipping unknown recordtype '%s'"%(rec.name,rec.args[0]))
             continue
     
         interesting=recflds.get(rtype,  None)
         if interesting is None:
             interesting=[]
-            for rf in rtype.fields:
-                if rf.dbf in linktypes:
-                    interesting.append(rf.name)
+            for rf in rtype.body:
+                if not isinstance(rf, Block) or rf.name!='field':
+                    continue
+                if rf.args[1] in linktypes:
+                    interesting.append(rf.args[0])
             recflds[rtype]=interesting
     
-        for fld in rec.fields:
-            if fld.name in interesting:
-                #print fld.name,
+        for fld in rec.body:
+            if not isinstance(fld, Block) or fld.name!='field':
+                continue
+            if fld.args[0] in interesting:
                 try:
-                    float(fld.value)
+                    float(fld.args[1])
                     # Constant link
                     continue
                 except ValueError:
                     pass
                 
-                val=cleanLink(fld.value)
+                val=cleanLink(fld.args[1])
     
                 if len(val)==0 or val[0]=='@':
                     continue
@@ -99,7 +102,7 @@ def main(opts,args,out):
                     valent=POEnt(val)
                     entries[val] = valent
                 
-                valent.refs.append('%s:%d'%(fld.value.file, fld.value.lineno))
+                valent.refs.append('%s:%d'%(fld.fname, fld.lineno))
      
             if fld.name in infofields:
                 ent.comExt.append('%s: %s'% \

@@ -9,76 +9,42 @@ in file LICENSE that is included with this distribution.
 import warnings
 import sys
 
-def showDBD(dbd, fd=sys.stdout):
+from .ast import Block, Command, Comment, Code, quote
+
+def showDBD(dbd, fd=sys.stdout, indent=''):
     for ent in dbd:
-        t=ent.what
-        if t=='include':
-            print >>fd,'include "%s"'%ent.name
+        if isinstance(ent, Command):
+            A = ent.arg
+            if ent.argquote:
+                A = quote(A)
+            print >>fd,'%s%s %s'%(indent, ent.name, A)
 
-        elif t=='menu':
-            print >>fd,'menu(%s) {'%ent.name
-            for k,v in ent.choices.iteritems():
-                print >>fd,'    choice(%s,"%s")'%(k,v)
-            print >>fd,'}'
-
-        elif t=='record':
-            print >>fd,'record(%s,"%s") {'%(ent.rec, ent.name)
-            for f in ent.fields:
-                if f.what=='include':
-                    print >>fd,'    include "%s"'%f.name
-
-                elif f.what in ['field', 'info']:
-                    print >>fd,'    %s(%s, "%s")'%(f.what,f.name,f.value)
-
-                elif f.what=='alias':
-                    print >>fd,'    alias("%s")'%(f.name)
-
+        elif isinstance(ent, Block):
+            As = []
+            for A,Q in zip(ent.args, ent.argsquoted):
+                if Q:
+                    As.append(quote(A))
                 else:
-                    warnings.warn("Unknown entry '%s' in record %s"%\
-                                (f.what, ent.name))
+                    As.append(A)
 
-            print >>fd,'}'
+            print >>fd,"%s%s(%s)"%(indent, ent.name, ', '.join(As)),
 
-        elif t=='recordtype':
-            print >>fd,'recordtype(%s) {'%ent.name
-            for f in ent.fields:
-                if f.what=='include':
-                    print >>fd,'    include "%s"'%f.name
+            if ent.name=='breaktable':
+                print >>fd
 
-                elif f.what=='field':
-                    print >>fd,'\tfield(%s,%s) {'%(f.name,f.dbf)
+            elif ent.body is None:
+                print >>fd
 
-                    for k,v in f.attrs.iteritems():
-                        if k in ['prompt', 'initial', 'extra']:
-                            print >>fd,'\t\t%s("%s")'%(k,v)
-                        else:
-                            print >>fd,'\t\t%s(%s)'%(k,v)
+            else:
+                print >>fd,"%s{"%indent
+                showDBD(ent.body, fd, indent+'  ')
+                print >>fd,"%s}"%indent
 
-                    print >>fd,'\t}'
+        elif isinstance(ent, Comment):
+            print >>fd,"%s#%s"%(indent, ent.value)
 
-                elif f.what=='CCode':
-                    print >>fd,'    %%%s'%f.code
-
-                else:
-                    warnings.warn("Unknown entry '%s' in recordtype %s"%\
-                                (f.what, ent.name))
-            print >>fd,'}'
-
-        elif t=='breaktable':
-            print >>fd, 'breaktable(%s) {' % ent.name
-            for E in ent.table:
-                print >>fd, '    %.06f %.06f'%tuple(E)
-            print >>fd, "}"
-
-        elif t=='device':
-            print >>fd,'device(%s,%s,%s,"%s")' % (ent.rec, ent.link, ent.name, ent.dtyp)
-
-        elif t=='variable':
-            print >>fd,'variable(%s,%s)' % (ent.name,ent.ctype)
-
-        elif t=='registrar':
-            print >>fd,'registrar(%s)' % ent.name
+        elif isinstance(ent, Code):
+            print >>fd,"%s%%%s"%(indent, ent.value)
 
         else:
-            warnings.warn("Unknown entry '%s'"%\
-                        (ent.what))
+            warnings.warn("Unknown entry '%s' (%s)"%(ent,type(ent)))

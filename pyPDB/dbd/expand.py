@@ -8,12 +8,13 @@ in file LICENSE that is included with this distribution.
 
 import sys
 import warnings
+from copy import copy
 
-from pyparsing import ParseBaseException
 from collections import defaultdict
 from StringIO import StringIO
 
-import grammer
+from .yacc import parse
+from .ast import Command, Block, Comment, Code
 
 class RecursiveError(RuntimeError):
     pass
@@ -53,7 +54,7 @@ def findFile(name, path=['.'], env=None, all=False, sep=':'):
     else:
         raise IOError(name+" not in path")
 
-def loadEntry(name, entry, path=['.'], skip=[], cache=None):
+def loadEntry(name, path=['.'], skip=[], cache=None):
     from os.path import realpath
     f=realpath( findFile(name, path, env='DBDPATH') )
     if f in skip:
@@ -61,25 +62,22 @@ def loadEntry(name, entry, path=['.'], skip=[], cache=None):
     skip.append(f)
 
     try:
-        return cache[entry][f]
+        return cache[f]
     except KeyError:
         pass
 
     try:
-        dbd=entry.parseFile(f)
+        with open(f,'r') as F:
+            dbd = parse(F.read(), file=name)
 
         out=[]
-        while len(dbd)>0:
-            ent=dbd.pop(0)
+        for ent in dbd:
+            if isinstance(ent, Command) and ent.name=='include':
+                R=loadEntry(ent.arg, path=path, skip=skip)
+                out+=R
 
-            if ent.what=='include':
-                R=loadEntry(ent.name, entry, path=path, skip=skip)
-                out+=R                        
-
-            elif ent.what=='field' and 'value' in ent:
-                # instance field
-                ent.value.file=name
-                out.append(ent)
+            elif isinstance(ent, int):
+                raise RuntimeError('foo: '+name)
             else:
                 out.append(ent)
 
@@ -90,14 +88,9 @@ def loadEntry(name, entry, path=['.'], skip=[], cache=None):
         next=RecursiveError('%s\nFrom %s'%(e,f))
         raise RecursiveError, next, tb
 
-    except ParseBaseException,e:
-        _, _, tb = sys.exc_info()
-        next=RecursiveError('%s\nOn %d (col %d) of %s\n  %s\n  %s'% \
-                            (e, e.lineno, e.col, f, e.line, ('-'*(e.col-1)+'^')))
-        raise RecursiveError, next, tb
 
     skip.pop()
-    cache[entry][f]=dbd
+    cache[f]=dbd
     return dbd
 
 class _Result(object):
@@ -111,9 +104,11 @@ class _Result(object):
     #del __delitem__(self, key):
         #return delattr(self, self.__list[key])
 
-def loadDBD(name, path=['.'], skip=[], cache=defaultdict(dict)):
+def loadDBD(name, path=['.'], skip=[], cache=None):
     """Recursively read and parse database
     """
+    if cache is None:
+        cache = {}
     from os.path import realpath
     f=realpath( findFile(name, path, env='DBDPATH') )
     if f in skip:
@@ -121,62 +116,35 @@ def loadDBD(name, path=['.'], skip=[], cache=defaultdict(dict)):
     skip.append(f)
     
     try:
-        return cache[grammer.DBD][f]
+        return cache[f]
     except KeyError:
         pass
 
     try:
-        dbd=grammer.DBD.parseFile(f)
+        with open(f,'r') as F:
+            dbd = parse(F.read(), file=name)
 
         out=[]
-        while len(dbd)>0:
-            ent=dbd.pop(0)
+        for ent in dbd:
 
-            if ent.what=='include':
-                R=loadDBD(ent.name, path=path, skip=skip)
+            if isinstance(ent, Command) and ent.name=='include':
+                R=loadDBD(ent.arg, path=path, skip=skip)
                 out+=R
 
-            elif ent.what=='recordtype':
+            elif isinstance(ent, Block) and ent.body is not None:
                 nf=[]
-                for fld in ent.fields:
-                    if fld.what=='include':
-                        R=loadEntry(fld.name, grammer.RecordInclude,
+                for fld in ent.body:
+                    if isinstance(fld, Command) and fld.name=='include':
+                        R=loadEntry(fld.arg,
                                     path=path, skip=skip, cache=cache)
                         nf+=R
 
                     else:
                         nf.append(fld)
 
-                ent2=_Result('what','name','fields')
-                for n in ['what','name']:
-                    setattr(ent2, n, getattr(ent, n))
-                ent2.fields=nf
+                ent.body = nf
 
-                out.append(ent2)
-
-            elif ent.what=='record' or ent.what=='grecord':
-                nf=[]
-                ent.name.file=name
-                while len(ent.fields)>0:
-                    fld=ent.fields.pop(0)
-                    if fld.what=='include':
-                        R=loadEntry(fld.name, grammer.InstInclude,
-                                    path=path, skip=skip, cache=cache)
-                        nf+=R
-
-                    elif fld.what=='field':
-                        fld.value.file=name
-                        nf.append(fld)
-
-                    else:
-                        nf.append(fld)
-
-                ent2=_Result('what','rec','name','fields')
-                for n in ['what','rec','name']:
-                    setattr(ent2, n, getattr(ent, n))
-                ent2.fields=nf
-
-                out.append(ent2)
+                out.append(ent)
 
             else:
                 out.append(ent)
@@ -188,14 +156,9 @@ def loadDBD(name, path=['.'], skip=[], cache=defaultdict(dict)):
         next=RecursiveError('%s\nFrom %s'%(e,f))
         raise RecursiveError, next, tb
 
-    except ParseBaseException,e:
-        _, _, tb = sys.exc_info()
-        next=RecursiveError('%s\nOn %d (col %d) of %s\n  %s\n  %s'% \
-                            (e, e.lineno, e.col, f, e.line, ('-'*(e.col-1)+'^')))
-        raise RecursiveError, next, tb
 
     skip.pop()
-    cache[grammer.DBD][f]=dbd
+    cache[f]=dbd
     return dbd
 
 class DBD(object):
@@ -208,15 +171,20 @@ class DBD(object):
                         'grecord':self.records,
                         'recordtype':self.recordtypes}
         if dbd is not None:
+            print 'Load',len(dbd)
             self.load(dbd)
 
     def load(self, dbd):
         # group by type
         for ent in dbd:
-            d=self._dispatch.get(ent.what, None)
-            if d is None:
+            if not isinstance(ent, Block):
                 continue
-            d[ent.name].append(ent)
+            d=self._dispatch.get(ent.name, None)
+            if d is None:
+                if ent.name not in ['variable','device','registrar']:
+                    warnings.warn("Ignoring %s"%ent)
+                continue
+            d[ent.args[-1]].append(ent)
 
     def singular(self, type):
         """Enforce that entries of 'type' have unique names
@@ -229,7 +197,7 @@ class DBD(object):
                 print >>R,'\nDuplicate definitions for %s \'%s\''% \
                   (type,name)
                 for inst in ent:
-                    print >>R,'  %s:%d'%(inst.name.file, inst.name.lineno)
+                    print >>R,'  %s:%d'%(inst.fname, inst.lineno)
             n[name]=ent[0]
         R.seek(0)
         R=R.read()

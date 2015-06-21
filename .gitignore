@@ -5,3 +5,6 @@ MANIFEST
 build
 dist
 test/output
+
+*tab.py
+*.out

@@ -2,9 +2,22 @@
 """
 DB/DBD lexer
 """
+
+import logging
+_log = logging.getLogger(__name__)
+
+if __name__=='__main__':
+    logging.basicConfig(level=logging.DEBUG)
+
 from ply import lex
 
 from .ast import unescape, Comment, Code, DBSyntaxError
+
+try:
+    from . import lextab
+except:
+    _log.warn('Unable to load lextab')
+    lextab = None
 
 tokens = (
     'BARE',
@@ -52,5 +65,5 @@ def t_error(t):
     raise DBSyntaxError("illegal char '%s' on line %d"%(t.value, t.lexer.lineno))
 
 if __name__=='__main__':
-    lexer = lex.lex(debug=1, optimize=0)
+    lexer = lex.lex(debug=1, optimize=1, lextab=lextab, debuglog=_log)
     lex.runmain(lexer=lexer)

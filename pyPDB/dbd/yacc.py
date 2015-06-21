@@ -6,6 +6,15 @@ DB/DBD parser
 import logging
 _log = logging.getLogger(__name__)
 
+if __name__=='__main__':
+    logging.basicConfig(level=logging.DEBUG)
+
+try:
+    from . import parsetab
+except:
+    _log.warn('Unable to load parsetab')
+    parsetab = None
+
 from ply import yacc, lex
 
 from . import lex as lexmod
@@ -101,8 +110,8 @@ def p_error(t):
 if __name__=='__main__':
     logging.basicConfig(level=logging.DEBUG)
 
-_lexer = lex.lex(module=lexmod, debug=0, optimize=0, debuglog=_log)
-_parser = yacc.yacc(debug=0, write_tables=0, errorlog=_log, debuglog=_log)
+_lexer = lex.lex(module=lexmod, debug=0, optimize=0, debuglog=_log, lextab=lexmod.lextab)
+_parser = yacc.yacc(debug=0, write_tables=0, errorlog=_log, debuglog=_log, tabmodule=parsetab)
 
 def parse(txt, debug=0, file=None):
     L = _lexer.clone()

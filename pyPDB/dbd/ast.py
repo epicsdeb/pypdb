@@ -2,6 +2,14 @@
 
 import re
 
+class DBSyntaxError(RuntimeError):
+    def __init__(self, msg, fname=None, lineno=None):
+        RuntimeError.__init__(self, msg)
+        self.fname, self.lineno = fname, lineno
+    def __repr__(self):
+        return 'DBSyntaxError %s:%d : %s'%(self.fname, self.lineno, self.message)
+    __str__ = __repr__
+
 _unquote = {
     'n':'\n',
     'r':'\r',
@@ -34,14 +42,14 @@ class Comment(object):
         self.fname = None
         self.value, self.lineno = val, lineno
     def __repr__(self):
-        return 'Comment("%s")'%self.value
+        return 'Comment("%s")'%self.value[:20]
 
 class Code(object):
     def __init__(self, val, lineno=None):
         self.fname = None
         self.value, self.lineno = val, lineno
     def __repr__(self):
-        return 'Code("%s")'%self.value
+        return 'Code("%s")'%self.value[:20]
 
 class Block(object):
     __slots__ = ('fname', 'lineno', 'name', 'args', 'argsquoted', 'body')

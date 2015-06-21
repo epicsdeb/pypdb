@@ -22,8 +22,6 @@ parser.add_option('-m', '--mode', default="db", metavar="NAME",
 
 opts, args = parser.parse_args()
 
-#from dbd.grammer import DBD
-#DBD.setDebug(True)
 
 from pyPDB.po import writePO
 

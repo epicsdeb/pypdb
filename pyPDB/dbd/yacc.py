@@ -94,9 +94,9 @@ def p_arglist_empty(p):
 
 def p_error(t):
     if t is None:
-        raise RuntimeError("Syntax error at end of input")
+        raise ast.DBSyntaxError("Syntax error at end of input")
     else:
-        raise RuntimeError("Syntax error on line %d: %s"%(t.lexer.lineno, t.value[:10]))
+        raise ast.DBSyntaxError("Syntax error on line %d: %s"%(t.lexer.lineno, t.value))
 
 if __name__=='__main__':
     logging.basicConfig(level=logging.DEBUG)
@@ -107,7 +107,11 @@ _parser = yacc.yacc(debug=0, write_tables=0, errorlog=_log, debuglog=_log)
 def parse(txt, debug=0, file=None):
     L = _lexer.clone()
     L._file = file
-    return _parser.parse(txt, lexer=L, debug=debug)
+    try:
+        return _parser.parse(txt, lexer=L, debug=debug)
+    except ast.DBSyntaxError as e:
+        e.fname = file
+        raise
 
 if __name__=='__main__':
     import sys

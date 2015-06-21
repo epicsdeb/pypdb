@@ -4,7 +4,7 @@ DB/DBD lexer
 """
 from ply import lex
 
-from .ast import unescape, Comment, Code
+from .ast import unescape, Comment, Code, DBSyntaxError
 
 tokens = (
     'BARE',
@@ -46,10 +46,10 @@ def t_eol(t):
 
 def t_quoted_unterm(t):
     r'"(?:\\.|[^"])*\n'
-    raise RuntimeError('Missing closing quote on line %d'%t.lexer.lineno)
+    raise DBSyntaxError('Missing closing quote on line %d'%t.lexer.lineno)
 
 def t_error(t):
-    raise RuntimeError("illegal char '%s' on line %d"%(t.value, t.lexer.lineno))
+    raise DBSyntaxError("illegal char '%s' on line %d"%(t.value, t.lexer.lineno))
 
 if __name__=='__main__':
     lexer = lex.lex(debug=1, optimize=0)

@@ -11,7 +11,7 @@ import re, sys, os.path
 from warnings import warn
 from optparse import OptionParser
 
-from pyPDB.po.grammer import PO
+import re
 
 parser = OptionParser(usage='%prog [options] <-i file.po ...> <input.db | in.edl>')
 parser.add_option('-i', '--po', action='append', default=[],
@@ -34,21 +34,46 @@ mappings={}
 src={}
 
 def loadPO(file):
-    x=PO.parseFile(file)
+    with open(file, 'r') as F:
+        orig, sub = None, None
+        for L in F:
+            L = L.strip()
+            if not L:
+                orig, sub = None, None # reset on blank line
 
-    for orig, sub in x:
-        if len(orig.strip())==0 or len(sub.strip())==0:
-            continue
-        if orig in mappings:
-            if mappings[orig] != sub:
-                warn("Found duplicate definition of '%s'\nIn '%s'\nPrevious '%s'"% \
-                        (orig, file, src[orig]))
+            elif L.startswith('msgid'):
+                M = re.match(r'msgid\s+"(.*)"\s*', L)
+                assert M is not None, L
+                orig = M.group(1)
+                assert sub is None
+
+            elif L.startswith('msgstr'):
+                M = re.match(r'msgstr\s+"(.*)"\s*', L)
+                assert M is not None, L
+                sub = M.group(1)
+                assert orig is not None
+                if not sub:
+                    continue
+
+                if orig in mappings:
+                    if mappings[orig] != sub:
+                        warn("Found duplicate definition of '%s'\nIn '%s'\nPrevious '%s'"% \
+                                (orig, file, src[orig]))
+                    else:
+                        pass # duplicate, but idential
+
+                else: # new mapping
+                    mappings[orig]=sub
+                    src[orig]=file
+
+            elif L.startswith('#'):
+                pass
+
+            elif L.startswith('"'):
+                pass
+
             else:
-                pass # duplicate, but idential
-
-        else: # new mapping
-            mappings[orig]=sub
-            src[orig]=file
+                raise RuntimeError('Unknown line: '+repr(L))
 
 for po in opts.po:
     loadPO(po)
@@ -87,7 +112,7 @@ if opts.mode in ['db', 'edl']:
         # look behind for beginning of line or a non-name charactor
         # look ahead for end of line or a non-name charactor
 
-	# Records names look like
+        # Records names look like
         #  record(type, "name")
         #  field(INPA, "name.VAL EXTRA")
         #  field(INPA, name.VAL)

@@ -40,10 +40,10 @@ def writePO(fd, ents, header={}):
     """
     
     header.setdefault('time',time.strftime('%F %H:%M%z'))
-    header.setdefault('projid','')
+    header.setdefault('projid','placeholder 0.0')
     header.setdefault('lasttr','')
     header.setdefault('team','')
-    header.setdefault('lang','')
+    header.setdefault('lang','xxx')
     
     print >>fd,"""msgid ""
 msgstr ""
@@ -55,7 +55,8 @@ msgstr ""
 "Language: %(lang)s\\n"
 "MIME-Version: 1.0\\n"
 "Content-Type: text/plain; charset=iso-8859-1\\n"
-"Content-Transfer-Encoding: 8bit\\n" """ % header
+"Content-Transfer-Encoding: 8bit\\n"
+"X-Generator: pyPDB\\n" """ % header
     
     path=header.get('path',[])
     if len(path)>0:

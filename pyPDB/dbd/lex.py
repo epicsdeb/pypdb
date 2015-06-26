@@ -25,7 +25,7 @@ states = (
 
 literals = (',', '{', '}', '(', ')', '=')
 
-t_ignore = ' \t'
+t_ignore = ' \t\r'
 
 t_macro_ignore = '' # don't ignore whitespace
 

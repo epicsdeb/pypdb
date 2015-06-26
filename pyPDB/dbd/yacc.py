@@ -87,10 +87,14 @@ def p_block_body(p):
     p[0] = ast.Block(p[1], Vs, Qs, body=p[6], lineno=p.lineno(1))
 
 def p_command(p):
-    '''command : BARE value
+    '''command : BARE BARE
     '''
-    V, Q = p[2]
-    p[0] = ast.Command(p[1], V, Q, p.lineno(1))
+    p[0] = ast.Command(p[1], p[2], False, p.lineno(1))
+
+def p_commandQ(p):
+    '''command : BARE QUOTED
+    '''
+    p[0] = ast.Command(p[1], p[2], True, p.lineno(1))
 
 def p_arglist_one(p):
     '''arglist : value

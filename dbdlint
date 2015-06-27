@@ -5,7 +5,7 @@ import sys, logging
 from pyPDB.dbdlint import getargs, main
 
 A = getargs()
-H = logging.StreamHandler(sys.stdout)
+H = logging.StreamHandler(sys.stderr)
 H.setFormatter(logging.Formatter('%(levelname)s %(message)s'))
 L = logging.getLogger()
 L.addHandler(H)

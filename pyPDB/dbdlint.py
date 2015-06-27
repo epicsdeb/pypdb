@@ -103,6 +103,8 @@ def main(args):
         try:
             with open(I, 'r') as F:
                 content = F.read()
+            if args.dbst:
+                sys.stdout.write(content)
             dbd = parse(content, file=I)
             walk(dbd, dbdtree, R)
         except DBSyntaxError as e:
@@ -114,9 +116,6 @@ def main(args):
         except:
             _log.exception("Error processing %s", I)
             R._error = True
-        else:
-            if args.dbst:
-                sys.stdout.write(content)
 
     if len(R.stack)>0:
         _log.error("parent stack not empty at exit: %s", R.stack)

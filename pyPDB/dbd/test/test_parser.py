@@ -92,3 +92,7 @@ class TestParseFail(unittest.TestCase):
 
         self.assertRaisesRegexp(DBSyntaxError, "Syntax error at {",
                                 yacc.parse, 'for(a {}')
+
+        # Macros in unquoted Command arguments not supported by this parser
+        self.assertRaisesRegexp(DBSyntaxError, r"Syntax error at \$\(BAR\)",
+                                yacc.parse, 'include foo$(BAR)')

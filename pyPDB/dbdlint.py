@@ -16,7 +16,7 @@ _msg.propagate = False
 import sys, itertools
 
 from .dbd.yacc import parse
-from .dbd.ast import Code, Comment, Block, Command
+from .dbd.ast import Code, Comment, Block, Command, DBSyntaxError
 
 _dft_warns = {
     'quoted':"a node argument isn't quoted",
@@ -104,6 +104,9 @@ def main(args):
                 content = F.read()
             dbd = parse(content, file=I)
             walk(dbd, dbdtree, R)
+        except DBSyntaxError as e:
+            R._error = True
+            _msg.error("%s:%s - %s", e.fname, e.lineno, e.message)
         except KeyboardInterrupt:
             R._error = True
             break
@@ -134,12 +137,12 @@ class Results(object):
 
     def err(self, msg, *args):
         self._error = True
-        _log.error("%s:%s - "+msg, self.node.fname, self.node.lineno, *args)
+        _msg.error("%s:%s - "+msg, self.node.fname, self.node.lineno, *args)
     def warn(self, name, msg, *args):
         if name not in self._warns:
             return
         self._warning = True
-        _log.warn("%s:%s - "+msg, self.node.fname, self.node.lineno, *args)
+        _msg.warn("%s:%s - "+msg, self.node.fname, self.node.lineno, *args)
 
 def checkRecInstField(ent, results, info):
     if ent.args[0].upper()!=ent.args[0]:

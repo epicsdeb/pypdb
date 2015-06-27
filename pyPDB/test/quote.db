@@ -1,0 +1,5 @@
+record(ai, unquoted)
+{
+  field(FOO, bar)
+}
+variable(foo)

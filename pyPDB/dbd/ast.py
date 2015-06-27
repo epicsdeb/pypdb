@@ -12,7 +12,7 @@ class DBSyntaxError(RuntimeError):
         RuntimeError.__init__(self, msg)
         self.fname, self.lineno = fname, lineno
     def __repr__(self):
-        return 'DBSyntaxError %s:%d : %s'%(self.fname, self.lineno, self.message)
+        return 'DBSyntaxError %s:%s : %s'%(self.fname, self.lineno, self.message)
     __str__ = __repr__
 
 _unquote = {
@@ -46,6 +46,10 @@ class Comment(object):
     def __init__(self, val, lineno=None):
         self.fname = None
         self.value, self.lineno = val, lineno
+    def __eq__(self, O):
+        if not isinstance(O, Comment):
+            return False
+        return self.value==O.value
     def __repr__(self):
         return 'Comment("%s")'%self.value[:20]
 
@@ -53,6 +57,10 @@ class Code(object):
     def __init__(self, val, lineno=None):
         self.fname = None
         self.value, self.lineno = val, lineno
+    def __eq__(self, O):
+        if not isinstance(O, Code):
+            return False
+        return self.value==O.value
     def __repr__(self):
         return 'Code("%s")'%self.value[:20]
 
@@ -64,6 +72,13 @@ class Block(object):
         self.name, self.args, self.body = name, argval, body
         self.argsquoted = argq
 
+    def __eq__(self, O):
+        if not isinstance(O, Block):
+            return False
+        return self.name==O.name and all([a==b for a,b in zip(self.args, O.args)]) \
+            and all([a==b for a,b in zip(self.argsquoted, O.argsquoted)]) \
+            and self.body==O.body
+            
     def __repr__(self):
         return 'Block(%s, %s, %s)'%(self.name, self.args, self.body)
     __str__ = __repr__
@@ -76,6 +91,10 @@ class Command(object):
         self.name, self.arg = name, argval
         self.argquoted = argq
 
+    def __eq__(self, O):
+        if not isinstance(O, Command):
+            return False
+        return self.name==O.name and self.arg==O.args and self.argquoted==O.argsquoted
     def __repr__(self):
         return 'Command(%s, %s)'%(self.name, self.arg)
     __str__ = __repr__

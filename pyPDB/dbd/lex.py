@@ -23,7 +23,7 @@ literals = (',', '{', '}', '(', ')')
 t_ignore = ' \t'
 
 def t_QUOTED(t):
-    r'"(?:\\.|[^"])*"'
+    r'"(?:\\.|[^"\n])*"'
     t.value = t.value[1:-1]
     if t.value.find('\\')!=-1:
         t.value = unescape(t.value)
@@ -50,11 +50,15 @@ def t_eol(t):
     t.lexer.lineno += len(t.value)
 
 def t_quoted_unterm(t):
-    r'"(?:\\.|[^"])*\n'
+    r'"(?:\\.|[^"\n])*\n'
     raise DBSyntaxError('Missing closing quote on line %d'%t.lexer.lineno)
 
+def t_quoted_eol(t):
+    r'"(?:\\.|[^"\n])*\Z'
+    raise DBSyntaxError('Missing closing quote at end of file')
+
 def t_error(t):
-    raise DBSyntaxError("illegal char '%s' on line %d"%(t.value, t.lexer.lineno))
+    raise DBSyntaxError("illegal char '%s'"%t.value, getattr(t.lexer, '_file'), t.lexer.lineno)
 
 if __name__=='__main__':
     lexer = lex.lex(debug=1, optimize=0)

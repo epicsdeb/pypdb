@@ -100,7 +100,7 @@ def p_error(t):
     if t is None:
         raise ast.DBSyntaxError("Syntax error at end of input")
     else:
-        raise ast.DBSyntaxError("Syntax error on line %d: %s"%(t.lexer.lineno, t.value))
+        raise ast.DBSyntaxError("Syntax error at %s"%t.value, getattr(t.lexer,'_file'), t.lexer.lineno)
 
 if __name__=='__main__':
     logging.basicConfig(level=logging.DEBUG)

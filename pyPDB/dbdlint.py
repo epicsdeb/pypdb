@@ -122,13 +122,14 @@ def main(args):
     if R._error:
         sys.exit(2)
     if args.werror and R._warning:
-        sys.exit(1)
+        sys.exit(2)
 
 class Results(object):
     def __init__(self, args):
         self.whole = args.whole
         self._error = False # Set if some syntax/sematic error is encountered
         self._warning = False
+        self._wlvl = logging.ERROR if args.werror else logging.WARN
         self._warns = args.warn
         self.node = None
         self.stack = []
@@ -142,7 +143,7 @@ class Results(object):
         if name not in self._warns:
             return
         self._warning = True
-        _msg.warn("%s:%s - "+msg, self.node.fname, self.node.lineno, *args)
+        _msg.log(self._wlvl, "%s:%s - "+msg, self.node.fname, self.node.lineno, *args)
 
 def checkRecInstField(ent, results, info):
     if ent.args[0].upper()!=ent.args[0]:

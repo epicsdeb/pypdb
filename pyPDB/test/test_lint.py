@@ -69,10 +69,8 @@ class _TestLint(unittest.TestCase):
         self._matchmsg(file, "warning", C.msg[logging.WARN], warnings)
         self._matchmsg(file, "error", C.msg[logging.ERROR], errors)
 
-        if errors:
+        if errors or args.werror:
             expectcode = 2
-        elif warnings and args.werror:
-            expectcode = 1
         else:
             expectcode = 0
 
@@ -102,7 +100,7 @@ class TestLint(_TestLint):
         ])
 
         # treat warnings as errors
-        self.assertLint("quote.db", warnings=[
+        self.assertLint("quote.db", errors=[
             r".*/quote.db:1.*'record' argument 2 not quoted",
             r".*/quote.db:3.*'field' argument 2 not quoted",
             r".*/quote.db:5.*No type specified for variable foo.*",

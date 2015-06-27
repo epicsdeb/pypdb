@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+import sys, logging
+
+from pyPDB.dbdlint import getargs, main
+
+A = getargs()
+H = logging.StreamHandler(sys.stdout)
+H.setFormatter(logging.Formatter('%(levelname)s %(message)s'))
+L = logging.getLogger()
+L.addHandler(H)
+L.setLevel(A.log_lvl)
+L = logging.getLogger('dbdlint')
+L.addHandler(H)
+L.setLevel(logging.DEBUG)
+if A.hotshot:
+    from hotshot import Profile, stats
+    _prof=Profile(A.hotshot)
+    try:
+        _prof.runcall(main, A)
+    finally:
+        _prof.close()
+        S = stats.load(A.hotshot)
+        S.stream = sys.stderr
+        S.sort_stats('time','calls')
+        S.print_stats(20)
+else:
+    main(A)

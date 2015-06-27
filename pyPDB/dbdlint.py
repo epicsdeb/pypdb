@@ -34,10 +34,11 @@ def getargs(args=None):
     P.add_argument('-l','--log-lvl', type=logging.getLevelName, default='WARN',
                    help='Logging level (default WARN)')
     P.add_argument('-W', '--warn', metavar='TAG', action='append', default=None,
-                   help="Used -Wlist to see a list of allowed targs."+\
-                       "May be 'no-...' to disable a warning,"+\
-                       ", 'error to treat warnings as errors, "+\
-                       " or 'none' to disable all warnings")
+                   help="Use -Wlist to see a list of allowed tags "+\
+                       "May be '-Wno-...' to disable a warning"+\
+                       ", '-Werror' to treat warnings as errors, "+\
+                       "or '-Wnone' to disable all warnings.  "+\
+                       "May be given multiple times.")
 
     P.add_argument('-d','--dbst', action='store_true', default=False,
                    help='Enable dbst compatibility mode')

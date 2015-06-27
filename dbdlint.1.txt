@@ -1,0 +1,54 @@
+DBDLINT(1)
+===========
+:doctype: manpage
+
+NAME
+----
+dbdlint - EPICS db/dbd file validator
+
+SYNOPSIS
+--------
+*dbdlint* [options] <file.db ...>
+
+*dbdlint* [options] . <file.db> -d
+
+DESCRIPTION
+-----------
+Parses and preforms checks on db/dbd files.
+Checks are either on "fragments" (*--partial* the default), or complete/full database definitions
+(with *--full*).
+
+When the *-d* option is provided, dbdlint enters dbst compatibility mode.
+Only one input file is accepted, which is echoed to stdout.
+
+OPTIONS
+-------
+
+*-h, --help*::
+  show this help message and exit
+
+*-P, --partial*::
+  Process input files as fragments.
+
+*-F, --full*::
+  Process input files as a complete database.
+
+*-W, --warn*=TAG::
+  Control warning messages.
+  May be *-Wno-...* to disable a warning, *-Werror* to treat warnings as errors, or *-Wnone* to disable all warnings.
+  Use *-Wlist* to see a list of allowed tags.  May be given multiple times.
+
+*-d, --dbst*::
+  Enable dbst compatibility mode.
+  Implies *--partial*.
+
+AUTHOR
+------
+Michael Davidsaver
+
+COPYING
+-------
+Copyright 2015 Michael Davidsaver
+
+This software may be used according to the terms of the
+GNU General Public License (GPL) version 2.

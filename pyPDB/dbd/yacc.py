@@ -115,13 +115,15 @@ def p_error(t):
     else:
         raise ast.DBSyntaxError("Syntax error at %s"%t.value, getattr(t.lexer,'_file'), t.lexer.lineno)
 
+dodebug=0
 if __name__=='__main__':
     logging.basicConfig(level=logging.DEBUG)
+    dodebug=1
 
-_lexer = lex.lex(module=lexmod, debug=0, optimize=0, debuglog=_log)
-_parser = yacc.yacc(debug=0, write_tables=0, errorlog=_log, debuglog=_log)
+_lexer = lex.lex(module=lexmod, debug=dodebug, optimize=0, debuglog=_log)
+_parser = yacc.yacc(debug=dodebug, write_tables=0, errorlog=_log, debuglog=_log)
 
-def parse(txt, debug=0, file=None):
+def parse(txt, debug=dodebug, file=None):
     L = _lexer.clone()
     L._file = file
     try:
@@ -135,13 +137,15 @@ def parse(txt, debug=0, file=None):
 if __name__=='__main__':
     import sys
     try:
+        fname = sys.argv[1]
         with open(sys.argv[1],'r') as F:
             data = F.read()
     except:
+        fname = '<stdin>'
         data = sys.stdin.read()
 
     print 'Start'
-    V = parse(data, debug=1)
+    V = parse(data, debug=1, file=fname)
 
     import pprint
     pprint.pprint(V)

@@ -36,9 +36,7 @@ def t_QUOTED(t):
         t.value = unescape(t.value)
     return t
 
-def t_BARE(t):
-    r'[a-zA-Z0-9_+:.\[\]<>;-]+'
-    return t
+t_BARE = r'[a-zA-Z0-9_+:.\[\]<>;-]+'
 
 _mac = {'{':'}', '(':')'}
 

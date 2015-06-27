@@ -43,6 +43,8 @@ def getargs(args=None):
     P.add_argument('-d','--dbst', action='store_true', default=False,
                    help='Enable dbst compatibility mode')
 
+    P.add_argument('--skip', action='store_true',
+                   help='Exit immediately with success.  No checking is done')
     P.add_argument('--hotshot', metavar='FILE',
                    help='Run with Hotshot profiller')
 
@@ -97,6 +99,8 @@ def readall(args):
     return F
 
 def main(args):
+    if args.skip:
+        sys.exit(0)
     R = Results(args)
     for I in args.input:
         _log.info('Processing %s', I)

@@ -42,6 +42,10 @@ OPTIONS
   Enable dbst compatibility mode.
   Implies *--partial*.
 
+*--skip*::
+  Exit immediately with success.
+  No checking is done.
+
 AUTHOR
 ------
 Michael Davidsaver

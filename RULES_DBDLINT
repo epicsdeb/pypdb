@@ -1,0 +1,27 @@
+# To use, copy this file as configure/RULES_DBDLINT
+#
+# Then in <myapp>App/Db/Makefile after the line including
+# "configure/RULES" add the line:
+#   include $(TOP)/configure/RULES_DBDLINT
+#
+# Then in configure/CONFIG_SITE add:
+#   DBDLINT = /path/to/dbdlint
+
+ifneq ($(DBDLINT),)
+ifneq ($(DISABLE_EXTERNAL_DBDLINT_RULES),YES)
+ifneq ($(T_A),)
+
+define idbline
+$(1): $$(DBCHK)
+endef
+
+DBCHK = $(patsubst %,$(COMMON_DIR)/%.chk,$(notdir $(DB)))
+
+$(foreach idb,$(INSTALL_DBS),$(eval $(call idbline,$(idb))))
+
+$(COMMON_DIR)/%.db.chk: %.db
+	$(DBDLINT) $(DBLINTFLAGS) $($*_LINTFLAGS) $<
+	@echo "checked" > $@
+endif
+endif
+endif

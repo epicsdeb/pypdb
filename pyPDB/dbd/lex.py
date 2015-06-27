@@ -98,7 +98,7 @@ def t_quotedeol(t):
     raise DBSyntaxError('Missing closing quote at end of file')
 
 def t_error(t):
-    raise DBSyntaxError("illegal char '%s' (state %s)"%(t.value,t.lexer.current_state()),
+    raise DBSyntaxError("illegal char '%s' (state %s)"%(t.value[0],t.lexer.current_state()),
                         getattr(t.lexer, '_file'), t.lexer.lineno)
 
 t_macro_error = t_error

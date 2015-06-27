@@ -111,9 +111,9 @@ def p_arglist_empty(p):
 
 def p_error(t):
     if t is None:
-        raise ast.DBSyntaxError("Syntax error at end of input")
+        raise ast.DBSyntaxError("Syntax error near end of input")
     else:
-        raise ast.DBSyntaxError("Syntax error at %s"%t.value, getattr(t.lexer,'_file'), t.lexer.lineno)
+        raise ast.DBSyntaxError("Syntax error at or before %s"%t.value, getattr(t.lexer,'_file'), t.lexer.lineno)
 
 dodebug=0
 if __name__=='__main__':
@@ -132,6 +132,8 @@ def parse(txt, debug=dodebug, file=None):
             raise ast.DBSyntaxError("open macro at EOF", file, L.lineno)
     except ast.DBSyntaxError as e:
         e.fname = file
+        if e.lineno is None:
+            e.lineno = L.lineno
         raise
 
 if __name__=='__main__':

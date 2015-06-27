@@ -84,15 +84,15 @@ class TestParseFail(unittest.TestCase):
         self.assertRaisesRegexp(DBSyntaxError, "Missing closing quote",
                                 yacc.parse, '"foo bar')
 
-        self.assertRaisesRegexp(DBSyntaxError, "Syntax error at end of input",
+        self.assertRaisesRegexp(DBSyntaxError, "Syntax error near end of input",
                                 yacc.parse, 'for(a ${')
 
-        self.assertRaisesRegexp(DBSyntaxError, "Syntax error at end of input",
+        self.assertRaisesRegexp(DBSyntaxError, "Syntax error near end of input",
                                 yacc.parse, 'for(a ${foo')
 
-        self.assertRaisesRegexp(DBSyntaxError, "Syntax error at {",
+        self.assertRaisesRegexp(DBSyntaxError, "Syntax error at or before {",
                                 yacc.parse, 'for(a {}')
 
         # Macros in unquoted Command arguments not supported by this parser
-        self.assertRaisesRegexp(DBSyntaxError, r"Syntax error at \$\(BAR\)",
+        self.assertRaisesRegexp(DBSyntaxError, r"Syntax error at or before \$\(BAR\)",
                                 yacc.parse, 'include foo$(BAR)')

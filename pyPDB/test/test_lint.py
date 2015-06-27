@@ -81,7 +81,7 @@ class _TestLint(unittest.TestCase):
 
 class TestLint(_TestLint):
     def test_badsyntax(self):
-        self.assertLint("badsyntax.db", errors=['.*Syntax error at }'])
+        self.assertLint("badsyntax.db", errors=['.*Syntax error at or before }'])
 
     def test_argno(self):
         self.assertLint("argno.db", errors=[

@@ -26,12 +26,35 @@ class TestParse(unittest.TestCase):
                 Block('one', ["two"], [False], []),
             ]),
         ]),
+        ("""
+        record(C, "$(MAC)")
+        """,[
+            Block('record', ["C", "$(MAC)"], [False, True]),
+        ]),
+        ("""
+        record(C, $(MAC))
+        """,[
+            Block('record', ["C", "$(MAC)"], [False, False]),
+        ]),
+        ("""
+        record(C, foo$(MAC)bar)
+        """,[
+            Block('record', ["C", "foo$(MAC)bar"], [False, False]),
+        ]),
+        # space in unquoted values is ignored
+        ("""
+        record(C, foo$(MAC) bar)
+        record(C, foo bar)
+        """,[
+            Block('record', ["C", "foo$(MAC)bar"], [False, False]),
+            Block('record', ["C", "foobar"], [False, False]),
+        ]),
     ]
 
     def test_ast(self):
         for n,(I, E) in enumerate(self.data):
             try:
-                O = yacc.parse(I)
+                O = yacc.parse(I) #,debug=1)
                 self.assertListEqual(E, O)
             except:
                 print 'Error in case', n
@@ -60,6 +83,12 @@ class TestParseFail(unittest.TestCase):
 
         self.assertRaisesRegexp(DBSyntaxError, "Missing closing quote",
                                 yacc.parse, '"foo bar')
+
+        self.assertRaisesRegexp(DBSyntaxError, "Syntax error at end of input",
+                                yacc.parse, 'for(a ${')
+
+        self.assertRaisesRegexp(DBSyntaxError, "Syntax error at end of input",
+                                yacc.parse, 'for(a ${foo')
 
         self.assertRaisesRegexp(DBSyntaxError, "Syntax error at {",
                                 yacc.parse, 'for(a {}')

@@ -19,15 +19,28 @@ from .lex import tokens
 
 start = 'nodelist'
 
+def p_bvalue(p):
+    '''bval : BARE
+            | MACRO
+            | BARE bval
+            | MACRO bval
+            |
+    '''
+    L = []
+    if len(p)>2:
+        L = p[2]
+    L.insert(0,p[1])
+    p[0] = L
+
 def p_value_Q(p):
     '''value : QUOTED
     '''
     p[0] = (p[1], True)
 
 def p_value(p):
-    '''value : BARE
+    '''value : bval
     '''
-    p[0] = (p[1], False)
+    p[0] = (''.join(p[1]), False)
 
 def p_nodelist_one(p):
     '''nodelist : node
@@ -113,6 +126,8 @@ def parse(txt, debug=0, file=None):
     L._file = file
     try:
         return _parser.parse(txt, lexer=L, debug=debug)
+        if L.lexer.current_state()!='INITIAL':
+            raise ast.DBSyntaxError("open macro at EOF", file, L.lineno)
     except ast.DBSyntaxError as e:
         e.fname = file
         raise

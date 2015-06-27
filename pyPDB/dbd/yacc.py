@@ -124,6 +124,18 @@ _lexer = lex.lex(module=lexmod, debug=dodebug, optimize=0, debuglog=_log)
 _parser = yacc.yacc(debug=dodebug, write_tables=0, errorlog=_log, debuglog=_log)
 
 def parse(txt, debug=dodebug, file=None):
+    """This function parses the provided text and returns
+    a list of nodes.
+    Each node is one of :class:`Block`, :class:`Command`,
+    :class:`Code`, or :class:`Comment`.
+    
+    :param str txt: The text to be parsed
+    :param bool debug: Log verbose debugging information with the logging module
+    :param str file: The file name
+    :return: A list of nodes
+    :rtype: list
+    :raises: :class:`DBSyntaxError` If parsing fails
+    """
     L = _lexer.clone()
     L._file = file
     try:

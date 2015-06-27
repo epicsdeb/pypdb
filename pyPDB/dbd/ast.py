@@ -22,27 +22,45 @@ _unquote = {
 }
 
 _quote = dict([(V, '\\'+K) for K,V in _unquote.items()])
-_quote.update({
-    '"': '\"',
-})
 
-_quotes = r'[\r\n\t]'
+_quotes = r'[\r\n\t"\\]'
 
 def _unescape(M):
-    c = M.string[1]
+    c = M.group(0)[1]
     return _unquote.get(c,c)
 
 def unescape(S):
     return re.sub(r'\\.', _unescape, S)
 
 def _escape(M):
-    c = M.string[0]
-    return _quote.get(c,c)
+    c = M.group(0)
+    return _quote.get(c,'\\'+c)
 
 def quote(S):
+    """Quote the provided string
+    
+    >>> quote("hello")
+    '"hello"'
+    >>> quote("hello world")
+    '"hello world"'
+    >>> quote("hello\\" world")
+    '"hello\\\\" world"'
+    >>> len(quote("hello\\" world"))
+    15
+    >>> quote("hello\\r world")
+    '"hello\\\\r world"'
+    """
     return '"%s"'%re.sub(_quotes, _escape, S)
 
 class Comment(object):
+    """A comment. ::
+
+        # comment
+
+    :ivar fname: File name
+    :ivar lineno: Line number in file
+    :ivar value: Comment text
+    """
     def __init__(self, val, lineno=None):
         self.fname = None
         self.value, self.lineno = val, lineno
@@ -54,6 +72,14 @@ class Comment(object):
         return 'Comment("%s")'%self.value[:20]
 
 class Code(object):
+    """Embedded C code. ::
+
+        % code
+
+    :ivar fname: File name
+    :ivar lineno: Line number in file
+    :ivar value: The C code
+    """
     def __init__(self, val, lineno=None):
         self.fname = None
         self.value, self.lineno = val, lineno
@@ -65,6 +91,17 @@ class Code(object):
         return 'Code("%s")'%self.value[:20]
 
 class Block(object):
+    """A block with optional body. ::
+
+        blockname(arg1, "arg2", ...) { <body nodes> }
+
+    :ivar fname: File name
+    :ivar lineno: Line number in file
+    :ivar name: Block name
+    :ivar args: List of argument strings
+    :ivar argsquoted: List of bool indicating which arguments need quoting
+    :ivar body: :obj:`None` or a list of child nodes
+    """
     __slots__ = ('fname', 'lineno', 'name', 'args', 'argsquoted', 'body')
     def __init__(self, name, argval, argq, body=None, lineno=None):
         self.fname = None
@@ -84,6 +121,16 @@ class Block(object):
     __str__ = __repr__
 
 class Command(object):
+    """A command . ::
+
+        commandname "argument"
+
+    :ivar fname: File name
+    :ivar lineno: Line number in file
+    :ivar name: Block name
+    :ivar arg: Argument string
+    :ivar argquoted: bool.  True if the argument string needs quoting
+    """
     __slots__ = ('fname', 'lineno', 'name', 'arg', 'argquoted')
     def __init__(self, name, argval, argq, lineno=None):
         self.fname = None
@@ -98,3 +145,7 @@ class Command(object):
     def __repr__(self):
         return 'Command(%s, %s)'%(self.name, self.arg)
     __str__ = __repr__
+
+if __name__=='__main__':
+    import doctest
+    doctest.testmod()

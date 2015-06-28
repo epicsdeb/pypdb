@@ -15,10 +15,15 @@
 import sys
 import os
 
+srcdir = os.path.abspath('..')
+
+# Set PATH so that sphinxcontrib.programoutput finds our scripts
+os.environ['PATH'] = '%s%s%s'%(srcdir, os.pathsep, os.environ['PATH'])
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, srcdir)
 
 # -- General configuration ------------------------------------------------
 
@@ -31,6 +36,7 @@ sys.path.insert(0, os.path.abspath('..'))
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
+    'sphinxcontrib.programoutput',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

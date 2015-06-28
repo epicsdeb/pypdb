@@ -21,6 +21,7 @@ from .dbd.ast import Code, Comment, Block, Command, DBSyntaxError
 _dft_warns = {
     'quoted':"a node argument isn't quoted",
     'varint':"a varaible(varname) node which doesn't specify a type, which defaults to 'int'",
+    'spec-comm':"Syntax error in special #: comment line"
 }
 
 _all_warns = {
@@ -304,7 +305,7 @@ def checkvar(ent, results, info):
                      ent.args[0])
 
     elif len(ent.args)!=2:
-        results.err('bad-var', "variable must have 2 arguments, found %d", len(ent.args))
+        results.err('bad-args', "variable must have 2 arguments, found %d", len(ent.args))
 
 def wholeDevice(ent, results, info):
     # device(rectype, *_IO, dev*, "DTYP string")

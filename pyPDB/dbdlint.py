@@ -23,6 +23,11 @@ _dft_warns = {
     'varint':"a varaible(varname) node which doesn't specify a type, which defaults to 'int'",
 }
 
+_all_warns = {
+    'ext-link':"A DB/CA link to a PV which is not defined.  Add '#: external(\"pv.FLD\")",
+}
+_all_warns.update(_dft_warns)
+
 def getargs(args=None):
     import argparse
     P = argparse.ArgumentParser(description='DB/DBD file validator')
@@ -78,6 +83,8 @@ def getargs(args=None):
                 P.exit(status=1)
             elif W=='error':
                 args.werror = True
+            elif W=='all':
+                warn = set(_all_warns.keys())
             elif W=='none':
                 warn = set()
             elif W.startswith('no-'):
@@ -140,12 +147,15 @@ class Results(object):
 
         self.rectypes = {} # {'ao':{'OUT':'DBF_OUTLINK', ...}, ...}
         self.recdsets = {} # {'ao':{'Soft Channel':'CONSTANT', ...}, ...}
+        self.recinst = {} # {'inst:name':'ao', ...}
+        self.extinst = set()
 
     def err(self, msg, *args):
         self._error = True
         _msg.error("%s:%s - "+msg, self.node.fname, self.node.lineno, *args)
     def warn(self, name, msg, *args):
         if name not in self._warns:
+            _log.debug("disabled warning %s", name)
             return
         self._warning = True
         _msg.log(self._wlvl, "%s:%s - "+msg, self.node.fname, self.node.lineno, *args)
@@ -170,6 +180,47 @@ rectypetree = {
     },
 }
 
+_lmod = set(['CA','CP','CPP','MS','MSS','MSI'])
+
+# Possibilities:
+#   recname
+#   recname MOD MOD
+#   recname.FLD
+#   recname.FLD MOD MOD
+_fld_pat = re.compile(r'([^. ]+)(\.[A-Z]+)?(?: ([A-Z ]+))?')
+
+def checkRecLink(results, lval):
+    '''Validate record (DB or CA) link string
+
+    Call from field() validation
+    '''
+    M = _fld_pat.match(lval)
+    if not M:
+        results.err("Invalid value for Link field '%s'", lval)
+        return
+    rname, fld, lmod = M.groups()
+
+    lmod = set(lmod.split()) if lmod else set()
+    if not fld or fld=='TIME':
+        fld = 'VAL'
+
+    if lmod:
+        badfld = lmod-_lmod
+        if badfld:
+            results.err("Invalid link modifier(s) '%s'", ', '.join(badfld))
+
+    try:
+        rtype = results.recinst[rname]
+    except KeyError:
+        extname = '%s.%s'%(rname, fld)
+        if extname not in results.extinst:
+            results.warn("ext-link", "DB/CA Link to outside PV '%s'", extname)
+    else:
+        fldinfo = results.rectypes[rtype]
+        if fld not in fldinfo:
+            results.err("Link to '%s' of type '%s' has no field '%s'",
+                        rname, rtype, fld)
+
 def checkRecInstField(ent, results, info):
     if ent.args[0].upper()!=ent.args[0]:
         results.err("Field names must be upper case (%s)", ent.args[0])
@@ -188,10 +239,13 @@ def wholeRecInstField(ent, results, info):
             if not re.match(lfmt, ent.args[1]):
                 results.err("Incorrect %s - %s", ltype, ent.args[1])
         except KeyError:
-            _log.info("Unsupported link type %s", ltype)
+            if ltype=='CONSTANT':
+                checkRecLink(results, ent.args[1])
+            else:
+                _log.info("Unsupported link type %s", ltype)
 
     elif ftype.endswith('LINK'):
-        pass
+        checkRecLink(results, ent.args[1])
 
     elif fname=='DTYP':
         try:
@@ -231,6 +285,7 @@ def wholeRecInst(ent, results, info):
     rtype = ent.args[0]
     try:
         ent._fieldinfo = results.rectypes[rtype]
+        results.recinst[ent.args[1]] = rtype
     except KeyError:
         results.err("%s has unknown record type %s", ent.args[1], rtype)
 
@@ -322,6 +377,22 @@ def walk(dbd, basetree, results):
         results.node = ent
         _log.debug("Visit node %s", ent)
 
+        if isinstance(ent, Comment) and ent.value.startswith(': '):
+            _log.debug('Special comment: %s', ent.value)
+            try:
+                specnodes = parse(ent.value[2:])
+                for SN in specnodes:
+                    if isinstance(SN, Block) and SN.name=='external':
+                        results.extinst.add(SN.args[0])
+                        _log.info("add ext '%s'", SN.args[0])
+            except DBSyntaxError as e:
+                results.warn('spec-comm', "Failed to parse dbdlint special comment: %s",
+                             e.message)
+            except:
+                _log.exception("Error processing special comment: '#%s'", ent.value)
+
+            continue
+
         try:
             T = tree[type(ent)]
         except KeyError:
@@ -365,7 +436,7 @@ def walk(dbd, basetree, results):
                     else:
                         results.warn("quoted", "'%s' argument %d quoted", ent.name, i)
 
-        if isinstance(ent, Command):
+        elif isinstance(ent, Command):
             quote = I.get('quote')
             if quote is not None and quote ^ ent.argquoted:
                 if quote:

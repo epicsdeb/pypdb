@@ -24,21 +24,72 @@ To make the warning an error: ::
 
 Or to disable warnings entirely give *-Wnone*.
 
-Arguments
----------
+Usage
+-----
 
 .. command-output:: dbdlint -h
 
 Validation Modes
-----------------
+~~~~~~~~~~~~~~~~
 
-By default, or when **--partial** is given, only local validation is done.
+By default, or when **-P** is given, only local validation is done.
 In the case of *wrong.db* no test is made to see if **xao** is a valid
 recordtype.
 
-When **--full** is given, additional validation is done which requires
+When **-F** is given, additional validation is done which requires
 a complete database (including **recordtype()** definitions).
 This allows a number of additional errors and warnings to be emitted.
+
+Integration with EPICS Makefiles
+--------------------------------
+
+The file makefile `RULES_DBDLINT`_ is provided to integrate *dbdlint*
+with the EPICS makefiles.
+This will cause all .db files to be checked with *dbdlint* prior to installation.
+
+When using the APS style source layout, `RULES_DBDLINT`_ should be placed
+as *configure/RULES_DBDLINT*.
+Then in *<myname>App/Db/Makefile* include it just after *RULES*.
+
+.. code-block:: makefile
+
+   include $(TOP)/configure/RULES
+   include $(TOP)/configure/RULES_DBDLINT
+
+So a complete example would be:
+
+.. code-block:: makefile
+
+   TOP=../..
+   include $(TOP)/configure/CONFIG
+
+   DB += some.db
+   DB += another.db
+
+   DBDLINT ?= /path/to/dbdlint
+   # or if in $PATH
+   #DBDLINT ?= dbdlint
+
+   include $(TOP)/configure/RULES
+   include $(TOP)/configure/RULES_DBDLINT
+
+The *DBDLINT* definition could also be placed in *configure/CONFIG_SITE*.
+
+.. note::
+
+   If *DBDLINT* is not defined, then no checking is done.
+
+.. _RULES_DBDLINT: https://github.com/epicsdeb/pypdb/blob/master/RULES_DBDLINT
+
+dbst Compatibility
+~~~~~~~~~~~~~~~~~~
+
+With the **-d** option *dbdlint* will behave in a similar manner as the *dbst*
+validator.
+This is **not recommended** as the makefile rules for *dbst* will
+permit invalid files to be installed (re-make w/o changes).
+
+To using *dblint* in this way, set ``DBST=dbdlint`` and ``DB_OPT=YES``.
 
 Error Tags
 ----------

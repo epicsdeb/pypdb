@@ -125,7 +125,7 @@ _parser = yacc.yacc(debug=dodebug, write_tables=0, errorlog=_log, debuglog=_log)
 
 def parse(txt, debug=dodebug, file=None):
     """This function parses the provided text and returns
-    a list of nodes.
+    a list of nodes (:token:`nodelist`).
     Each node is one of :class:`Block`, :class:`Command`,
     :class:`Code`, or :class:`Comment`.
     

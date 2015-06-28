@@ -16,7 +16,8 @@ class CaptureMsg(logging.Handler):
     def __init__(self, lvl=logging.WARN):
         self._lvl = lvl
         logging.Handler.__init__(self)
-        self._fmt = logging.Formatter('%(levelname)s %(message)s')
+        F = logging.Formatter('%(levelname)s|%(dbfile)s:%(dbline)s|%(tag)s|%(message)s')
+        self.setFormatter(F)
         self.reset()
     def __enter__(self):
         L = self._log = logging.getLogger("dbdlint")
@@ -29,7 +30,7 @@ class CaptureMsg(logging.Handler):
         self.msg = {logging.WARN:[], logging.ERROR:[]}
     def emit(self, rec):
         try:
-            self.msg[rec.levelno].append(rec)
+            self.msg[rec.levelno].append(self.format(rec))
         except KeyError:
             pass
 
@@ -39,8 +40,7 @@ class _TestLint(unittest.TestCase):
         for expect in Lexpect or []:
             found = False
             for actual in Lactual:
-                msg = actual.getMessage()
-                M = re.match(expect, msg)
+                M = re.match(expect, actual)
                 if M is not None:
                     found = True
                     Lactual.remove(actual)
@@ -49,7 +49,7 @@ class _TestLint(unittest.TestCase):
                 missing.append(expect)
 
         for actual in Lactual:
-            raise self.failureException("Un-expected %s: '%s'"%(type, actual.getMessage()))
+            raise self.failureException("Un-expected %s: '%s'"%(type, actual))
 
         for expect in missing:
             raise self.failureException("%s did not raise %s '%s'"%(file, type, expect))
@@ -83,27 +83,27 @@ class TestLint(_TestLint):
 
     def test_argno(self):
         self.assertLint("argno.db", errors=[
-            '.*/argno.db:1.*Incorrect number of arguments for record.  1 but expect 2',
-            '.*/argno.db:2.*Incorrect number of arguments for field.  3 but expect 2',
+            '.*/argno.db:1|bad-args|.*record.* 1 but expect 2',
+            '.*/argno.db:2|bad-args|.*field.* 3 but expect 2',
         ])
 
     def test_fieldname(self):
         self.assertLint("fieldname.db", errors=[
-            r'.*/fieldname.db:2.*Field names must be upper case \(dTYP\)',
+            r'.*/fieldname.db:2|field-case|.*dTYP.*',
         ])
 
     def test_quote(self):
         self.assertLint("quote.db", warnings=[
-            r".*/quote.db:1.*'record' argument 2 not quoted",
-            r".*/quote.db:3.*'field' argument 2 not quoted",
-            r".*/quote.db:5.*No type specified for variable foo.*",
+            r".*/quote.db:1|quoted|.*record.* 2 not quoted",
+            r".*/quote.db:3|quoted|.*field.* 2 not quoted",
+            r".*/quote.db:5|varint|.*foo.*",
         ])
 
         # treat warnings as errors
         self.assertLint("quote.db", errors=[
-            r".*/quote.db:1.*'record' argument 2 not quoted",
-            r".*/quote.db:3.*'field' argument 2 not quoted",
-            r".*/quote.db:5.*No type specified for variable foo.*",
+            r".*/quote.db:1|quoted|.*record.* 2 not quoted",
+            r".*/quote.db:3|quoted|.*field.* 2 not quoted",
+            r".*/quote.db:5|varint|.*foo.*",
         ], args=['-Werror'])
 
         # disable warning
@@ -111,6 +111,6 @@ class TestLint(_TestLint):
 
         # enable only this warning
         self.assertLint("quote.db", warnings=[
-            r".*/quote.db:1.*'record' argument 2 not quoted",
-            r".*/quote.db:3.*'field' argument 2 not quoted",
+            r".*/quote.db:1|quoted|.*record.* 2 not quoted",
+            r".*/quote.db:3|quoted|.*field.* 2 not quoted",
         ], args=['-Wnone', '-Wquoted'])

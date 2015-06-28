@@ -120,7 +120,9 @@ def main(args):
             walk(dbd, dbdtree, R)
         except DBSyntaxError as e:
             R._error = True
-            _msg.error("%s:%s - %s", e.fname, e.lineno, e.message)
+            _msg.error(e.message, extra={'dbfile':e.fname,
+                                         'dbline':e.lineno,
+                                         'tag':'syntax'})
         except KeyboardInterrupt:
             R._error = True
             break
@@ -150,15 +152,22 @@ class Results(object):
         self.recinst = {} # {'inst:name':'ao', ...}
         self.extinst = set()
 
-    def err(self, msg, *args):
+    def err(self, name, msg, *args):
         self._error = True
-        _msg.error("%s:%s - "+msg, self.node.fname, self.node.lineno, *args)
+        _msg.error(msg, extra={'dbfile':self.node.fname,
+                               'dbline':self.node.lineno,
+                               'tag':name},
+                               *args)
+
     def warn(self, name, msg, *args):
         if name not in self._warns:
             _log.debug("disabled warning %s", name)
             return
         self._warning = True
-        _msg.log(self._wlvl, "%s:%s - "+msg, self.node.fname, self.node.lineno, *args)
+        _msg.log(self._wlvl, msg, extra={'dbfile':self.node.fname,
+                                         'dbline':self.node.lineno,
+                                         'tag':name},
+                                         *args)
 
 _hwlink_fmts = {
     'INST_IO':'@.*',
@@ -196,7 +205,7 @@ def checkRecLink(results, lval):
     '''
     M = _fld_pat.match(lval)
     if not M:
-        results.err("Invalid value for Link field '%s'", lval)
+        results.err('link-format', "Invalid value for Link field '%s'", lval)
         return
     rname, fld, lmod = M.groups()
 
@@ -207,7 +216,7 @@ def checkRecLink(results, lval):
     if lmod:
         badfld = lmod-_lmod
         if badfld:
-            results.err("Invalid link modifier(s) '%s'", ', '.join(badfld))
+            results.err('link-mod', "Invalid link modifier(s) '%s'", ', '.join(badfld))
 
     try:
         rtype = results.recinst[rname]
@@ -218,18 +227,18 @@ def checkRecLink(results, lval):
     else:
         fldinfo = results.rectypes[rtype]
         if fld not in fldinfo:
-            results.err("Link to '%s' of type '%s' has no field '%s'",
+            results.err('bad-field', "Link to '%s' of type '%s' has no field '%s'",
                         rname, rtype, fld)
 
 def checkRecInstField(ent, results, info):
     if ent.args[0].upper()!=ent.args[0]:
-        results.err("Field names must be upper case (%s)", ent.args[0])
+        results.err('field-case', "Field names must be upper case (%s)", ent.args[0])
 
 def wholeRecInstField(ent, results, info):
     recent, fname = results.stack[-1], ent.args[0]
     ftype = recent._fieldinfo.get(fname)
     if not ftype:
-        results.err("recordtype '%s' has not field '%s'",
+        results.err('bad-field', "recordtype '%s' has not field '%s'",
                     recent.args[0], fname)
 
     elif fname in ['INP', 'OUT']:
@@ -237,7 +246,7 @@ def wholeRecInstField(ent, results, info):
         try:
             lfmt = _hwlink_fmts[ltype]
             if not re.match(lfmt, ent.args[1]):
-                results.err("Incorrect %s - %s", ltype, ent.args[1])
+                results.err('hw-link', "Incorrect %s - %s", ltype, ent.args[1])
         except KeyError:
             if ltype=='CONSTANT':
                 checkRecLink(results, ent.args[1])
@@ -251,7 +260,7 @@ def wholeRecInstField(ent, results, info):
         try:
             recent._iolink = results.recdsets[recent.args[0]][ent.args[1]]
         except KeyError:
-            results.err("record type '%s' has no DTYP '%s'",
+            results.err('bad-dtyp', "record type '%s' has no DTYP '%s'",
                         recent.args[0], ent.args[1])
 
 recinsttree = {
@@ -287,7 +296,7 @@ def wholeRecInst(ent, results, info):
         ent._fieldinfo = results.rectypes[rtype]
         results.recinst[ent.args[1]] = rtype
     except KeyError:
-        results.err("%s has unknown record type %s", ent.args[1], rtype)
+        results.err('bad-rtyp', "%s has unknown record type %s", ent.args[1], rtype)
 
 def checkvar(ent, results, info):
     if len(ent.args)==1:
@@ -295,13 +304,13 @@ def checkvar(ent, results, info):
                      ent.args[0])
 
     elif len(ent.args)!=2:
-        results.err("variable must have 2 arguments, found %d", len(ent.args))
+        results.err('bad-var', "variable must have 2 arguments, found %d", len(ent.args))
 
 def wholeDevice(ent, results, info):
     # device(rectype, *_IO, dev*, "DTYP string")
     rtype = ent.args[0]
     if rtype not in results.rectypes:
-        results.err("%s has unknown record type %s", ent.args[3], rtype)
+        results.err('bad-rtyp', "%s has unknown record type %s", ent.args[3], rtype)
     else:
         results.recdsets[rtype][ent.args[3]] = ent.args[1]
 
@@ -384,7 +393,6 @@ def walk(dbd, basetree, results):
                 for SN in specnodes:
                     if isinstance(SN, Block) and SN.name=='external':
                         results.extinst.add(SN.args[0])
-                        _log.info("add ext '%s'", SN.args[0])
             except DBSyntaxError as e:
                 results.warn('spec-comm', "Failed to parse dbdlint special comment: %s",
                              e.message)
@@ -401,7 +409,7 @@ def walk(dbd, basetree, results):
 
         I = T.get(ent.name)
         if not I:
-            results.err("Unknown node or out of context: %s", ent)
+            results.err('unknown-node', "Unknown node or out of context: %s", ent)
             continue
 
         if isinstance(ent, Block):
@@ -410,10 +418,10 @@ def walk(dbd, basetree, results):
 
             if expectbody is not None:
                 if expectbody and not havebody:
-                    results.err("empty body {} not allowed")
+                    results.err('missing-body', "empty body {} not allowed")
                     continue
                 elif not expectbody and havebody:
-                    results.err("body {} not allowed")
+                    results.err('bad-body', "body {} not allowed")
                     continue
 
             subtree = I.get('tree')
@@ -424,7 +432,7 @@ def walk(dbd, basetree, results):
 
             nargs = I.get('nargs')
             if nargs is not None and len(ent.args)!=nargs:
-                results.err("Incorrect number of arguments for %s.  %d but expect %d",
+                results.err('bad-args', "Incorrect number of arguments for %s.  %d but expect %d",
                             ent.name, len(ent.args), nargs)
     
             quote = I.get('quote')

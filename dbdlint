@@ -5,14 +5,19 @@ import sys, logging
 from pyPDB.dbdlint import getargs, main
 
 A = getargs()
+
 H = logging.StreamHandler(sys.stderr)
-H.setFormatter(logging.Formatter('%(levelname)s %(message)s'))
+H.setFormatter(logging.Formatter('%(levelname)-7s %(message)s'))
 L = logging.getLogger()
 L.addHandler(H)
 L.setLevel(A.log_lvl)
+
+H = logging.StreamHandler(sys.stderr)
+H.setFormatter(logging.Formatter('%(levelname)-7s %(dbfile)s:%(dbline)s %(tag)s - %(message)s'))
 L = logging.getLogger('dbdlint')
 L.addHandler(H)
 L.setLevel(logging.DEBUG)
+
 if A.hotshot:
     from hotshot import Profile, stats
     _prof=Profile(A.hotshot)

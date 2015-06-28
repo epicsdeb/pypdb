@@ -1,0 +1,33 @@
+# Unknown recordtype
+device(aaa, CONSTANT, devxyzsoft, "Soft Channel")
+
+recordtype(xyz) {
+    field(DTYP, DBF_DEVICE) {}
+    field(VAL, DBF_LONG) {}
+    field(RVAL,DBF_LONG) {}
+    field(INP, DBF_INLINK) {}
+    field(FLNK, DBF_FWDLINK) {}
+}
+device(xyz, CONSTANT, devxyzsoft, "Soft Channel")
+device(xyz, VME_IO, devxyzdev, "Device")
+
+# Unknown recordtype
+record(abc, "invalid:rtype") {}
+
+record(xyz, "foo") {
+    field(DTYP, "Device")
+    field(INP , "#X0 S4 @foo") # bad format
+    field(INP , "#C3 S4 @foo") # good format, but field given twice
+}
+
+record(xyz, "bar") {
+    field(INP , "foo.RVAL CP")
+    field(FLNK, "foo")
+}
+
+#: external("isexternal.PROC")
+
+record(xyz, "other") {
+    field(INP , "missing.RVAL CP") # "missing.RVAL" not defined external()
+    field(FLNK, "isexternal.PROC")
+}

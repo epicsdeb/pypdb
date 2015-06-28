@@ -196,7 +196,7 @@ _lmod = set(['CA','CP','CPP','MS','MSS','MSI'])
 #   recname MOD MOD
 #   recname.FLD
 #   recname.FLD MOD MOD
-_fld_pat = re.compile(r'([^. ]+)(\.[A-Z]+)?(?: ([A-Z ]+))?')
+_fld_pat = re.compile(r'([^. ]+)(?:\.([A-Z]+))?(?: ([A-Z ]+))?')
 
 def checkRecLink(results, lval):
     '''Validate record (DB or CA) link string
@@ -243,14 +243,14 @@ def wholeRecInstField(ent, results, info):
 
     elif fname in ['INP', 'OUT']:
         ltype = getattr(recent, '_iolink', 'CONSTANT')
-        try:
-            lfmt = _hwlink_fmts[ltype]
-            if not re.match(lfmt, ent.args[1]):
-                results.err('hw-link', "Incorrect %s - %s", ltype, ent.args[1])
-        except KeyError:
-            if ltype=='CONSTANT':
-                checkRecLink(results, ent.args[1])
-            else:
+        if ltype=='CONSTANT':
+            checkRecLink(results, ent.args[1])
+        else:
+            try:
+                lfmt = _hwlink_fmts[ltype]
+                if not re.match(lfmt, ent.args[1]):
+                    results.err('hw-link', "Incorrect %s - %s", ltype, ent.args[1])
+            except KeyError:
                 _log.info("Unsupported link type %s", ltype)
 
     elif ftype.endswith('LINK'):

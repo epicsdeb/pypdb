@@ -36,23 +36,10 @@ class CaptureMsg(logging.Handler):
 
 class _TestLint(unittest.TestCase):
     def _matchmsg(self, file, type, Lactual, Lexpect):
-        missing = []
-        for expect in Lexpect or []:
-            found = False
-            for actual in Lactual:
-                M = re.match(expect, actual)
-                if M is not None:
-                    found = True
-                    Lactual.remove(actual)
-                    break
-            if not found:
-                missing.append(expect)
-
-        for actual in Lactual:
-            raise self.failureException("Un-expected %s: '%s'"%(type, actual))
-
-        for expect in missing:
-            raise self.failureException("%s did not raise %s '%s'"%(file, type, expect))
+        for expect, actual in zip(Lexpect or [], Lactual):
+            M = re.match(expect, actual)
+            if M is None:
+                raise self.failureException("%s '%s' not mached by '%s'"%(type, actual, expect))
 
     def assertLint(self, file, errors=None, warnings=None, args=None):
         args = args or []
@@ -95,15 +82,15 @@ class TestLint(_TestLint):
     def test_quote(self):
         self.assertLint("quote.db", warnings=[
             r".*/quote.db:1|quoted|.*record.* 2 not quoted",
-            r".*/quote.db:3|quoted|.*field.* 2 not quoted",
             r".*/quote.db:5|varint|.*foo.*",
+            r".*/quote.db:2|quoted|.*field.* 2 not quoted",
         ])
 
         # treat warnings as errors
         self.assertLint("quote.db", errors=[
             r".*/quote.db:1|quoted|.*record.* 2 not quoted",
-            r".*/quote.db:3|quoted|.*field.* 2 not quoted",
             r".*/quote.db:5|varint|.*foo.*",
+            r".*/quote.db:2|quoted|.*field.* 2 not quoted",
         ], args=['-Werror'])
 
         # disable warning
@@ -112,5 +99,14 @@ class TestLint(_TestLint):
         # enable only this warning
         self.assertLint("quote.db", warnings=[
             r".*/quote.db:1|quoted|.*record.* 2 not quoted",
-            r".*/quote.db:3|quoted|.*field.* 2 not quoted",
+            r".*/quote.db:2|quoted|.*field.* 2 not quoted",
         ], args=['-Wnone', '-Wquoted'])
+
+    def test_fieldlinks(self):
+        self.assertLint("fields.db", warnings=[
+            r'.*/fields.db:31|ext-link|.*missing.RVAL',
+        ], errors=[
+            r'.*/fields.db:2|bad-rtyp|.*Soft Channel .* aaa',
+            r'.*/fields.db:15|bad-rtyp|.*abc',
+            r'.*/fields.db:19|hw-link|.*VME_IO.*',
+        ], args=['-Wall', '--full'])

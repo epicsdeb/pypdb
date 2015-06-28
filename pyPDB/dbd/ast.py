@@ -102,7 +102,7 @@ class Block(object):
     :ivar argsquoted: List of bool indicating which arguments need quoting
     :ivar body: :obj:`None` or a list of child nodes
     """
-    __slots__ = ('fname', 'lineno', 'name', 'args', 'argsquoted', 'body')
+
     def __init__(self, name, argval, argq, body=None, lineno=None):
         self.fname = None
         self.lineno = lineno

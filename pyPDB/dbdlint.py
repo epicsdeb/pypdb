@@ -13,7 +13,7 @@ _log = logging.getLogger(__name__)
 _msg = logging.getLogger("dbdlint")
 _msg.propagate = False
 
-import sys, itertools
+import sys, re, itertools
 
 from .dbd.yacc import parse
 from .dbd.ast import Code, Comment, Block, Command, DBSyntaxError
@@ -138,7 +138,8 @@ class Results(object):
         self.node = None
         self.stack = []
 
-        self.rectypes = {}
+        self.rectypes = {} # {'ao':{'OUT':'DBF_OUTLINK', ...}, ...}
+        self.recdsets = {} # {'ao':{'Soft Channel':'CONSTANT', ...}, ...}
 
     def err(self, msg, *args):
         self._error = True
@@ -149,9 +150,55 @@ class Results(object):
         self._warning = True
         _msg.log(self._wlvl, "%s:%s - "+msg, self.node.fname, self.node.lineno, *args)
 
+_hwlink_fmts = {
+    'INST_IO':'@.*',
+    'VME_IO':'#C[0-9A-Fa-fx]+ S[0-9A-Fa-fx]+ @.*',
+}
+
+def wholeRectypeField(ent, results, info):
+    ft = ent.args[1]
+    rt = results.stack[-1].args[0]
+    results.rectypes[rt][ent.args[0]] = ft
+
+rectypetree = {
+    Block:{
+        'field':{
+            'nargs':2,
+            'quote':[False, False],
+            'wholefn':wholeRectypeField,
+        },
+    },
+}
+
 def checkRecInstField(ent, results, info):
     if ent.args[0].upper()!=ent.args[0]:
         results.err("Field names must be upper case (%s)", ent.args[0])
+
+def wholeRecInstField(ent, results, info):
+    recent, fname = results.stack[-1], ent.args[0]
+    ftype = recent._fieldinfo.get(fname)
+    if not ftype:
+        results.err("recordtype '%s' has not field '%s'",
+                    recent.args[0], fname)
+
+    elif fname in ['INP', 'OUT']:
+        ltype = getattr(recent, '_iolink', 'CONSTANT')
+        try:
+            lfmt = _hwlink_fmts[ltype]
+            if not re.match(lfmt, ent.args[1]):
+                results.err("Incorrect %s - %s", ltype, ent.args[1])
+        except KeyError:
+            _log.info("Unsupported link type %s", ltype)
+
+    elif ftype.endswith('LINK'):
+        pass
+
+    elif fname=='DTYP':
+        try:
+            recent._iolink = results.recdsets[recent.args[0]][ent.args[1]]
+        except KeyError:
+            results.err("record type '%s' has no DTYP '%s'",
+                        recent.args[0], ent.args[1])
 
 recinsttree = {
     Block:{
@@ -160,6 +207,7 @@ recinsttree = {
             'quote':[None, True],
             'body':False,
             'checkfn':checkRecInstField,
+            'wholefn':wholeRecInstField,
         },
         'info':{
             'nargs':2,
@@ -175,11 +223,15 @@ recinsttree = {
 }
 
 def checkRecType(ent, results, info):
-    results.rectypes[ent.args[0]] = ent
+    rtype = ent.args[0]
+    results.rectypes[rtype] = {}
+    results.recdsets[rtype] = {}
 
 def wholeRecInst(ent, results, info):
     rtype = ent.args[0]
-    if rtype not in results.rectypes:
+    try:
+        ent._fieldinfo = results.rectypes[rtype]
+    except KeyError:
         results.err("%s has unknown record type %s", ent.args[1], rtype)
 
 def checkvar(ent, results, info):
@@ -189,6 +241,14 @@ def checkvar(ent, results, info):
 
     elif len(ent.args)!=2:
         results.err("variable must have 2 arguments, found %d", len(ent.args))
+
+def wholeDevice(ent, results, info):
+    # device(rectype, *_IO, dev*, "DTYP string")
+    rtype = ent.args[0]
+    if rtype not in results.rectypes:
+        results.err("%s has unknown record type %s", ent.args[3], rtype)
+    else:
+        results.recdsets[rtype][ent.args[3]] = ent.args[1]
 
 dbdtree = {
     Block:{
@@ -201,6 +261,7 @@ dbdtree = {
         'recordtype':{
             'nargs':1,
             'wholefn':checkRecType,
+            'tree':rectypetree,
         },
         'alias':{
             'nargs':2,
@@ -211,6 +272,7 @@ dbdtree = {
             'nargs':4,
             'quote':[False,False,False,True],
             'body':False,
+            'wholefn':wholeDevice,
         },
         'registrar':{
             'nargs':1,

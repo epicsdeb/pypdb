@@ -22,6 +22,8 @@ To make the warning an error: ::
     $ echo $?
     2
 
+Or to disable warnings entirely give *-Wnone*.
+
 Validation Modes
 ----------------
 

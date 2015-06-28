@@ -31,3 +31,7 @@ record(xyz, "other") {
     field(INP , "missing.RVAL CP") # "missing.RVAL" not defined external()
     field(FLNK, "isexternal.PROC")
 }
+
+record(xyz, "last") {
+    field(INP , "42.2")
+}

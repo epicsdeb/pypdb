@@ -204,6 +204,11 @@ def checkRecLink(results, lval):
 
     Call from field() validation
     '''
+    try:
+        float(lval) # parse as a test for a CONSTANT value
+        return
+    except ValueError:
+        pass
     M = _fld_pat.match(lval)
     if not M:
         results.err('link-format', "Invalid value for Link field '%s'", lval)

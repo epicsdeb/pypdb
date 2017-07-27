@@ -1,0 +1,11 @@
+sudo: false
+dist: trusty
+language: python
+install:
+  - pip install -r requirements-${PROF}.txt
+script:
+  - python -m nose pyPDB
+matrix:
+  include:
+  - python: "2.7"
+    env: PROF=deb9

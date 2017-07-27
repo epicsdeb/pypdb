@@ -1,5 +1,15 @@
 
 Utilities for working with EPICS PDB files
+==========================================
+
+File validating (linting)
+-------------------------
+
+The dbdlint tool performs syntax and other checks of individual .db
+files, or entire databases (.dbd and .db files).
+
+Naming convention translation
+-----------------------------
 
 This manual describes the usage of the getpvs and applypvs utilities
 included in the pyPDB package. These tools provide a way to generate

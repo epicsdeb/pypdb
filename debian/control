@@ -1,7 +1,7 @@
 Source: pypdb
 Section: python
 Priority: extra
-Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
+Maintainer: Michael Davidsaver <mdavidsaver@gmail.com>
 Build-Depends: debhelper (>= 8.0.0),
                python-all, python-all-dbg,
                python-ply (>= 3.4~),

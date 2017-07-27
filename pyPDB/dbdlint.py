@@ -172,7 +172,7 @@ class Results(object):
 
 _hwlink_fmts = {
     'INST_IO':'@.*',
-    'VME_IO':'#C[0-9A-Fa-fx]+ S[0-9A-Fa-fx]+ @.*',
+    'VME_IO':'#C.+ S.+ @.*',
 }
 
 def wholeRectypeField(ent, results, info):
@@ -190,14 +190,14 @@ rectypetree = {
     },
 }
 
-_lmod = set(['CA','CP','CPP','MS','MSS','MSI'])
+_lmod = set(['CA','CP','CPP','NMS','MS','MSS','MSI','NPP','PP'])
 
 # Possibilities:
 #   recname
 #   recname MOD MOD
 #   recname.FLD
 #   recname.FLD MOD MOD
-_fld_pat = re.compile(r'([^. ]+)(?:\.([A-Z]+))?(?: ([A-Z ]+))?')
+_fld_pat = re.compile(r'(?:([^. ]+)(?:\.([A-Z][A-Z0-9]+))?(?: ([A-Z ]+))?)?')
 
 def checkRecLink(results, lval):
     '''Validate record (DB or CA) link string
@@ -364,6 +364,10 @@ dbdtree = {
         'breaktable':{
             'nargs':1,
             'body':True,
+        },
+        'link':{
+            'nargs':2,
+            'body':False,
         },
     },
     Command:{

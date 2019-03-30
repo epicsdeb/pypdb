@@ -104,9 +104,11 @@ class TestLint(_TestLint):
 
     def test_fieldlinks(self):
         self.assertLint("fields.db", warnings=[
+            r'.*/fields.db:6|bad-field|Unable to validate field \'VAL\'',
             r'.*/fields.db:31|ext-link|.*missing.RVAL',
         ], errors=[
             r'.*/fields.db:2|bad-rtyp|.*Soft Channel .* aaa',
+            r'.*/fields.db:5|bad-rtyp|.*unknown record type aaa',
             r'.*/fields.db:15|bad-rtyp|.*abc',
             r'.*/fields.db:19|hw-link|.*VME_IO.*',
         ], args=['-Wall', '--full'])

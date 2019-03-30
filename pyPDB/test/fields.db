@@ -1,6 +1,11 @@
 # Unknown recordtype
 device(aaa, CONSTANT, devxyzsoft, "Soft Channel")
 
+# Unknown recordtype
+record(aaa, "something") {
+    field(VAL, "")
+}
+
 recordtype(xyz) {
     field(DTYP, DBF_DEVICE) {}
     field(VAL, DBF_LONG) {}

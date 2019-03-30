@@ -1,0 +1,21 @@
+recordtype(xyz) {
+    field(DTYP, DBF_DEVICE) {}
+    field(VAL, DBF_LONG) {}
+    field(RVAL,DBF_LONG) {}
+    field(INP, DBF_INLINK) {}
+    field(FLNK, DBF_FWDLINK) {}
+}
+recordtype(other) {
+    field(DTYP, DBF_DEVICE) {}
+    field(VAL, DBF_LONG) {}
+    field(RVAL,DBF_LONG) {}
+    field(INP, DBF_INLINK) {}
+    field(FLNK, DBF_FWDLINK) {}
+}
+
+record(xyz, "blah") {
+    field(VAL, "4")
+}
+record(other, "blah") {
+    field(VAL, "5")
+}

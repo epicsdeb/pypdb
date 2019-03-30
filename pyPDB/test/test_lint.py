@@ -56,7 +56,7 @@ class _TestLint(unittest.TestCase):
         self._matchmsg(file, "warning", C.msg[logging.WARN], warnings)
         self._matchmsg(file, "error", C.msg[logging.ERROR], errors)
 
-        if errors or args.werror:
+        if errors or (args.werror and warnings):
             expectcode = 2
         else:
             expectcode = 0
@@ -65,6 +65,9 @@ class _TestLint(unittest.TestCase):
             raise self.failureException("expected exit code %d, actual %d"%(expectcode,code))
 
 class TestLint(_TestLint):
+    def test_good(self):
+        self.assertLint("good.db", args=['-F'])
+
     def test_badsyntax(self):
         self.assertLint("badsyntax.db", errors=['.*Syntax error at or before }'])
 
@@ -112,3 +115,8 @@ class TestLint(_TestLint):
             r'.*/fields.db:15|bad-rtyp|.*abc',
             r'.*/fields.db:19|hw-link|.*VME_IO.*',
         ], args=['-Wall', '--full'])
+
+    def test_switchrtyp(self):
+        self.assertLint("switchrtyp.db", args=['-F'], errors=[
+            r".*/switchrtyp.db:19|bad-rtyp|.*change record 'blah' from 'xyz' to 'other'",
+        ])

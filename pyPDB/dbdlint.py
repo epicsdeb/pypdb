@@ -270,11 +270,22 @@ def checkRecType(ent, results, info):
 
 def wholeRecInst(ent, results, info):
     rtype = ent.args[0]
+    if rtype=='*' and ent.args[1] in results.recinst:
+        rtype = results.recinst[ent.args[1]]
+
     try:
         ent._fieldinfo = results.rectypes[rtype]
-        results.recinst[ent.args[1]] = rtype
     except KeyError:
         results.err('bad-rtyp', "%s has unknown record type %s", ent.args[1], rtype)
+
+    if ent.args[1] in results.recinst:
+        _log.debug("Appending record '%s'", ent.args[1])
+        otype = results.recinst[ent.args[1]]
+        if otype!=rtype:
+            results.err('bad-rtyp', "Can't change record '%s' from '%s' to '%s'",
+                        ent.args[1], otype, rtype)
+    else:
+        results.recinst[ent.args[1]] = rtype
 
 def checkvar(ent, results, info):
     if len(ent.args)==1:

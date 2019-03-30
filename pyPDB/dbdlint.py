@@ -181,16 +181,6 @@ def wholeRectypeField(ent, results, info):
     rt = results.stack[-1].args[0]
     results.rectypes[rt][ent.args[0]] = ft
 
-rectypetree = {
-    Block:{
-        'field':{
-            'nargs':2,
-            'quote':[False, False],
-            'wholefn':wholeRectypeField,
-        },
-    },
-}
-
 _lmod = set(['CA','CP','CPP','NMS','MS','MSS','MSI','NPP','PP'])
 
 # Possibilities:
@@ -273,28 +263,6 @@ def wholeRecInstField(ent, results, info):
             results.err('bad-dtyp', "record type '%s' has no DTYP '%s'",
                         recent.args[0], ent.args[1])
 
-recinsttree = {
-    Block:{
-        'field':{
-            'nargs':2,
-            'quote':[None, True],
-            'body':False,
-            'checkfn':checkRecInstField,
-            'wholefn':wholeRecInstField,
-        },
-        'info':{
-            'nargs':2,
-            'quote':[None, True],
-            'body':False,
-        },
-        'alias':{
-            'nargs':1,
-            'quote':[True],
-            'body':False,
-        },
-    },
-}
-
 def checkRecType(ent, results, info):
     rtype = ent.args[0]
     results.rectypes[rtype] = {}
@@ -327,18 +295,47 @@ def wholeDevice(ent, results, info):
 def includeFile(ent, results, info):
     results.err('incomplete-dbd', 'This tool must be run on an expanded .dbd.  (eg. softIoc.dbd, not base.dbd)')
 
+# Checks to be applied at specific places in the syntax tree.
 dbdtree = {
     Block:{
         'record':{
             'nargs':2,
             'quote':[None, True],
-            'tree':recinsttree,
             'wholefn':wholeRecInst,
+            'tree':{
+                Block:{
+                    'field':{
+                        'nargs':2,
+                        'quote':[None, True],
+                        'body':False,
+                        'checkfn':checkRecInstField,
+                        'wholefn':wholeRecInstField,
+                    },
+                    'info':{
+                        'nargs':2,
+                        'quote':[None, True],
+                        'body':False,
+                    },
+                    'alias':{
+                        'nargs':1,
+                        'quote':[True],
+                        'body':False,
+                    },
+                },
+            },
         },
         'recordtype':{
             'nargs':1,
             'wholefn':checkRecType,
-            'tree':rectypetree,
+            'tree':{
+                Block:{
+                    'field':{
+                        'nargs':2,
+                        'quote':[False, False],
+                        'wholefn':wholeRectypeField,
+                    },
+                },
+            },
         },
         'alias':{
             'nargs':2,

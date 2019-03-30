@@ -26,6 +26,7 @@ _dft_warns = {
 
 _all_warns = {
     'ext-link':"A DB/CA link to a PV which is not defined.  Add '#: external(\"pv.FLD\")",
+    'bad-field':"Unable to validate record instance field due to a previous error (missing recordtype).",
 }
 _all_warns.update(_dft_warns)
 
@@ -242,6 +243,9 @@ def checkRecInstField(ent, results, info):
 
 def wholeRecInstField(ent, results, info):
     recent, fname = results.stack[-1], ent.args[0]
+    if not hasattr(recent, '_fieldinfo'):
+        results.warn('bad-field', "Unable to validate field '%s'", fname)
+        return
     ftype = recent._fieldinfo.get(fname)
     if not ftype:
         results.err('bad-field', "recordtype '%s' has not field '%s'",

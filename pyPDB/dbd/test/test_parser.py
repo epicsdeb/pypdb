@@ -56,9 +56,8 @@ class TestParse(unittest.TestCase):
             try:
                 O = yacc.parse(I) #,debug=1)
                 self.assertListEqual(E, O)
-            except:
-                print 'Error in case', n
-                raise
+            except Exception as e:
+                raise e.__class__('Error in case: %s : %s'%(n, e))
 
 class TestParseFail(unittest.TestCase):
     def test_fail(self):

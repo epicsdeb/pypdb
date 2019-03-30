@@ -44,11 +44,11 @@ if __name__=='__main__':
         import sys
         out=sys.stdout
     else:
-        out=file(opts.output, 'w')
+        out=open(opts.output, 'w')
 
     entries=main(opts,args,out)
 
-    entries=entries.values()
+    entries=list(entries.values())
     entries.sort()
     
     writePO(out, entries, header={'path':opts.include})

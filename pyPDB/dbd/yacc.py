@@ -7,6 +7,8 @@ in file LICENSE that is included with this distribution.
 DB/DBD file parser
 """
 
+from __future__ import print_function
+
 import logging
 _log = logging.getLogger(__name__)
 
@@ -158,7 +160,7 @@ if __name__=='__main__':
         fname = '<stdin>'
         data = sys.stdin.read()
 
-    print 'Start'
+    print('Start')
     V = parse(data, debug=1, file=fname)
 
     import pprint

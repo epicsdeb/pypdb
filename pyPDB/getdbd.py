@@ -50,9 +50,9 @@ def main(opts,args,out):
                 yield inst
     
     if opts.dups:
-        I=allentries(pdb.records.itervalues())
+        I=allentries(pdb.records.values())
     else:
-        I=pdb.records.itervalues()
+        I=pdb.records.values()
     
     for rec in I:
     
@@ -71,7 +71,7 @@ def main(opts,args,out):
             warn("%s : Skipping unknown recordtype '%s'"%(rec.name,rec.args[0]))
             continue
     
-        interesting=recflds.get(rtype,  None)
+        interesting=recflds.get(rec.args[0],  None)
         if interesting is None:
             interesting=[]
             for rf in rtype.body:
@@ -79,7 +79,7 @@ def main(opts,args,out):
                     continue
                 if rf.args[1] in linktypes:
                     interesting.append(rf.args[0])
-            recflds[rtype]=interesting
+            recflds[rec.args[0]]=interesting
     
         for fld in rec.body:
             if not isinstance(fld, Block) or fld.name!='field':

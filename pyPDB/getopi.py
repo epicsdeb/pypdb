@@ -33,9 +33,9 @@ bodypvs=[
 # pattern tag names
 bodypatpvs=[
 # xy graph
-'trace_[0-9]+_[a-z]_pv'
+'trace_[0-9]+_[a-zA-Z]+_pv'
 ]
-bodypatpvs=map(re.compile, bodypatpvs)
+bodypatpvs=list(map(re.compile, bodypatpvs))
 
 class tagger(object):
     def __init__(self, db):
@@ -114,12 +114,12 @@ def main(opts,args,out):
 
             fullname=findFile(fname, path=opts.include) 
 
-            fd=open(fullname, 'rU')
+            fd=open(fullname, 'rb')
             p.ParseFile(fd)
             fd.close()
 
         except IOError:
-            print >>sys.stderr, "Can't find/read",fname,"in",', '.join(opts.include)
+            sys.stderr.write("Can't find/read %s in %s\n"%(fname,', '.join(opts.include)))
             sys.exit(1)
 
     return entries

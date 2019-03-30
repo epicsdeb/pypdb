@@ -18,7 +18,7 @@ def showDBD(dbd, fd=sys.stdout, indent=''):
             A = ent.arg
             if ent.argquote:
                 A = quote(A)
-            print >>fd,'%s%s %s'%(indent, ent.name, A)
+            fd.write('%s%s %s\n'%(indent, ent.name, A))
 
         elif isinstance(ent, Block):
             As = []
@@ -28,24 +28,24 @@ def showDBD(dbd, fd=sys.stdout, indent=''):
                 else:
                     As.append(A)
 
-            print >>fd,"%s%s(%s)"%(indent, ent.name, ', '.join(As)),
+            fd.write("%s%s(%s)\n"%(indent, ent.name, ', '.join(As))),
 
             if ent.name=='breaktable':
-                print >>fd
+                fd.write('\n')
 
             elif ent.body is None:
-                print >>fd
+                fd.write('\n')
 
             else:
-                print >>fd,"%s{"%indent
+                fd.write("%s{\n"%indent)
                 showDBD(ent.body, fd, indent+'  ')
-                print >>fd,"%s}"%indent
+                fd.write("%s}\n"%indent)
 
         elif isinstance(ent, Comment):
-            print >>fd,"%s#%s"%(indent, ent.value)
+            fd.write("%s#%s\n"%(indent, ent.value))
 
         elif isinstance(ent, Code):
-            print >>fd,"%s%%%s"%(indent, ent.value)
+            fd.write("%s%%%s\n"%(indent, ent.value))
 
         else:
             warnings.warn("Unknown entry '%s' (%s)"%(ent,type(ent)))

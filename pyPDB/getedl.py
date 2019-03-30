@@ -73,11 +73,10 @@ def main(opts,args,out):
             fd=open(fullname, 'rU')
     
         except IOError:
-            print >>sys.stderr, "Can't find/read",fname,"in",', '.join(opts.include)
+            sys.stderr.write("Can't find/read %s in %s\n"%(fname,', '.join(opts.include)))
             sys.exit(1)
     
         for ln, L in enumerate(fd.readlines()):
-            #print ln,L
             M=attrpat.match(L)
             if M is None:
                 continue

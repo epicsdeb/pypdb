@@ -12,7 +12,7 @@ class DBSyntaxError(RuntimeError):
         RuntimeError.__init__(self, msg)
         self.fname, self.lineno = fname, lineno
     def __repr__(self):
-        return 'DBSyntaxError %s:%s : %s'%(self.fname, self.lineno, self.message)
+        return 'DBSyntaxError %s:%s : %s'%(self.fname, self.lineno, self.args[0])
     __str__ = __repr__
 
 _unquote = {

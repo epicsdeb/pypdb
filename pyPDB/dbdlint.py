@@ -123,7 +123,7 @@ def main(args):
             walk(dbd, dbdtree, R)
         except DBSyntaxError as e:
             R._error = True
-            _msg.error(e.message, extra={'dbfile':e.fname,
+            _msg.error(e.args[0], extra={'dbfile':e.fname,
                                          'dbline':e.lineno,
                                          'tag':'syntax'})
         except KeyboardInterrupt:

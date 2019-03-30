@@ -10,9 +10,11 @@ PO (gettext) translation file generator
 """
 
 import time
+from functools import total_ordering
 
 __all__ = ['POEnt','writePO']
 
+@total_ordering
 class POEnt(object):
     ID=None  # untranslated
     STR=None # translated
@@ -32,8 +34,8 @@ class POEnt(object):
         self.flags=[]
         self.olds=[]
 
-    def __cmp__(self, o):
-        return cmp(self.ID, o.ID)
+    def __lt__(self, o):
+        return self.ID < o.ID
 
 def writePO(fd, ents, header={}):
     """Takes a file desriptor, list of POEnts, and a dictionary of
@@ -41,12 +43,12 @@ def writePO(fd, ents, header={}):
     """
     
     header.setdefault('time',time.strftime('%F %H:%M%z'))
-    header.setdefault('projid','placeholder 0.0')
+    header.setdefault('projid','')
     header.setdefault('lasttr','')
     header.setdefault('team','')
-    header.setdefault('lang','xxx')
+    header.setdefault('lang','')
     
-    print >>fd,"""msgid ""
+    fd.write("""msgid ""
 msgstr ""
 "Project-Id-Version: %(projid)s\\n"
 "POT-Creation-Date: %(time)s\\n"
@@ -56,28 +58,29 @@ msgstr ""
 "Language: %(lang)s\\n"
 "MIME-Version: 1.0\\n"
 "Content-Type: text/plain; charset=iso-8859-1\\n"
-"Content-Transfer-Encoding: 8bit\\n"
-"X-Generator: pyPDB\\n" """ % header
+"Content-Transfer-Encoding: 8bit\\n" 
+"X-Generator: pyPDB\\n"
+""" % header)
     
     path=header.get('path',[])
     if len(path)>0:
-        print >>fd,'"X-Poedit-Basepath: %s\\n"'%(path[0])
+        fd.write('"X-Poedit-Basepath: %s\\n"\n'%(path[0]))
     for n,d in enumerate(path):
-        print >>fd,'"X-Poedit-SearchPath-%d: %s\\n"'%(n,d)
-    print >>fd
+        fd.write('"X-Poedit-SearchPath-%d: %s\\n"\n'%(n,d))
+    fd.write("\n")
 
     for E in ents:
         for c in E.comTR:
-            print >>fd,'# ',c
+            fd.write('# %s\n'%c)
         for c in E.comExt:
-            print >>fd,'#.',c
+            fd.write('#. %s\n'%c)
         for c in E.refs:
-            print >>fd,'#:',c
+            fd.write('#: %s\n'%c)
         for c in E.flags:
-            print >>fd,'#,',c
+            fd.write('#, %s\n'%c)
         for c in E.olds:
-            print >>fd,'#|',c
+            fd.write('#| %s\n'%c)
     
-        print >>fd,'msgid "%s"'%E.ID
-        print >>fd,'msgstr "%s"'%E.STR
-        print >>fd
+        fd.write('msgid "%s"\n'%E.ID)
+        fd.write('msgstr "%s"\n'%E.STR)
+        fd.write("\n")

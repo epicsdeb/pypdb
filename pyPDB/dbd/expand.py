@@ -9,13 +9,19 @@ in file LICENSE that is included with this distribution.
 
 import sys
 import warnings
+import logging
 from copy import copy
 
 from collections import defaultdict
-from StringIO import StringIO
+try:
+    from io import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 from .yacc import parse
 from .ast import Command, Block, Comment, Code
+
+_log = logging.getLogger(__name__)
 
 class RecursiveError(RuntimeError):
     pass
@@ -83,11 +89,8 @@ def loadEntry(name, path=['.'], skip=[], cache=None):
                 out.append(ent)
 
         dbd=out
-    except RecursiveError,e:
-        # Append message while preserving stack trace
-        _, _, tb = sys.exc_info()
-        next=RecursiveError('%s\nFrom %s'%(e,f))
-        raise RecursiveError, next, tb
+    except RecursiveError as e:
+        raise RecursiveError('%s\nFrom %s'%(e,f))
 
 
     skip.pop()
@@ -151,11 +154,8 @@ def loadDBD(name, path=['.'], skip=[], cache=None):
                 out.append(ent)
 
         dbd=out
-    except RecursiveError,e:
-        # Append message while preserving stack trace
-        _, _, tb = sys.exc_info()
-        next=RecursiveError('%s\nFrom %s'%(e,f))
-        raise RecursiveError, next, tb
+    except RecursiveError as e:
+        raise RecursiveError('%s\nFrom %s'%(e,f))
 
 
     skip.pop()
@@ -172,7 +172,7 @@ class DBD(object):
                         'grecord':self.records,
                         'recordtype':self.recordtypes}
         if dbd is not None:
-            print 'Load',len(dbd)
+            _log.info('Load %d',len(dbd))
             self.load(dbd)
 
     def load(self, dbd):
@@ -193,17 +193,15 @@ class DBD(object):
         d=self._dispatch[type]
         n=defaultdict(list)
         R=StringIO()
-        for name, ent in d.iteritems():
+        for name, ent in d.items():
             if len(ent)>1:
-                print >>R,'\nDuplicate definitions for %s \'%s\''% \
-                  (type,name)
+                R.write('\nDuplicate definitions for %s \'%s\'\n'%(type,name))
                 for inst in ent:
-                    print >>R,'  %s:%d'%(inst.fname, inst.lineno)
+                    R.write('  %s:%d\n'%(inst.fname, inst.lineno))
             n[name]=ent[0]
         R.seek(0)
         R=R.read()
         if len(R)>0:
-            print R
-            raise KeyError('duplicate definitions')
+            raise KeyError('duplicate definitions: %s'%R)
         d.clear()
         d.update(n)

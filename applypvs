@@ -82,16 +82,16 @@ for po in opts.po:
 if opts.reverse:
     fail=False
     nm={}
-    for orig, sub in mappings.iteritems():
+    for orig, sub in mappings.items():
         if sub not in nm:
             nm[sub]=orig
 
         else:
-            print >>sys.stderr,"""Un-reversable mapping
+            sys.stderr.write("""Un-reversable mapping
 From %(origfile)s '%(orig)s = %(sub)s'
 and
 From %(prevfile)s '%(prev)s = %(sub)s'
-""" % {'orig':orig, 'sub':sub, 'prev':nm[sub],
+""") % {'orig':orig, 'sub':sub, 'prev':nm[sub],
        'origfile':src[orig], 'prevfile':src[nm[sub]]}
             fail=True
     if fail:
@@ -103,7 +103,7 @@ From %(prevfile)s '%(prev)s = %(sub)s'
 actions=[]
 
 if opts.mode in ['db', 'edl']:
-    for orig, sub in mappings.iteritems():
+    for orig, sub in mappings.items():
         if opts.mode=='edl':
             orig = orig.replace('{', '\{')
             sub = sub.replace('{', '\{')
@@ -118,25 +118,25 @@ if opts.mode in ['db', 'edl']:
         #  field(INPA, "name.VAL EXTRA")
         #  field(INPA, name.VAL)
         # So break names on whitespace, '.', or '"'
-        tst = '(?:^|(?<=[\s,"\(]))' + re.escape(orig) + '(?:$|(?=[\s.,"\)]))'
-        actions.append((re.compile(tst), sub))
+        tst = b'(?:^|(?<=[\s,"\(]))' + re.escape(orig).encode('utf-8') + b'(?:$|(?=[\s.,"\)]))'
+        actions.append((re.compile(tst), sub.encode('utf-8')))
 
 elif opts.mode in ['xml','opi']:
     from xml.sax.saxutils import escape
 
-    for orig, sub in mappings.iteritems():
+    for orig, sub in mappings.items():
         # Like DB except record names are found
         # enclosed like ">$(1):name.FLD<"
         orig, sub = map(escape, (orig,sub))
-        tst = '''(?:^|(?<=[\s'">]))''' + re.escape(orig) + '''(?:$|(?=[\s.'"<]))'''
-        actions.append((re.compile(tst), sub))
+        tst = b'''(?:^|(?<=[\s'">]))''' + re.escape(orig).encode('utf-8') + b'''(?:$|(?=[\s.'"<]))'''
+        actions.append((re.compile(tst), sub.encode('utf-8')))
 
 elif opts.mode=='proto':
-    for orig, sub in mappings.iteritems():
+    for orig, sub in mappings.items():
         # Like DB except that macros are "\$1" and record names are found
         # enclosed like "(\$1:name.FLD)"
-        tst = '(?:^|(?<=[\s"\(]))' + re.escape(orig) + '(?:$|(?=[\)\s."]))'
-        actions.append((re.compile(tst), sub))
+        tst = b'(?:^|(?<=[\s"\(]))' + re.escape(orig).encode('utf-8') + b'(?:$|(?=[\)\s."]))'
+        actions.append((re.compile(tst), sub.encode('utf-8')))
 
 elif opts.mode=='alias':
     if opts.output=='.':
@@ -144,13 +144,13 @@ elif opts.mode=='alias':
     else:
         out=open(opts.output, 'w')
 
-    for orig, sub in mappings.iteritems():
-        print >>out,'alias("%s",\t"%s")'%(orig,sub)
+    for orig, sub in mappings.items():
+        out.write(b'alias("%s",\t"%s")\n'%(orig,sub))
     out.close()
     sys.exit(0)
 
 else:
-    print >>sys.stderr,"Unknown replacement mode",opts.mode
+    sys.stderr.write("Unknown replacement mode %s\n"%opts.mode)
     sys.exit(1)
 
 if not os.path.exists(opts.output):
@@ -171,7 +171,10 @@ for f in args:
     val=inp.read()
 
     for pat, sub in actions:
-        val=pat.sub(sub, val)
+        try:
+            val=pat.sub(sub, val)
+        except TypeError as e:
+            raise TypeError("%s"%((type(pat),type(sub),type(val)),))
 
     inp.close()
     # close input file in case it is about to be overwritten

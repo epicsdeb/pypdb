@@ -19,8 +19,8 @@ from .dbd.yacc import parse
 from .dbd.ast import Code, Comment, Block, Command, DBSyntaxError
 
 _dft_warns = {
-    'quoted':"a node argument isn't quoted",
-    'varint':"a varaible(varname) node which doesn't specify a type, which defaults to 'int'",
+    'quoted':"A node argument isn't quoted",
+    'varint':"A varaible(varname) node which doesn't specify a type, which defaults to 'int'",
     'spec-comm':"Syntax error in special #: comment line"
 }
 
@@ -78,9 +78,9 @@ def getargs(args=None):
                 F = sys.stderr
                 F.write("Warning tags\n  Warn when ...\n")
                 fmt = TextWrapper(initial_indent='  ', subsequent_indent='  ',
-                                  width=60)
-                for tag,desc in _dft_warns.items():
-                    F.write("\n%s\n"%tag)
+                                  width=80)
+                for tag,desc in _all_warns.items():
+                    F.write("\n-W%s\n"%tag)
                     F.write(fmt.fill(desc))
                     F.write('\n')
                 P.exit(status=1)
@@ -287,6 +287,8 @@ def wholeRecInst(ent, results, info):
                         ent.args[1], otype, rtype)
         elif not appending:
             results.warn('rec-append', "Append/overwrite with record(\"*\", \"%s\") { ...", ent.args[1])
+        else:
+            _log.debug("Appending '%s'", ent.args[1])
 
     else:
         results.recinst[ent.args[1]] = rtype

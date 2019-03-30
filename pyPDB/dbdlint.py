@@ -27,6 +27,7 @@ _dft_warns = {
 _all_warns = {
     'ext-link':"A DB/CA link to a PV which is not defined.  Add '#: external(\"pv.FLD\")",
     'bad-field':"Unable to validate record instance field due to a previous error (missing recordtype).",
+    'rec-append':"Not using Base >=3.15 style recordtype \"*\" when appending/overwriting record instances",
 }
 _all_warns.update(_dft_warns)
 
@@ -270,6 +271,7 @@ def checkRecType(ent, results, info):
 
 def wholeRecInst(ent, results, info):
     rtype = ent.args[0]
+    appending = rtype=='*'
     if rtype=='*' and ent.args[1] in results.recinst:
         rtype = results.recinst[ent.args[1]]
 
@@ -279,11 +281,13 @@ def wholeRecInst(ent, results, info):
         results.err('bad-rtyp', "%s has unknown record type %s", ent.args[1], rtype)
 
     if ent.args[1] in results.recinst:
-        _log.debug("Appending record '%s'", ent.args[1])
         otype = results.recinst[ent.args[1]]
         if otype!=rtype:
             results.err('bad-rtyp', "Can't change record '%s' from '%s' to '%s'",
                         ent.args[1], otype, rtype)
+        elif not appending:
+            results.warn('rec-append', "Append/overwrite with record(\"*\", \"%s\") { ...", ent.args[1])
+
     else:
         results.recinst[ent.args[1]] = rtype
 

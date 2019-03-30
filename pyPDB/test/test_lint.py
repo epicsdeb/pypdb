@@ -36,10 +36,13 @@ class CaptureMsg(logging.Handler):
 
 class _TestLint(unittest.TestCase):
     def _matchmsg(self, file, type, Lactual, Lexpect):
-        for expect, actual in zip(Lexpect or [], Lactual):
+        Lexpect = Lexpect or []
+        for expect, actual in zip(Lexpect, Lactual):
             M = re.match(expect, actual)
             if M is None:
                 raise self.failureException("%s '%s' not mached by '%s'"%(type, actual, expect))
+        if len(Lexpect)!=len(Lactual):
+            self.assertListEqual(Lexpect, Lactual)
 
     def assertLint(self, file, errors=None, warnings=None, args=None):
         args = args or []
@@ -66,7 +69,10 @@ class _TestLint(unittest.TestCase):
 
 class TestLint(_TestLint):
     def test_good(self):
-        self.assertLint("good.db", args=['-F'])
+        self.assertLint("good.db", args=['-Wall', '-F'],
+                        warnings=[
+            r'.*/good.db:12|rec-append|Append/overwrite.*',
+        ])
 
     def test_badsyntax(self):
         self.assertLint("badsyntax.db", errors=['.*Syntax error at or before }'])

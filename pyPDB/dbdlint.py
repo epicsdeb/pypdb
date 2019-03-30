@@ -324,6 +324,9 @@ def wholeDevice(ent, results, info):
     else:
         results.recdsets[rtype][ent.args[3]] = ent.args[1]
 
+def includeFile(ent, results, info):
+    results.err('incomplete-dbd', 'This tool must be run on an expanded .dbd.  (eg. softIoc.dbd, not base.dbd)')
+
 dbdtree = {
     Block:{
         'record':{
@@ -377,6 +380,7 @@ dbdtree = {
     Command:{
         'include':{
             'quote':True,
+            'checkfn':includeFile,
         },
     },
 }

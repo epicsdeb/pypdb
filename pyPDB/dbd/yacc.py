@@ -31,7 +31,8 @@ def p_bvalue(p):
     L = []
     if len(p)>2:
         L = p.slice[2].value
-    L.insert(0,p.slice[1].value)
+    if len(p)>1:
+        L.insert(0,p.slice[1].value)
     p.slice[0].value = L
 
 def p_value_Q(p):

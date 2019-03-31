@@ -235,7 +235,7 @@ def checkRecInstField(ent, results, info):
 def wholeRecInstField(ent, results, info):
     recent, fname = results.stack[-1], ent.args[0]
     if not hasattr(recent, '_fieldinfo'):
-        results.warn('bad-field', "Unable to validate field '%s'", fname)
+        results.warn('bad-field', "Unable to validate field '%s'.  Likely due to an earlier error.", fname)
         return
     ftype = recent._fieldinfo.get(fname)
     if not ftype:
@@ -278,7 +278,7 @@ def wholeRecInst(ent, results, info):
     try:
         ent._fieldinfo = results.rectypes[rtype]
     except KeyError:
-        results.err('bad-rtyp', "%s has unknown record type %s", ent.args[1], rtype)
+        results.err('bad-rtyp', "%s has unknown record type '%s'", ent.args[1], rtype)
 
     if ent.args[1] in results.recinst:
         otype = results.recinst[ent.args[1]]
@@ -323,6 +323,7 @@ dbdtree = {
                 Block:{
                     'field':{
                         'nargs':2,
+                        'empty':[False,True],
                         'quote':[None, True],
                         'body':False,
                         'checkfn':checkRecInstField,
@@ -399,6 +400,14 @@ dbdtree = {
     },
 }
 
+def checkEmpty(strs, results, info):
+    empty = itertools.chain(info.get('empty',[]), itertools.repeat(False))
+    for i,(S,empty) in enumerate(zip(strs, empty)):
+        if S is None:
+            continue
+        if len(S)==0 and empty is False:
+            results.err('empty', "Empty string not allowed")
+
 def walk(dbd, basetree, results):
     Q = [('visit',N,basetree) for N in dbd]
 
@@ -467,6 +476,7 @@ def walk(dbd, basetree, results):
                 results.err('bad-args', "Incorrect number of arguments for %s.  %d but expect %d",
                             ent.name, len(ent.args), nargs)
     
+            checkEmpty(ent.args, results, I)
             quote = I.get('quote')
             if quote is not None:
                 qerr = [E is not None and E!=A for E,A in zip(quote, ent.argsquoted)]
@@ -477,6 +487,7 @@ def walk(dbd, basetree, results):
                         results.warn("quoted", "'%s' argument %d quoted", ent.name, i)
 
         elif isinstance(ent, Command):
+            checkEmpty([ent.arg], results, I)
             quote = I.get('quote')
             if quote is not None and quote ^ ent.argquoted:
                 if quote:

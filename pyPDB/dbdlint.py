@@ -406,7 +406,7 @@ def checkEmpty(strs, results, info):
         if S is None:
             continue
         if len(S)==0 and empty is False:
-            results.err('empty', "Empty string not allowed")
+            results.err('empty', "Empty string not allowed in position %d (from zero)"%i)
 
 def walk(dbd, basetree, results):
     Q = [('visit',N,basetree) for N in dbd]

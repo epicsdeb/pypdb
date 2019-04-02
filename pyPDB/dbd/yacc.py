@@ -30,37 +30,37 @@ def p_bvalue(p):
     '''
     L = []
     if len(p)>2:
-        L = p.slice[2].value
+        L = p[2]
     if len(p)>1:
-        L.insert(0,p.slice[1].value)
-    p.slice[0].value = L
+        L.insert(0,p[1])
+    p[0] = L
 
 def p_value_Q(p):
     '''value : QUOTED
     '''
-    p.slice[0].value = (p.slice[1].value, True)
+    p[0] = (p[1], True)
 
 def p_value(p):
     '''value : bval
     '''
-    p.slice[0].value = (' '.join(p.slice[1].value), False)
+    p[0] = (' '.join(p[1]), False)
 
 def p_nodelist_one(p):
     '''nodelist : node
     '''
-    p.slice[0].value = [p.slice[1].value]
+    p[0] = [p[1]]
 
 def p_nodelist_many(p):
     '''nodelist : node nodelist
     '''
-    L = p.slice[2].value
-    L.insert(0, p.slice[1].value)
-    p.slice[0].value = L
+    L = p[2]
+    L.insert(0, p[1])
+    p[0] = L
 
 def p_nodelist_empty(p):
     '''nodelist :
     '''
-    p.slice[0].value = []
+    p[0] = []
 
 def p_node(p):
     '''node : block
@@ -68,49 +68,49 @@ def p_node(p):
             | CODE
             | COMMENT
     '''
-    N = p.slice[0].value = p.slice[1].value
+    N = p[0] = p[1]
     N.fname = p.lexer._file
 
 def p_block_plain(p):
     '''block : BARE '(' arglist ')'
     '''
-    Vs, Qs = p.slice[3].value
-    p.slice[0].value = ast.Block(p.slice[1].value, Vs, Qs, body=None, lineno=p.lineno(1))
+    Vs, Qs = p[3]
+    p[0] = ast.Block(p[1], Vs, Qs, body=None, lineno=p.lineno(1))
 
 def p_block_body(p):
     '''block : BARE '(' arglist ')' '{' nodelist '}'
     '''
-    Vs, Qs = p.slice[3].value
-    p.slice[0].value = ast.Block(p.slice[1].value, Vs, Qs, body=p.slice[6].value, lineno=p.lineno(1))
+    Vs, Qs = p[3]
+    p[0] = ast.Block(p[1], Vs, Qs, body=p[6], lineno=p.lineno(1))
 
 def p_command(p):
     '''command : BARE BARE
     '''
-    p.slice[0].value = ast.Command(p.slice[1].value, p.slice[2].value, False, p.lineno(1))
+    p[0] = ast.Command(p[1], p[2], False, p.lineno(1))
 
 def p_commandQ(p):
     '''command : BARE QUOTED
     '''
-    p.slice[0].value = ast.Command(p.slice[1].value, p.slice[2].value, True, p.lineno(1))
+    p[0] = ast.Command(p[1], p[2], True, p.lineno(1))
 
 def p_arglist_one(p):
     '''arglist : value
     '''
-    V, Q = p.slice[1].value
-    p.slice[0].value = [V], [Q]
+    V, Q = p[1]
+    p[0] = [V], [Q]
 
 def p_arglist_many(p):
     '''arglist : value ',' arglist
     '''
-    V, Q = p.slice[1].value
-    p.slice[0].value = LV, LQ = p.slice[3].value
+    V, Q = p[1]
+    p[0] = LV, LQ = p[3]
     LV.insert(0, V)
     LQ.insert(0, Q)
 
 def p_arglist_empty(p):
     '''arglist :
     '''
-    p.slice[0].value = []
+    p[0] = []
 
 def p_error(t):
     if t is None:

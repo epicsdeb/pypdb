@@ -39,15 +39,15 @@ class TestParse(unittest.TestCase):
         ("""
         record(C, foo$(MAC)bar)
         """,[
-            Block('record', ["C", "foo$(MAC)bar"], [False, False]),
+            Block('record', ["C", "foo $(MAC) bar"], [False, False]),
         ]),
         # space in unquoted values is ignored
         ("""
         record(C, foo$(MAC) bar)
         record(C, foo bar)
         """,[
-            Block('record', ["C", "foo$(MAC)bar"], [False, False]),
-            Block('record', ["C", "foobar"], [False, False]),
+            Block('record', ["C", "foo $(MAC) bar"], [False, False]),
+            Block('record', ["C", "foo bar"], [False, False]),
         ]),
     ]
 

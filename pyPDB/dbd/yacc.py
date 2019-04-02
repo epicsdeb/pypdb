@@ -43,7 +43,7 @@ def p_value_Q(p):
 def p_value(p):
     '''value : bval
     '''
-    p.slice[0].value = (''.join(p.slice[1].value), False)
+    p.slice[0].value = (' '.join(p.slice[1].value), False)
 
 def p_nodelist_one(p):
     '''nodelist : node

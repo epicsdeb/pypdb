@@ -482,7 +482,10 @@ def walk(dbd, basetree, results):
                 qerr = [E is not None and E!=A for E,A in zip(quote, ent.argsquoted)]
                 for i,E in itertools.compress(zip(range(1,1+len(quote)),quote), qerr):
                     if E:
-                        results.warn("quoted", "'%s' argument %d not quoted", ent.name, i)
+                        if ent.args[i-1].find(" ")==-1:
+                            results.warn("quoted", "'%s' argument %d not quoted", ent.name, i)
+                        else:
+                            results.err("quoted", "'%s' argument %d must be quoted", ent.name, i)
                     else:
                         results.warn("quoted", "'%s' argument %d quoted", ent.name, i)
 

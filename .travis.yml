@@ -6,6 +6,10 @@ script:
 matrix:
   include:
   - python: "2.7"
+    env: PROF=min
+  - python: "2.7"
     env: PROF=deb9
   - python: "3.5"
     env: PROF=deb9
+  - python: "3.5"
+    env: PROF=latest

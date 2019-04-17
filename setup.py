@@ -3,7 +3,7 @@
 import sys
 
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(name='pyPDB',
           version='0.1',
@@ -15,6 +15,6 @@ setup(name='pyPDB',
                     'pyPDB.po',
                    ],
           scripts=['getpvs', 'applypvs', 'dbdlint'],
-          requires=
+          install_requires=
             ['ply (>=3.4)'],
       )

@@ -4,6 +4,7 @@ Priority: extra
 Maintainer: Michael Davidsaver <mdavidsaver@gmail.com>
 Build-Depends: debhelper (>= 8.0.0),
                python-all, python-all-dbg,
+               python-setuptools,
                python-ply (>= 3.4~),
                lyx (>= 2.1~),
                asciidoc, libxml2-utils, docbook-utils, xmlto,

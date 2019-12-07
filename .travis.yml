@@ -1,15 +1,30 @@
-language: python
-install:
-  - pip install -r requirements-${PROF}.txt
-script:
-  - python -m nose pyPDB
 matrix:
   include:
-  - python: "2.7"
+  - language: python
+    python: "2.7"
     env: PROF=min
-  - python: "2.7"
+    install: pip install -r requirements-${PROF}.txt
+    script: python -m nose pyPDB
+
+  - language: python
+    python: "2.7"
     env: PROF=deb9
-  - python: "3.5"
+    install: pip install -r requirements-${PROF}.txt
+    script: python -m nose pyPDB
+
+  - language: python
+    python: "3.5"
     env: PROF=deb9
-  - python: "3.5"
+    install: pip install -r requirements-${PROF}.txt
+    script: python -m nose pyPDB
+
+  - language: python
+    python: "3.5"
     env: PROF=latest
+    install: pip install -r requirements-${PROF}.txt
+    script: python -m nose pyPDB
+
+  - language: generic
+    services: docker
+    env: TRAVIS_DEBIAN_DISTRIBUTION=buster
+    script: wget -O- http://travis.debian.net/script.sh | sh -

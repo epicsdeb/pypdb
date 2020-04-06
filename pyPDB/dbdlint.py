@@ -371,6 +371,11 @@ dbdtree = {
             'quote':[False],
             'body':False,
         },
+        'function':{
+            'nargs':1,
+            'quote':[False],
+            'body':False,
+        },
         'variable':{
             'body':False,
             'checkfn':checkvar,

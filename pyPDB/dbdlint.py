@@ -366,6 +366,11 @@ dbdtree = {
             'body':False,
             'wholefn':wholeDevice,
         },
+        'function':{
+            'nargs':1,
+            'quote':[False],
+            'body':False,
+        },
         'registrar':{
             'nargs':1,
             'quote':[False],

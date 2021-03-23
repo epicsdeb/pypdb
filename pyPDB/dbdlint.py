@@ -197,7 +197,12 @@ def checkRecLink(results, lval):
     Call from field() validation
     '''
     try:
-        float(lval) # parse as a test for a CONSTANT value
+        float(lval) # parse as a test for a CONSTANT floating value
+        return
+    except ValueError:
+        pass
+    try:
+        int(lval, 0) # parse as a test for a CONSTANT integer value
         return
     except ValueError:
         pass
